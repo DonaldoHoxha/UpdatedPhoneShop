@@ -5,7 +5,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Ottieni l'ID dell'utente
+// Get the user ID
 $username = $_SESSION['username'];
 $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
 $stmt->bind_param("s", $username);
@@ -18,11 +18,13 @@ if (!$user) {
 }
 $user_id = $user['id'];
 
-$stmt = $conn->prepare("SELECT w.name, c.quantity FROM warehouse w JOIN cart c on w.id = c.warehouse_id WHERE c.user_id = ?");
+// We get the name and the quantity of the items in the cart
+$stmt = $conn->prepare("SELECT w.name, c.quantity FROM product w JOIN cart c on w.id = c.product_id WHERE c.user_id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
+//simple print to be updated
 echo "<table>";
 echo "<tr>";
 echo "<th>Prodotto</th>";
