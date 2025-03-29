@@ -1,16 +1,10 @@
 <?php
+// We check if the user has logged in 
 session_start();
 if (!isset($_SESSION['username'])) {
     header("Location: index.html");
     exit();
 }
-
-include 'db_conn.php';
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -26,48 +20,36 @@ if ($conn->connect_error) {
             const profileContainer = document.querySelector('.user-btn');
             const profileOptions = document.querySelector('.profile-options');
             let hoverTimeout;
-
             // Show on hover
             profileContainer.addEventListener('mouseenter', () => {
                 clearTimeout(hoverTimeout);
                 profileOptions.classList.add('show');
             });
-
             // Hide with delay
             profileContainer.addEventListener('mouseleave', () => {
                 hoverTimeout = setTimeout(() => {
                     profileOptions.classList.remove('show');
                 }, 300);
             });
-
             // Keep open if hovering over options
             profileOptions.addEventListener('mouseenter', () => {
                 clearTimeout(hoverTimeout);
                 profileOptions.classList.add('show');
-            });
-
+            })
             profileOptions.addEventListener('mouseleave', () => {
                 hoverTimeout = setTimeout(() => {
                     profileOptions.classList.remove('show');
                 }, 200);
             });
-
             // Close when clicking outside
             document.addEventListener('click', (e) => {
                 if (!profileContainer.contains(e.target)) {
                     profileOptions.classList.remove('show');
                 }
             });
-
-
-            function add() {
-
-            }
-
         });
-
+        // Add an item to the cart 
         function addItem(productId) {
-            console.log("productId: " + productId);
             fetch('add_to_cart.php', {
                     method: 'POST',
                     headers: {
@@ -181,7 +163,7 @@ if ($conn->connect_error) {
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
-            $stmt = $conn->prepare("SELECT * FROM warehouse");
+            $stmt = $conn->prepare("SELECT * FROM product");
             $stmt->execute();
             $result = $stmt->get_result();
             while ($row = $result->fetch_assoc()) {
