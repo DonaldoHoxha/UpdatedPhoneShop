@@ -60,8 +60,7 @@ if (!isset($_SESSION['username'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === "success") {
-                        alert(data.message);
-                        // Opzionale: aggiornare il numero nel carrello
+                        // update the cart items count
                         let cartCount = document.querySelector('.cart-count');
                         cartCount.textContent = parseInt(cartCount.textContent) + 1;
                     } else {
@@ -72,25 +71,23 @@ if (!isset($_SESSION['username'])) {
         }
         //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
         const add_to_cart = document.querySelector('.add-to-cart');
-            const icon = add_to_cart.querySelector('i');
-            const originalIconClass = 'fa-cart-plus';
-            const clickedIconClass = 'fa-check-circle';
+        const icon = add_to_cart.querySelector('i');
+        const originalIconClass = 'fa-cart-plus';
+        const clickedIconClass = 'fa-check-circle';
 
-            add_to_cart.addEventListener('click', () => {
-           
-                    icon.classList.remove(originalIconClass);
-                    icon.classList.add(clickedIconClass);
-                
-            });
+        add_to_cart.addEventListener('click', () => {
 
-            add_to_cart.addEventListener('mouseleave', () => {
-                
-                    icon.classList.remove(clickedIconClass);
-                    icon.classList.add(originalIconClass);
-                
-            });
-        });
-        
+            icon.classList.remove(originalIconClass);
+            icon.classList.add(clickedIconClass);
+
+        });
+
+        add_to_cart.addEventListener('mouseleave', () => {
+
+            icon.classList.remove(clickedIconClass);
+            icon.classList.add(originalIconClass);
+
+        });
     </script>
 </head>
 
