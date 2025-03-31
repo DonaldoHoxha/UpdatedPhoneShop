@@ -47,6 +47,25 @@ if (!isset($_SESSION['username'])) {
                     profileOptions.classList.remove('show');
                 }
             });
+        //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
+        const add_to_cart = document.querySelector('.add-to-cart');
+        const icon = add_to_cart.querySelector('i');
+        const originalIconClass = 'fa-cart-plus';
+        const clickedIconClass = 'fa-check-circle';
+
+        add_to_cart.addEventListener('click', () => {
+
+            icon.classList.remove(originalIconClass);
+            icon.classList.add(clickedIconClass);
+
+        });
+
+        add_to_cart.addEventListener('mouseleave', () => {
+
+            icon.classList.remove(clickedIconClass);
+            icon.classList.add(originalIconClass);
+
+        });
         });
         // Add an item to the cart 
         function addItem(productId) {
@@ -69,25 +88,7 @@ if (!isset($_SESSION['username'])) {
                 })
                 .catch(error => console.error('Errore:', error));
         }
-        //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
-        const add_to_cart = document.querySelector('.add-to-cart');
-        const icon = add_to_cart.querySelector('i');
-        const originalIconClass = 'fa-cart-plus';
-        const clickedIconClass = 'fa-check-circle';
-
-        add_to_cart.addEventListener('click', () => {
-
-            icon.classList.remove(originalIconClass);
-            icon.classList.add(clickedIconClass);
-
-        });
-
-        add_to_cart.addEventListener('mouseleave', () => {
-
-            icon.classList.remove(clickedIconClass);
-            icon.classList.add(originalIconClass);
-
-        });
+        
     </script>
 </head>
 
