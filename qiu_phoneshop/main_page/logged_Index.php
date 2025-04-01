@@ -56,25 +56,27 @@ if (!isset($_SESSION['username'])) {
                     profileOptions.classList.remove('show');
                 }
             });
-        //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
-        const add_to_cart = document.querySelector('.add-to-cart');
-        const icon = add_to_cart.querySelector('i');
-        const originalIconClass = 'fa-cart-plus';
-        const clickedIconClass = 'fa-check-circle';
+            //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                const icon = button.querySelector('i');
+                const originalIconClass = 'fa-cart-plus';
+                const clickedIconClass = 'fa-check-circle';
 
-        add_to_cart.addEventListener('click', () => {
+                document.addEventListener('click', (e) => {
+                    if (event.target.closest('.add-to-cart')) {
+                        const button = event.target.closest('.add-to-cart');
+                        const icon = button.querySelector('i');
 
-            icon.classList.remove(originalIconClass);
-            icon.classList.add(clickedIconClass);
+                        icon.classList.replace('fa-cart-plus', 'fa-check-circle');
 
-        });
+                        setTimeout(() => {
+                            icon.classList.replace('fa-check-circle', 'fa-cart-plus');
+                        }, 700);
+                    }
+                });
 
-        add_to_cart.addEventListener('mouseleave', () => {
+            });
 
-            icon.classList.remove(clickedIconClass);
-            icon.classList.add(originalIconClass);
-
-        });
         });
         // Add an item to the cart 
         function addItem(productId) {
@@ -97,7 +99,6 @@ if (!isset($_SESSION['username'])) {
                 })
                 .catch(error => console.error('Errore:', error));
         }
-        
     </script>
 </head>
 
@@ -114,7 +115,7 @@ if (!isset($_SESSION['username'])) {
                 <button class="search-btn"><i class="fas fa-search"></i></button>
             </div>
             <div class="user-actions">
-                <a href="../login&register/logout.php"><button class="logout">LogOut</button></a>
+                <a href="../login&register/logout.php"><button class="logout">Logout</button></a>
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
