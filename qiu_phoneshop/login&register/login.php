@@ -43,7 +43,7 @@ if ($result->num_rows === 1) {
             'samesite' => 'Strict'
         ];
         setcookie("user", $user['username'], $cookie_options);
-        setcookie("email", $user['email'], $cookie_options);
+
 
         // Redirect to dashboard
         header("Location: ../main_page/logged_Index.php");
