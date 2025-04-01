@@ -1,3 +1,17 @@
+<?php
+// We check if the user has logged in 
+session_start();
+if (!isset($_SESSION['username'])) {
+    // Session doesn't exist, check for cookies
+    if (isset($_COOKIE['user'])) {
+        // Validate these cookies (potentially against database)
+        // If valid, recreate the session
+        $_SESSION['username'] = $_COOKIE['user'];
+        // Additional session setup as needed
+        header("Location: logged_Index.php");
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="it">
 
