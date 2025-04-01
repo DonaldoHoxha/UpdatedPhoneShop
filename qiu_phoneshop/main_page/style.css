@@ -23,7 +23,7 @@ body {
 /* Header */
 .main-header {
     background: white;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -81,23 +81,26 @@ body {
     cursor: pointer;
 }
 
-.login-register > a > button{
+.login-register>a>button {
     background: none;
     border: none;
     font-size: 1.2rem;
     color: var(--primary-color);
     cursor: pointer;
 }
-.login-register > a > .login{
+
+.login-register>a>.login {
     border-right: 1px solid var(--dark-gray);
     padding-right: 0.3rem;
 }
+
 .user-actions {
     display: flex;
     gap: 1.5rem;
 }
 
-.user-btn, .cart-btn {
+.user-btn,
+.cart-btn {
     background: none;
     border: none;
     font-size: 1.3rem;
@@ -105,6 +108,7 @@ body {
     cursor: pointer;
     position: relative;
 }
+
 /* Add this CSS using your existing classes */
 .proflie-img {
     position: relative;
@@ -117,7 +121,7 @@ body {
     top: 100%;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
@@ -184,7 +188,7 @@ body {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('hero-bg.jpg');
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('hero-bg.jpg');
     background-size: cover;
     background-position: center;
     height: 60vh;
@@ -205,13 +209,26 @@ body {
     font-size: 2.5rem;
     margin-bottom: 1rem;
 }
-.logout{
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: var(--primary-color);
+
+.logout {
+    background-color: white;
+    color: var(--accent-color);
+    font-weight: 700;
+    border: var(--accent-color) 2px solid;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 12px;
     cursor: pointer;
-    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.logout:hover {
+    background-color: #01a584;
+    color: white;
+}
+
+.logout:active {
+    transform: scale(0.97);
 }
 
 .cta-btn {
@@ -242,7 +259,7 @@ body {
     background: white;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     position: relative;
 }
@@ -288,7 +305,8 @@ body {
     gap: 1rem;
 }
 
-.quick-view, .add-to-cart {
+.quick-view,
+.add-to-cart {
     background: var(--secondary-color);
     color: white;
     border: none;
@@ -298,7 +316,8 @@ body {
     transition: background 0.3s ease;
 }
 
-.quick-view:hover, .add-to-cart:hover {
+.quick-view:hover,
+.add-to-cart:hover {
     background: var(--primary-color);
 }
 
