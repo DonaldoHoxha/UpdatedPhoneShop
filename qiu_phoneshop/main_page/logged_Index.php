@@ -2,8 +2,17 @@
 // We check if the user has logged in 
 session_start();
 if (!isset($_SESSION['username'])) {
-    header("Location: index.php");
-    exit();
+    // Session doesn't exist, check for cookies
+    if (isset($_COOKIE['user'])) {
+        // Validate these cookies (potentially against database)
+        // If valid, recreate the session
+        $_SESSION['username'] = $_COOKIE['user'];
+        // Additional session setup as needed
+    } else {
+        // No session or cookies, redirect to login
+        header('Location: ../login&register/login&register.html');
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>
