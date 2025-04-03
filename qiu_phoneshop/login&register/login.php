@@ -32,30 +32,28 @@ if ($result->num_rows === 1) {
     if (password_verify($_POST['password'], $user['password'])) {
         // Regenerate session ID for security
         session_regenerate_id(true);
+        if (isset($_POST['remember'])) {
+            // Set secure cookie (BEFORE ANY OUTPUT)
+            $cookie_options = [
+                'expires'  => time() + 86400 * 30,
+                'path'     => '/',
+                'secure'   => true,    // Requires HTTPS
+                'httponly' => true,
+                'samesite' => 'Strict'
+            ];
+            setcookie("user", $user['username'], $cookie_options);
+        }
         $_SESSION['username'] = $user['username'];
-
-        // Set secure cookie (BEFORE ANY OUTPUT)
-        $cookie_options = [
-            'expires'  => time() + 86400 * 30,
-            'path'     => '/',
-            'secure'   => true,    // Requires HTTPS
-            'httponly' => true,
-            'samesite' => 'Strict'
-        ];
-        setcookie("user", $user['username'], $cookie_options);
-
-
         // Redirect to dashboard
         header("Location: ../main_page/logged_Index.php");
-        exit();
     } else {
         header("Location: login&register.html?error=invalid_password");
-        exit();
     }
 } else {
     header("Location: login&register.html?error=user_not_found");
-    exit();
 }
+
+
 
 $stmt->close();
 $conn->close();
