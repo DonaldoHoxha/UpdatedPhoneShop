@@ -1,13 +1,35 @@
 <?php
-// We check if the user has logged in 
+// Start the session at the very beginning
 session_start();
+// Check if the user is logged in via session
 if (!isset($_SESSION['username'])) {
     // Session doesn't exist, check for cookies
     if (isset($_COOKIE['user'])) {
-        // Validate these cookies (potentially against database)
-        // If valid, recreate the session
-        $_SESSION['username'] = $_COOKIE['user'];
-        // Additional session setup as needed
+        // Validate the cookie against the database for security
+        include 'db_conn.php';
+        $stmt = $conn->prepare("SELECT username FROM user WHERE username = ?");
+        if ($stmt) {
+            $stmt->bind_param("s", $_COOKIE['user']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows === 1) {
+                // Cookie is valid, recreate the session
+                $_SESSION['username'] = $_COOKIE['user'];
+                // Regenerate session ID for security
+                session_regenerate_id(true);
+                $stmt->close();
+            } else {
+                // Invalid cookie, clear it and redirect
+                setcookie("user", "", time() - 3600, "/");
+                header('Location: ../login&register/login&register.html?error=invalid_cookie');
+                exit();
+            }
+            $conn->close();
+        } else {
+            // Database error
+            header('Location: ../login&register/login&register.html?error=db_error');
+            exit();
+        }
     } else {
         // No session or cookies, redirect to login
         header('Location: ../login&register/login&register.html');
