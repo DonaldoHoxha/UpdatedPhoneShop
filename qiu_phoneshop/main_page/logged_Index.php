@@ -211,6 +211,10 @@ if (!isset($_SESSION['username'])) {
                 })
                 .catch(error => console.error('Errore:', error));
         }
+        // Function to show the description of the selected phone
+        function showDesc(productId) {
+
+        }
     </script>
 </head>
 
@@ -313,7 +317,7 @@ if (!isset($_SESSION['username'])) {
                 echo "<h3>" . $row['name'] . "</h3>";
                 echo "<p class='product-price'>€" . $row['price'] . "</p>";
                 echo "<div class='product-actions'>";
-                echo "<button class='quick-view'><i class='fas fa-eye'></i></button>";
+                echo "<button class='quick-view' onclick='showDesc(" . $row['id'] . ")'><i class='fas fa-eye'></i></button>";
                 echo "<button class='add-to-cart' onclick='addItem(" . $row['id'] . ")'><i class='fas fa-cart-plus'></i></button>";
                 echo "</div>";
                 echo "</div>";
