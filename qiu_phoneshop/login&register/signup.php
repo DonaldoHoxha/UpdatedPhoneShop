@@ -26,6 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = htmlspecialchars($_POST["username"]);
     $password = $_POST["password"];
     $confirm_password = $_POST["confirmPassword"];
+    $shipping_address = $_POST["shipping_address"];
 
     // Validate username 
     if ($username !== $_POST['username']) {
@@ -71,8 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Prepare SQL and bind parameters
-        $stmt = $conn->prepare("INSERT INTO user (username,email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $hashed_password);
+        $stmt = $conn->prepare("INSERT INTO user (username,email, password, shipping_address) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $username, $email, $hashed_password, $shipping_address);
 
         if ($stmt->execute()) {
             // Clear any session data from previous attempts
@@ -93,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // If there are errors, store them in session and redirect back to registration page
     if (!empty($errors)) {
-        header("Location: test.php?errors"); 
+        header("Location: test.php?errors");
         exit();
     }
 }
