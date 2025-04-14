@@ -44,6 +44,24 @@ if (!isset($_SESSION['username'])) {
                 })
                 .catch(error => console.error('Errore:', error));
         }
+
+        function buyCart() {
+            fetch('buy_cart.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        location.reload();
+                    } else {
+                        alert("Errore: " + data.message)
+                    }
+                })
+                .catch(error => console.error('Errore:', error));
+        }
     </script>
 </head>
 
@@ -93,6 +111,8 @@ if (!isset($_SESSION['username'])) {
         echo "<p>Totale: " . $row['total'] . "</p>";
     }
     ?>
+    <button onclick="buyCart()">buy cart</button>
+    <br>
     <a href="logged_Index.php"> Continua ad acquistare</a>
 </body>
 
