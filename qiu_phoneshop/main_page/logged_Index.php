@@ -235,7 +235,7 @@ if (!isset($_SESSION['username'])) {
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
-                                <a href="/profile" class="profile-link">Profile</a>
+                                <a href="profile.php" class="profile-link">Profile</a>
                                 <a href="/orders" class="profile-link">Orders</a>
                                 <a href="/settings" class="profile-link">Settings</a>
                                 <a href="../login&register/logout.php" class="profile-link">Logout</a>
