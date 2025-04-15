@@ -4,7 +4,6 @@ FONDAMENTALE:
 
 -gestione delle caratteristiche del telefono sul database
 -dashboard e login per amministratore
--css per la pagina di carrello
 -acquistare un telefono
 -possibilità di acquistare un singolo telefono all'interno del carrello
 
@@ -22,8 +21,10 @@ FATTI✅:
 -aggiungere scheda orders✅
 -aggiungere scheda profile✅
 -inserimento indirizzo e altri dati e memorizzarli✅
+-occhio per visualizzare le caratteristiche dei telefoni e immagine del telefono✅
 
 IN SVOLGIMENTO⚒️:
--occhio per visualizzare le caratteristiche dei telefoni e immagine del telefono⚒️
+-css per la pagina di carrello⚒️
+
 
 
