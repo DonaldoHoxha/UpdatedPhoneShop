@@ -153,7 +153,7 @@ if (!isset($_SESSION['username'])) {
                         <h3>${product.name}</h3>
                         <p class="product-price">€${product.price}</p>
                         <div class="product-actions">
-                            <button class="quick-view"><i class="fas fa-eye"></i></button>
+                            <button class="quick-view" onclick="showDesc(${product.id})"><i class="fas fa-eye"></i></button>
                             <button class="add-to-cart" onclick="addItem(${product.id})">
                                 <i class="fas fa-cart-plus"></i>
                             </button>
@@ -213,7 +213,41 @@ if (!isset($_SESSION['username'])) {
         }
         // Function to show the description of the selected phone
         function showDesc(productId) {
+            fetch('display_product.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'product_id=' + encodeURIComponent(productId)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showDescInGrid(data);
+                })
+        }
 
+        function showDescInGrid(productDesc) {
+            const productsGrid = document.querySelector('.products-grid');
+            productDesc.forEach(product => {
+                productsGrid.innerHTML =
+                    `
+                <p>Articolo: ${product.name}</p>
+                <br>
+                <p>Ram: ${product.ram}</p>
+                <br>
+                <p>Rom: ${product.rom}</p>
+                <br>
+                <p>Battery: ${product.battery}</p>
+                <br>
+                <p>Camera: ${product.camera}</p>
+                <br>
+                <p>Price: ${product.price}</p>
+                <button class="cta-btn" onclick="document.getElementById('search-input').value='';
+                    document.getElementById('search-btn').click();">
+                    Mostra tutti i prodotti
+                    </button>
+                `
+            });
         }
     </script>
 </head>
