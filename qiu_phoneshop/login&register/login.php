@@ -13,7 +13,7 @@ if (empty($_POST['username']) || empty($_POST['password'])) {
 }
 
 // Database connection
-include '../main_page/db_conn.php';
+include '../main_page/back-end/db_conn.php';
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -45,7 +45,7 @@ if ($result->num_rows === 1) {
         }
         $_SESSION['username'] = $user['username'];
         // Redirect to dashboard
-        header("Location: ../main_page/logged_Index.php");
+        header("Location: ../main_page/front-end/logged_Index.php");
     } else {
         header("Location: login&register.html?error=invalid_password");
     }

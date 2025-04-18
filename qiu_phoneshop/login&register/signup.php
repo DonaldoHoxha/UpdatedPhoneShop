@@ -2,7 +2,7 @@
 // Start session to store error messages and form data
 session_start();
 // Database connection
-include '../main_page/db_conn.php';
+include '../main_page/back-end/db_conn.php';
 // Check connection
 if ($conn->connect_error) {
     $_SESSION['errors'] = ["Database connection failed: " . $conn->connect_error];
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirect to success page or login page
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $username;
-            header("Location: ../main_page/logged_Index.php"); //nome del file in cui deve andare dopo aver creato l'user
+            header("Location: ../main_page/front-end/logged_Index.php"); //nome del file in cui deve andare dopo aver creato l'user
             exit();
         } else {
             $errors[] = "Registration failed: " . $stmt->error;
