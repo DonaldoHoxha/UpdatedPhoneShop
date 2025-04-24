@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../../main_page/back-end/db_conn.php';
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -6,7 +7,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
-    $stmt = $conn->prepare("SELECT password FROM administrator_user WHERE name = ?");
+    $stmt = $conn->prepare("SELECT name,password FROM administrator_user WHERE name = ?");
     $stmt->bind_param("s", $_POST['username']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -24,9 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'httponly' => true,
                     'samesite' => 'Strict'
                 ];
-                setcookie("user", $user['username'], $cookie_options);
+                setcookie("user", $user['name'], $cookie_options);
             }
-            $_SESSION['username'] = $user['username'];
+            $_SESSION['username'] = $user['name'];
             // Redirect to dashboard
             header("Location: ../front-end/admin_dashboard.php");
         } else {
