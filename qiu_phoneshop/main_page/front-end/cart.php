@@ -2,7 +2,7 @@
 session_start();
 include '../back-end/db_conn.php';
 if (!isset($_SESSION['username'])) {
-    header('Location: ../../login&register/login&register.html');
+    header('Location: ../../login_register_user/login_register.html');
     exit();
 }
 ?>
@@ -33,14 +33,14 @@ if (!isset($_SESSION['username'])) {
                 <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
             </div>
             <div class="user-actions">
-                <a href="../../login&register/logout.php"><button class="logout">Logout</button></a>
+                <a href="../../login_register_user/logout.php"><button class="logout">Logout</button></a>
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
                                 <a href="profile.php" class="profile-link">Profilo</a>
                                 <a href="orders.php" class="profile-link">Ordini</a>
                                 <a href="/settings" class="profile-link">Impostazioni</a>
-                                <a href="../../login&register/logout.php" class="profile-link">Logout</a>
+                                <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>
                     </i></button>
