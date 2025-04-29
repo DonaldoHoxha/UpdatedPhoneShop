@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Check if username/password fields exist
 if (empty($_POST['username']) || empty($_POST['password'])) {
-    header("Location: login&register.html?error=missing_fields");
+    header("Location: login_register.html?error=missing_fields");
     exit();
 }
 
@@ -47,10 +47,10 @@ if ($result->num_rows === 1) {
         // Redirect to dashboard
         header("Location: ../main_page/front-end/logged_Index.php");
     } else {
-        header("Location: login&register.html?error=invalid_password");
+        header("Location: login_register.html?error=invalid_password");
     }
 } else {
-    header("Location: login&register.html?error=user_not_found");
+    header("Location: login_register.html?error=user_not_found");
 }
 
 

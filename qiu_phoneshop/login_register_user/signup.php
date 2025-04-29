@@ -6,7 +6,7 @@ include '../main_page/back-end/db_conn.php';
 // Check connection
 if ($conn->connect_error) {
     $_SESSION['errors'] = ["Database connection failed: " . $conn->connect_error];
-    header("Location: login&register.html");
+    header("Location: login_register.html");
     exit();
 }
 // Process form data when form is submitted
@@ -30,18 +30,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate username 
     if ($username !== $_POST['username']) {
-        header("Location: login&register.html?error=username_not_valid");
+        header("Location: login_register.html?error=username_not_valid");
         exit();
     }
     // Validate password match
     if ($password !== $confirm_password) {
-        header("Location: login&register.html?error=password_mismatch");
+        header("Location: login_register.html?error=password_mismatch");
         exit();
     }
 
     // Validate password strength (example: at least 8 characters)
     if (strlen($password) < 8) {
-        header("Location: login&register.html?error=password_length");
+        header("Location: login_register.html?error=password_length");
         exit();
     }
 
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     if ($row['count'] > 0) {
-        header("Location: login&register.html?error=email_exists");
+        header("Location: login_register.html?error=email_exists");
         exit();
     }
 
@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     if ($row['count'] > 0) {
-        header("Location: login&register.html?error=username_exists");
+        header("Location: login_register.html?error=username_exists");
         exit();
     }
     // Insert the user into the database
