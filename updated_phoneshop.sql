@@ -167,7 +167,7 @@ CREATE TABLE `user` (
   `password` varchar(100) DEFAULT NULL,
   `email` varchar(50) NOT NULL,
   `shipping_address` varchar(100) DEFAULT NULL,
-  `registration_date` date NOT NULL DEFAULT current_timestamp()
+  `registration_date` date NOT NULL DEFAULT (CURRENT_DATE())
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
