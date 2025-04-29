@@ -21,18 +21,18 @@ if (!isset($_SESSION['username'])) {
             } else {
                 // Invalid cookie, clear it and redirect
                 setcookie("user", "", time() - 3600, "/");
-                header('Location: ../../login_register/login_register.html?error=invalid_cookie');
+                header('Location: ../../login_register_user/login_register.html?error=invalid_cookie');
                 exit();
             }
             $conn->close();
         } else {
             // Database error
-            header('Location: ../../login_register/login_register.html?error=db_error');
+            header('Location: ../../login_register_user/login_register.html?error=db_error');
             exit();
         }
     } else {
         // No session or cookies, redirect to login
-        header('Location: ../../login_register/login_register.html');
+        header('Location: ../../login_register_user/login_register.html');
         exit();
     }
 }
@@ -62,14 +62,14 @@ if (!isset($_SESSION['username'])) {
                 <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
             </div>
             <div class="user-actions">
-                <a href="../../login_register/logout.php"><button class="logout">Logout</button></a>
+                <a href="../../login_register_user/logout.php"><button class="logout">Logout</button></a>
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
                                 <a href="profile.php" class="profile-link">Profile</a>
                                 <a href="orders.php" class="profile-link">Orders</a>
                                 <a href="/settings" class="profile-link">Settings</a>
-                                <a href="../../login_register/logout.php" class="profile-link">Logout</a>
+                                <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>
                     </i></button>
