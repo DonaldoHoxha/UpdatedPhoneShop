@@ -38,8 +38,8 @@ if (!isset($_SESSION['username'])) {
             </div>
             <div class="user-actions">
                 <div class="login-register">
-                    <a href="../../login&register/login&register.html"><button class="login">Login</button></a>
-                    <a href="../../login&register/login&register.html"><button class="register">SignUp</button></a>
+                    <a href="../../login_register_user/login_register.html"><button class="login">Login</button></a>
+                    <a href="../../login_register_user/login_register.html"><button class="register">SignUp</button></a>
                 </div>
                 <button class="user-btn"><i class="fas fa-user"></i></button>
                 <button class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></button>
