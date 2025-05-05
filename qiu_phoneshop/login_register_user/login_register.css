@@ -137,7 +137,7 @@ a:hover {
 /* Responsive Design */
 @media (max-width: 768px) {
   body {
-    height: 99%;
+    height: 98%;
     width: 95%;
     display: flex;
     justify-content: center;
