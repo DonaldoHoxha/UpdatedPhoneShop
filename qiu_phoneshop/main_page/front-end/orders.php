@@ -34,7 +34,8 @@ if (!isset($_SESSION['username'])) {
             </div>
             <div class="user-actions">
                 <a href="../../login_register_user/logout.php"><button class="logout">Logout</button></a>
-                <button class="user-btn"><i class="fas fa-user">
+                <button class="user-btn">
+                    <i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
                                 <a href="profile.php" class="profile-link">Profile</a>
@@ -43,7 +44,8 @@ if (!isset($_SESSION['username'])) {
                                 <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>
-                    </i></button>
+                    </i>
+                </button>
                 <a href="cart.php">
                     <button class="cart-btn">
                         <i class="fas fa-shopping-cart"></i>
