@@ -65,61 +65,61 @@ if (!isset($_SESSION['username'])) {
             </div>
 
             <div class="sidebar">
-                <a href="#">
+                <a href="#" class="active" id="dashboard">
                     <span class="material-icons-sharp">
                         dashboard
                     </span>
                     <h3>Dashboard</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="users">
                     <span class="material-icons-sharp">
                         person_outline
                     </span>
                     <h3>Users</h3>
                 </a>
-                <a href="#" class="active">
+                <a href="#" id="history" >
                     <span class="material-icons-sharp">
                         receipt_long
                     </span>
                     <h3>History</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="analytics">
                     <span class="material-icons-sharp">
                         insights
                     </span>
                     <h3>Analytics</h3>
                 </a>
 
-                <a href="#">
+                <a href="#" id="tickets">
                     <span class="material-icons-sharp">
                         mail_outline
                     </span>
                     <h3>Tickets</h3>
                     <span class="message-count">1</span>
                 </a>
-                <a href="#">
+                <a href="#" id="sales">
                     <span class="material-icons-sharp">
                         inventory
                     </span>
                     <h3>Sale List</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="reports">
                     <span class="material-icons-sharp">
                         report_gmailerrorred
                     </span>
                     <h3>Reports</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="settings">
                     <span class="material-icons-sharp">
                         settings
                     </span>
                     <h3>Settings</h3>
                 </a>
-                <a href="#">
+                <a href="#" id="management">
                     <span class="material-icons-sharp">
                         add
                     </span>
-                    <h3>New Login</h3>
+                    <h3>Management</h3>
                 </a>
                 <a href="#">
                     <span class="material-icons-sharp">
