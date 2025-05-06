@@ -2,61 +2,129 @@
 session_start();
 include '../back-end/db_conn.php';
 if (!isset($_SESSION['username'])) {
-    echo json_encode(["status" => "error", "message" => "Utente non autenticato"]);
+    header('Location: ../../login_register_user/login_register.html');
     exit();
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilo</title>
-    <style>
-        table,
-        th,
-        td {
-            border: 1px black solid;
-            border-collapse: collapse;
-        }
-    </style>
+    <title>TechPhone - Profilo Utente</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
     <?php
     // Get the user ID
     $username = $_SESSION['username'];
-    $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, username, email, shipping_address FROM user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
+
     if (!$user) {
-        echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
+        echo "<script>alert('Utente non trovato'); window.location.href='logged_index.php';</script>";
         exit();
     }
+
     $user_id = $user['id'];
-    // We get the username, email, shipping_address and total orders of the user
-    $stmt = $conn->prepare("SELECT username, email, shipping_address FROM user WHERE id = ?");
+
+    // Get total orders count
+    $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-        echo "<p>Nome: " . $row['username'] . "</p>";
-        echo "<p>Email: " . $row['email'] . "</p>";
-        echo "<p>Indirizzo: " . $row['shipping_address'] . "</p>";
-    }
-    $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders from orders where user_id = ?");
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-        echo "<p>Ordini totali: " . $row['number_of_orders'] . "</p>";
-    }
+    $orders_result = $stmt->get_result();
+    $orders_data = $orders_result->fetch_assoc();
     ?>
-    <a href="logged_Index.php"> Continua ad acquistare</a>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Il mio profilo</h1>
+            <a href="logged_index.php" class="back-to-shop">Torna allo shopping</a>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-sidebar">
+                <img src="default-avatar.jpg" class="profile-avatar">
+                <ul class="profile-nav">
+                    <li><a href="#" class="active"><i class="fas fa-user"></i> Profilo</a></li>
+                    <li><a href="orders.php"><i class="fas fa-box"></i> Ordini</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Impostazioni</a></li>
+                    <li><a href="../../login_register_user/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+
+            <div class="profile-main">
+                <div class="profile-section">
+                    <h2>Informazioni personali</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nome utente</span>
+                            <span class="info-value"><?php echo htmlspecialchars($user['username']); ?></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value"><?php echo htmlspecialchars($user['email']); ?></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Indirizzo di spedizione</span>
+                            <span class="info-value">
+                                <?php
+                                if (!empty($user['shipping_address'])) {
+                                    echo htmlspecialchars($user['shipping_address']);
+                                } else {
+                                    echo "Nessun indirizzo registrato";
+                                }
+                                ?>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ordini totali</span>
+                            <span class="info-value"><?php echo $orders_data['number_of_orders']; ?></span>
+                        </div>
+                    </div>
+                    <button class="edit-btn" onclick="location.href='edit_profile.php'">Modifica profilo</button>
+                </div>
+
+                <div class="profile-section orders-summary">
+                    <h2>Ultimi ordini</h2>
+                    <?php
+                    // Get last 3 orders
+                    $stmt = $conn->prepare("SELECT id, order_date, total_price FROM orders WHERE user_id = ? ORDER BY order_date DESC LIMIT 3");
+                    $stmt->bind_param("i", $user_id);
+                    $stmt->execute();
+                    $recent_orders = $stmt->get_result();
+
+                    if ($recent_orders->num_rows > 0) {
+                        while ($order = $recent_orders->fetch_assoc()) {
+                            echo '<div class="order-card">';
+                            echo '<div class="order-header">';
+                            echo '<span>Ordine #' . $order['id'] . '</span>';
+                            echo '<span class="order-date">' . date('d/m/Y', strtotime($order['order_date'])) . '</span>';
+                            echo '</div>';
+                            echo '<div class="order-details">';
+                            echo '<div><span class="info-label">Totale</span><span>€' . number_format($order['total_price'], 2) . '</span></div>';
+                            echo '</div>';
+                            echo '</div>';
+                        }
+                    } else {
+                        echo '<p>Nessun ordine effettuato</p>';
+                    }
+                    ?>
+                    <?php if ($orders_data['number_of_orders'] > 3) : ?>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <a href="orders.php" style="color: var(--secondary-color); text-decoration: none;">Visualizza tutti gli ordini →</a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
