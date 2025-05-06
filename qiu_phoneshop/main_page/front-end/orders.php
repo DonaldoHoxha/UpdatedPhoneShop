@@ -17,6 +17,7 @@ if (!isset($_SESSION['username'])) {
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="orders.css">
+    <script src="script.js"></script>
 </head>
 
 <body>
@@ -36,9 +37,9 @@ if (!isset($_SESSION['username'])) {
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
-                                <a href="profile.php" class="profile-link">Profilo</a>
-                                <a href="orders.php" class="profile-link">Ordini</a>
-                                <a href="/settings" class="profile-link">Impostazioni</a>
+                                <a href="profile.php" class="profile-link">Profile</a>
+                                <a href="orders.php" class="profile-link">Orders</a>
+                                <a href="/settings" class="profile-link">Setting</a>
                                 <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>
