@@ -121,6 +121,22 @@ b {
     max-height: 100vh;
 }
 
+.tempBox {
+    padding-top: 1rem;
+}
+
+.tempBox_inactive {
+    display: none;
+}
+
+.tableUser,
+.rowUser,
+.headUser,
+.columnUser {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 0.5rem;
+}
 
 aside {
     height: 100vh;
@@ -545,7 +561,7 @@ main .recent-orders a {
 }
 
 
-.hidden{
+.hidden {
     display: none;
 }
 
@@ -612,116 +628,116 @@ main .recent-orders a {
     }
 
     @media screen and (max-width: 768px) {
-        .container{
-        width: 100%;
-        grid-template-columns: 1fr;
-        padding: 0 var(--padding-1);
+        .container {
+            width: 100%;
+            grid-template-columns: 1fr;
+            padding: 0 var(--padding-1);
         }
 
 
 
-        aside{
+        aside {
             position: fixed;
             background-color: var(--color-white);
-            width:15rem;
+            width: 15rem;
             z-index: 3;
             box-shadow: 1rem 3rem 4rem var(--color-light);
             height: 100vh;
             animation: showMenu 0.4s ease forwards;
             left: -100%;
             display: none;
-          
+
         }
-        
+
         #menu-btn {
-            border: none;       
-            outline: none;       
+            border: none;
+            outline: none;
         }
 
 
-        @keyframes showMenu{
-            to{
+        @keyframes showMenu {
+            to {
                 left: 0;
             }
         }
 
-        aside .logo{
+        aside .logo {
             margin-left: 1rem;
         }
 
-        aside .logo h2{
+        aside .logo h2 {
             display: inline;
         }
 
-        aside .sidebar h3{
+        aside .sidebar h3 {
             display: inline;
         }
 
-        aside .sidebar a{
+        aside .sidebar a {
             width: 100%;
             height: 3.4rem;
         }
 
-        aside .sidebar a:last-child{
+        aside .sidebar a:last-child {
             position: absolute;
-            bottom:5rem;
+            bottom: 5rem;
         }
 
-        aside .toggle .close{
+        aside .toggle .close {
             display: inline-block;
             cursor: pointer;
         }
 
-        main{
+        main {
             margin-top: 8rem;
             padding: 0 1rem;
         }
 
-        main .new-users .user-list .user{
+        main .new-users .user-list .user {
             flex-basis: 35%;
         }
 
-        main .recent-orders{
-            position : relative;
+        main .recent-orders {
+            position: relative;
             margin: 3rem 0 0 0;
             width: 100%;
         }
 
-        main .recent-orders table{
+        main .recent-orders table {
             width: 100%;
             margin: 0;
         }
 
-        .right-section{
+        .right-section {
             width: 94%;
             margin: 0 auto 4rem;
         }
 
-        .right-section .nav{
-           position: fixed;
-           top: 0;
-           left: 0;
-           align-items: center;
-           background-color: var(--color-white);
-           pad: 0 var(--padding-1);
-           height: 4.6rem;
-           width: 100%;
-           z-index: 2;
-           box-shadow: 0 1rem 1rem var(--color-light);
-           margin: 0;
+        .right-section .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            align-items: center;
+            background-color: var(--color-white);
+            pad: 0 var(--padding-1);
+            height: 4.6rem;
+            width: 100%;
+            z-index: 2;
+            box-shadow: 0 1rem 1rem var(--color-light);
+            margin: 0;
         }
 
-        .right-section .nav .dark-mode{
+        .right-section .nav .dark-mode {
             width: 4.4rem;
             position: absolute;
             left: 60%;
         }
 
-        .right-section .profile .info{
+        .right-section .profile .info {
             display: none;
         }
 
-        .right-section .nav button{
+        .right-section .nav button {
             display: inline-block;
             background-color: transparent;
             cursor: pointer;
@@ -730,7 +746,7 @@ main .recent-orders a {
             left: 1rem;
         }
 
-        .right-section .nav button span{
+        .right-section .nav button span {
             font-size: 2rem;
         }
 

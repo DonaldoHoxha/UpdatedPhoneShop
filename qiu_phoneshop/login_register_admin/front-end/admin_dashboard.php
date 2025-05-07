@@ -77,7 +77,7 @@ if (!isset($_SESSION['username'])) {
                     </span>
                     <h3>Users</h3>
                 </a>
-                <a href="#" id="history" >
+                <a href="#" id="history">
                     <span class="material-icons-sharp">
                         receipt_long
                     </span>
@@ -236,7 +236,7 @@ if (!isset($_SESSION['username'])) {
                         <?php
                         include '../../main_page/back-end/db_conn.php';
                         // Fetch the latest 5 orders from the database
-                        $query= "SELECT o.id,u.username,p.name,
+                        $query = "SELECT o.id,u.username,p.name,
                         o.order_date,o.quantity,o.total_price FROM orders o 
                         join product p on o.product_id = p.id
                         join user u on o.user_id = u.id order by o.order_date desc limit 3;";
@@ -272,11 +272,9 @@ if (!isset($_SESSION['username'])) {
                 </table>
                 <a href="#">Show All</a>
             </div>
-            <!--End of Recent Orders Section-->
-            <div id="tempBox" class="tempBox"></div>
         </main>
         <!--End of Main Section-->
-
+        <div id="tempBox" class="tempBox_inactive"></div>
         <!-- Right Section-->
         <div class="right-section">
             <!--Nav Section-->

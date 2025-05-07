@@ -2,7 +2,10 @@
 include '../../main_page/back-end/db_conn.php';
 
 $action = $_GET['action'] ?? '';
-
+if (empty($action)) {
+    echo json_encode(["status" => "error", "message" => "Azione non valida"]);
+    exit();
+}
 switch ($action) {
     case 'users':
         loadUsers($conn);
@@ -18,7 +21,8 @@ switch ($action) {
         break;
 }
 
-function loadUsers($conn) {
+function loadUsers($conn)
+{
     $query = "SELECT id, username, email, 
     shipping_address,registration_date FROM user";
     $users = [];
@@ -36,7 +40,8 @@ function loadUsers($conn) {
     echo json_encode($users);
 }
 
-function loadOrders($conn) {
+function loadOrders($conn)
+{
     $query = "SELECT id, username, email, 
     shipping_address,registration_date FROM user";
     $users = [];
@@ -54,7 +59,8 @@ function loadOrders($conn) {
     echo json_encode($users);
 }
 
-function loadProducts($conn) {
+function loadProducts($conn)
+{
     $query = "SELECT id, name, price, description, image FROM product";
     $products = [];
     $stmt = $conn->prepare($query);
