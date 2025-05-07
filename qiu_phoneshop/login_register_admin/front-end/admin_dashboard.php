@@ -224,20 +224,56 @@ if (!isset($_SESSION['username'])) {
                 <table>
                     <thead>
                         <tr>
+                            <th>OrderID</th>
+                            <th>CustomerName</th>
                             <th>ProductName</th>
-                            <th>ProductID</th>
-                            <th>Customer</th>
+                            <th>Quantity</th>
                             <th>Price</th>
-                            <th>Status</th>
                             <th>Date</th>
-                            <th></th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <?php
+                        include '../../main_page/back-end/db_conn.php';
+                        // Fetch the latest 5 orders from the database
+                        $query= "SELECT o.id,u.username,p.name,
+                        o.order_date,o.quantity,o.total_price FROM orders o 
+                        join product p on o.product_id = p.id
+                        join user u on o.user_id = u.id order by o.order_date desc limit 3;";
+
+                        $stmt = $conn->prepare($query);
+                        if ($stmt) {
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+
+                            // Check if there are any results
+                            if ($result->num_rows > 0) {
+                                // Loop through the results and display them in the table
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['username']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
+                                    echo "<td>$" . htmlspecialchars($row['total_price']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row['order_date']) . "</td>";
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='6'>No recent orders found.</td></tr>";
+                            }
+                            $stmt->close();
+                        } else {
+                            // Handle error in preparing statement
+                            echo "<tr><td colspan='6'>Error fetching orders.</td></tr>";
+                        }
+                        ?>
+                    </tbody>
                 </table>
                 <a href="#">Show All</a>
             </div>
             <!--End of Recent Orders Section-->
+            <div id="tempBox" class="tempBox"></div>
         </main>
         <!--End of Main Section-->
 

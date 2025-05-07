@@ -25,6 +25,8 @@ darkMode.addEventListener('click', () => {
 
 const sidebarSection = document.querySelectorAll(".sidebar a");
 const dashboardSection = document.getElementById("dashboard");
+//an empty div to temporaly store the content of the selected section
+const tempBox = document.getElementById('tempBox');
 
 sidebarSection.forEach((link) => {
     link.addEventListener('click', function () {
@@ -36,12 +38,9 @@ sidebarSection.forEach((link) => {
         switch (this.id) {
             case 'dashboard':
                 const main = document.querySelector('main');
-                const userProfile = document.querySelector('.user-profile');
-                const reminders = document.querySelector('.reminders');
-            
+
                 main.style.display = 'block';
-                userProfile.style.display = 'block';
-                reminders.style.display = 'block';
+                tempBox.style.display = 'none';
                 break;
             case 'management':
                 showManagement();
@@ -76,51 +75,81 @@ sidebarSection.forEach((link) => {
   
 });
 
-function hiddenMainContent(){
-    const main = document.querySelector('main');
-    const userProfile = document.querySelector('.user-profile');
-    const reminders = document.querySelector('.reminders');
 
+function hiddenMain(){
+    const main = document.querySelector('main');
     main.style.display = 'none';
-    userProfile.style.display = 'none';
-    reminders.style.display = 'none';
 }
 
 function showManagement(){
-    hiddenMainContent();
+    hiddenMain();
+   
 }
 
 function showUsers(){
-    hiddenMainContent();
-
+    hiddenMain();
+    tempBox.style.display = 'block';
+    tempBox.innerHTML = `<table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Shipping address</th>
+                                    <th>Registration date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempTbody">
+                            </tbody>
+                        </table>
+                    `
+                    ;
+        const tempTbody = document.getElementById('tempTbody');
+        tempTbody.innerHTML = '';
+        fetch('front-end/load.php?action=users')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        data.forEach(users => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${users.id}</td>
+            <td>${users.username}</td>
+            <td>${users.email}</td>
+            <td>${users.shipping_address}</td>
+            <td>€${users.registration_date}</td>
+            `;
+            tempTbody.appendChild(row);
+        });
+    });
 }
 
 function showHistory(){
-    hiddenMainContent();
+
 
 }
 function showProducts(){
-    hiddenMainContent();
+
 
 }
 
 function showOrders(){
-    hiddenMainContent();
+
 
 }
 
 function showAnalytics(){
-    hiddenMainContent();
+
 
 }
 
 function showSettings(){
-    hiddenMainContent();
+
 
 }
 
 function showSales(){
-    hiddenMainContent();
+
 
 }
 
