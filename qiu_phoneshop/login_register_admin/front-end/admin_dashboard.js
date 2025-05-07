@@ -44,14 +44,8 @@ sidebarSection.forEach((link) => {
                 tempBox.classList.remove('tempBox');
                 tempBox.classList.add('tempBox_inactive');
                 break;
-            case 'management':
-                showManagement();
-                break;
             case 'users':
                 showUsers();
-                break;
-            case 'history':
-                showHistory();
                 break;
             case 'products':
                 showProducts();
@@ -82,28 +76,21 @@ function hiddenMain() {
     const main = document.querySelector('main');
     main.style.display = 'none';
 
-
 }
-
-function showManagement() {
-    hiddenMain();
-
-}
-
 function showUsers() {
     hiddenMain();
     tempBox.classList.remove('tempBox_inactive');
     tempBox.classList.add('tempBox');
     tempBox.innerHTML = `   
-                        <h2>User list</h2>
-                            <table class="userTable">
+                        <h1>User list</h1>
+                            <table class="tempTable">
                             <thead>
-                                <tr class="userData">
-                                    <th class="headUser">ID</th>
-                                    <th class="headUser">Username</th>
-                                    <th class="headUser">Email</th>
-                                    <th class="headUser">Shipping address</th>
-                                    <th class="headUser">Registration date</th>
+                                <tr class="tempData">
+                                    <th >ID</th>
+                                    <th >Username</th>
+                                    <th >Email</th>
+                                    <th >Shipping address</th>
+                                    <th >Registration date</th>
                                 </tr>
                             </thead>
                             <tbody id="tempTbody">
@@ -136,16 +123,122 @@ function showUsers() {
         .catch(error => console.error('Error:', error));
 }
 
-function showHistory() {
-
-
-}
 function showProducts() {
+    hiddenMain();
+    tempBox.classList.remove('tempBox_inactive');
+    tempBox.classList.add('tempBox');
+    tempBox.innerHTML = `   
+                        <h1>Product list</h1>
+                            <table class="tempTable">
+                            <thead>
+                                <tr class="tempData">
+                                    <th>ProductID</th>
+                                    <th>Product</th>
+                                    <th>Brand</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempTbody">
+                            </tbody>
+                        </table>`;
 
+    const tempTbody = document.getElementById('tempTbody');
+    if (!tempTbody) {
+        console.error('tempTbody element not found');
+        return;
+    }
+
+    tempTbody.innerHTML = '';
+
+    fetch('load.php?action=products')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.forEach(products => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td >${products.id}</td>
+                    <td >${products.name}</td>
+                    <td >${products.brand}</td>
+                    <td >${products.price}</td>
+                    <td >${products.quantity}</td>
+                    <td ></td>
+                    `;
+                tempTbody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
 
 }
 
 function showOrders() {
+    hiddenMain();
+    tempBox.classList.remove('tempBox_inactive');
+    tempBox.classList.add('tempBox');
+    tempBox.innerHTML = `   
+                        <h1>Order list</h1>
+                            <table class="tempTable">
+                            <thead>
+                                <tr class="tempData">
+                                    <th>ID</th>
+                                    <th>CustomerID</th>
+                                    <th>Customer</th>
+                                    <th>ProductID</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>OrderDate</th>
+                                    <th>ShippingAddress</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempTbody">
+                            </tbody>
+                        </table>`;
+
+    const tempTbody = document.getElementById('tempTbody');
+    if (!tempTbody) {
+        console.error('tempTbody element not found');
+        return;
+    }
+
+    tempTbody.innerHTML = '';
+
+    fetch('load.php?action=orders')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.forEach(orders => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td >${orders.orderID}</td>
+                    <td >${orders.userID}</td>
+                    <td >${orders.username}</td>
+                    <td >${orders.productID}</td>
+                    <td >${orders.name}</td>
+                    <td >${orders.quantity}</td>
+                    <td >${orders.total_price}</td>  
+                    <td >${orders.order_date}</td>
+                    <td >${orders.shipping_address}</td>
+                    
+                    `;
+                tempTbody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+        const crudDiv = document.createElement('div');
+        crudDiv.classList.add('crudDiv');
+        crudDiv.innerHTML = `
+        <button id="addOrderBtn">Add Product</button>
+        <button id="updateOrderBtn">Update Product</button>
+        <form method="POST" action="load.php?crud=add" id="addProduct">
+        </form>
+        <form method="POST" action="load.php?crud=update" id="updateProduct">
+        </form>
+        `;
+
 
 
 }

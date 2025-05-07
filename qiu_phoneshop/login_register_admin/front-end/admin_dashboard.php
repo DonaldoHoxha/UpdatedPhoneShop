@@ -71,11 +71,11 @@ if (!isset($_SESSION['username'])) {
                     </span>
                     <h3>Dashboard</h3>
                 </a>
-                <a href="#" id="management">
+                <a href="#" id="products">
                     <span class="material-icons-sharp">
                         add
                     </span>
-                    <h3>Management</h3>
+                    <h3>Products</h3>
                 </a>
 
                 <a href="#" id="analytics">
@@ -85,7 +85,7 @@ if (!isset($_SESSION['username'])) {
                     <h3>Analytics</h3>
                 </a>
 
-                <a href="#" id="sales">
+                <a href="#" id="orders">
                     <span class="material-icons-sharp">
                         inventory
                     </span>
@@ -381,8 +381,8 @@ if (!isset($_SESSION['username'])) {
 
 
     </div>
-    <script src="order.js"></script>
     <script src="admin_dashboard.js"></script>
+ 
 
 </body>
 
