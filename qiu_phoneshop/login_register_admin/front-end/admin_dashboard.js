@@ -94,9 +94,11 @@ function showUsers() {
     hiddenMain();
     tempBox.classList.remove('tempBox_inactive');
     tempBox.classList.add('tempBox');
-    tempBox.innerHTML = `<table class="tableUser">
+    tempBox.innerHTML = `   
+                        <h2>User list</h2>
+                            <table class="userTable">
                             <thead>
-                                <tr class="rowUser">
+                                <tr class="userData">
                                     <th class="headUser">ID</th>
                                     <th class="headUser">Username</th>
                                     <th class="headUser">Email</th>

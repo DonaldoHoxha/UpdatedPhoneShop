@@ -121,23 +121,6 @@ b {
     max-height: 100vh;
 }
 
-.tempBox {
-    padding-top: 1rem;
-}
-
-.tempBox_inactive {
-    display: none;
-}
-
-.tableUser,
-.rowUser,
-.headUser,
-.columnUser {
-    border: 1px solid black;
-    border-collapse: collapse;
-    padding: 0.5rem;
-}
-
 aside {
     height: 100vh;
 }
@@ -365,15 +348,15 @@ main .new-users .user-list .user img {
     margin-bottom: 0.4rem;
 }
 
-main .recent-orders {
+main .recent-orders  {
     margin-top: 1.3rem;
 }
 
-main .recent-orders h2 {
+main .recent-orders h2 , .tempBox h2 {
     margin-bottom: 0.8rem;
 }
 
-main .recent-orders table {
+main .recent-orders table , .userTable{
     background-color: var(--color-white);
     width: 100%;
     padding: var(--card-padding);
@@ -383,17 +366,17 @@ main .recent-orders table {
     transition: all 0.3s ease;
 }
 
-main .recent-orders table:hover {
+main .recent-orders table:hover, .userTable:hover {
     box-shadow: none;
 }
 
-main table tbody td {
+main table tbody td ,.userTable tbody td {
     height: 2.8rem;
     border-bottom: 1px solid var(--color-light);
     color: var(--color-dark-variant);
 }
 
-main table tbody tr:last-child td {
+main table tbody tr:last-child td , .userTable tbody tr:last-child td {
     border-bottom: none;
 }
 
@@ -403,6 +386,15 @@ main .recent-orders a {
     margin: 1rem auto;
     color: var(--color-primary);
 }
+
+.tempBox {
+    margin-top: 2.5rem;
+}
+
+.tempBox_inactive {
+    display: none;
+}
+
 
 .right-section {
     margin-top: 1.4rem;
@@ -564,18 +556,6 @@ main .recent-orders a {
 .hidden {
     display: none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @media screen and (max-width: 1200px) {
