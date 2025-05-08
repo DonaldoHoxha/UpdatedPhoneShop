@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 include '../../main_page/back-end/db_conn.php';
 
@@ -78,7 +79,6 @@ function loadProducts($conn)
 
     $stmt->close();
     echo json_encode($products);
-  
 }
 
 // crud funtions for products
