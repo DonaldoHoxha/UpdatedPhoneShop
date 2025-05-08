@@ -78,23 +78,7 @@ function loadProducts($conn)
 
     $stmt->close();
     echo json_encode($products);
-    /*
-da spostare
-    $crud = $_POST['crud'] ?? '';
-    switch ($crud) {
-        case 'add':
-            addProduct($conn);
-            break;
-        case 'update':
-            //updateProduct($conn);
-            break;
-        case 'delete':
-            //deleteProduct($conn);
-            break;
-        default:
-            echo json_encode(["status" => "error", "message" => "Azione non valida"]);
-            break;
-    }*/
+  
 }
 
 // crud funtions for products
