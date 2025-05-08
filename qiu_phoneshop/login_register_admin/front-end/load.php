@@ -78,7 +78,8 @@ function loadProducts($conn)
 
     $stmt->close();
     echo json_encode($products);
-
+    /*
+da spostare
     $crud = $_POST['crud'] ?? '';
     switch ($crud) {
         case 'add':
@@ -93,12 +94,13 @@ function loadProducts($conn)
         default:
             echo json_encode(["status" => "error", "message" => "Azione non valida"]);
             break;
-    }
+    }*/
 }
 
 // crud funtions for products
 
-function addProduct($conn){
+function addProduct($conn)
+{
     $name = $_POST['name'];
     $brand = $_POST['brand'];
     $price = $_POST['price'];
@@ -108,6 +110,4 @@ function addProduct($conn){
     $rom = $_POST['rom'];
     $battery = $_POST['battery'];
     $camera = $_POST['camera'];
-
-    
 }

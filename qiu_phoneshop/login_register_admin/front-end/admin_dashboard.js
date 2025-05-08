@@ -127,6 +127,8 @@ function showProducts() {
     hiddenMain();
     tempBox.classList.remove('tempBox_inactive');
     tempBox.classList.add('tempBox');
+    const crudDiv = document.createElement('div');
+    crudDiv.classList.add('crudDiv');
     tempBox.innerHTML = `   
                         <h1>Product list</h1>
                             <table class="tempTable">
@@ -143,7 +145,15 @@ function showProducts() {
                             <tbody id="tempTbody">
                             </tbody>
                         </table>`;
-
+    crudDiv.innerHTML = `
+                        <button id="addOrderBtn">Add Product</button>
+                        <button id="updateOrderBtn">Update Product</button>
+                        <form method="POST" action="load.php?crud=add" id="addProduct">
+                        </form>
+                        <form method="POST" action="load.php?crud=update" id="updateProduct">
+                        </form>
+                        `;
+    tempBox.appendChild(crudDiv);
     const tempTbody = document.getElementById('tempTbody');
     if (!tempTbody) {
         console.error('tempTbody element not found');
@@ -228,16 +238,7 @@ function showOrders() {
         })
         .catch(error => console.error('Error:', error));
 
-        const crudDiv = document.createElement('div');
-        crudDiv.classList.add('crudDiv');
-        crudDiv.innerHTML = `
-        <button id="addOrderBtn">Add Product</button>
-        <button id="updateOrderBtn">Update Product</button>
-        <form method="POST" action="load.php?crud=add" id="addProduct">
-        </form>
-        <form method="POST" action="load.php?crud=update" id="updateProduct">
-        </form>
-        `;
+
 
 
 
