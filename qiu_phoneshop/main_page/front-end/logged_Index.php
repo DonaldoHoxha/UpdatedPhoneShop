@@ -90,6 +90,7 @@ if (!isset($_SESSION['username'])) {
                             $result = $stmt->get_result();
                             $user = $result->fetch_assoc();
                             if (!$user) {
+                                header("Location: index.php");
                                 echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
                                 exit();
                             }
