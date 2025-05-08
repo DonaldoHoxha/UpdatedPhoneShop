@@ -2,7 +2,11 @@
 session_start();
 header('Content-Type: application/json');
 include '../../main_page/back-end/db_conn.php';
-
+// get the user id from the session
+if (!isset($_SESSION['user'])) {
+    echo json_encode(["status" => "error", "message" => "Utente non autenticato"]);
+    exit();
+}
 $action = $_GET['action'] ?? '';
 if (empty($action)) {
     echo json_encode(["status" => "error", "message" => "Azione non valida"]);
@@ -44,12 +48,27 @@ function loadUsers($conn)
 
 function loadOrders($conn)
 {
+
+    $user = $_SESSION['user'];
+    $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $admin = $result->fetch_assoc();
+    if (!$admin) {
+        echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
+        exit();
+    }
+    $user_id = $admin['id'];
     $query = "SELECT o.id as orderID,u.id as userID,u.username,p.id as productID,p.name,
                     o.order_date,o.quantity,o.total_price,o.shipping_address FROM orders o 
                     join product p on o.product_id = p.id
-                    join user u on o.user_id = u.id order by o.order_date desc;";
+                    join user u on o.user_id = u.id 
+                    where p.fk_admin = ?
+                    order by o.order_date desc;";
     $orders = [];
     $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
     if (!$stmt) {
         echo json_encode(["status" => "error", "message" => "Errore nel preparare la query"]);
         exit();
@@ -65,9 +84,22 @@ function loadOrders($conn)
 
 function loadProducts($conn)
 {
-    $query = "SELECT p.id, p.name,p.brand,p.price,p.quantity FROM product p";
+    $user = $_SESSION['user'];
+    $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $admin = $result->fetch_assoc();
+    if (!$admin) {
+        echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
+        exit();
+    }
+    $user_id = $admin['id'];
+    $query = "SELECT p.id, p.name,p.brand,p.price,p.quantity FROM product p WHERE p.fk_admin = ?
+                    order by p.name asc;";
     $products = [];
     $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
     if (!$stmt) {
         echo json_encode(["status" => "error", "message" => "Errore nel preparare la query"]);
         exit();
@@ -82,16 +114,3 @@ function loadProducts($conn)
 }
 
 // crud funtions for products
-
-function addProduct($conn)
-{
-    $name = $_POST['name'];
-    $brand = $_POST['brand'];
-    $price = $_POST['price'];
-    $quantity = $_POST['quantity'];
-    $price = $_POST['price'];
-    $ram = $_POST['ram'];
-    $rom = $_POST['rom'];
-    $battery = $_POST['battery'];
-    $camera = $_POST['camera'];
-}

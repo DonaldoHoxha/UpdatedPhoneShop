@@ -69,6 +69,23 @@ try {
         $stmt->bind_param("ii", $user_id, $_POST['product_id']);
         $stmt->execute();
     }
+    // Controlla se il prodotto è disponibile in magazzino
+    $stmt = $conn->prepare("SELECT quantity FROM product WHERE id = ?");
+    $stmt->bind_param("i", $_POST['product_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $product = $result->fetch_assoc();
+    if ($product['quantity'] <= 0) {
+        throw new Exception("Prodotto non disponibile in magazzino");
+    }
+    // Se il prodotto è disponibile, diminuisci la quantità nel magazzino
+    if ($product['quantity'] < $quantity) {
+        throw new Exception("Quantità richiesta non disponibile in magazzino");
+    }
+    // Diminuisci la quantità del prodotto nel magazzino
+    $stmt = $conn->prepare("UPDATE product SET quantity = quantity - 1 WHERE id = ?");
+    $stmt->bind_param("i", $_POST['product_id']);
+    $stmt->execute();
 
     $conn->commit();
     echo json_encode(["status" => "success", "message" => "Prodotto acquistato"]);

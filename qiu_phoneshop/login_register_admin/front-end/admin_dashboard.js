@@ -282,27 +282,13 @@ function showOrders() {
             });
         })
         .catch(error => console.error('Error:', error));
-
-
-
-
-
 }
 
 function showAnalytics() {
-
-
 }
 
 function showSettings() {
-
-
 }
 
 function showSales() {
-
-
 }
-
-
-

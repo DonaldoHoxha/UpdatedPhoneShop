@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ];
                 setcookie("user", $user['name'], $cookie_options);
             }
-            $_SESSION['username'] = $user['name'];
+            $_SESSION['user'] = $user['name'];
             // Redirect to dashboard
             header("Location: ../front-end/admin_dashboard.php");
         } else {

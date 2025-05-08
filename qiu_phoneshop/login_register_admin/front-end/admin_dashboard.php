@@ -98,7 +98,7 @@ if (!isset($_SESSION['username'])) {
                     </span>
                     <h3>Users</h3>
                 </a>
-                
+
                 <a href="#" id="tickets">
                     <span class="material-icons-sharp">
                         mail_outline
@@ -106,7 +106,7 @@ if (!isset($_SESSION['username'])) {
                     <h3>Tickets</h3>
                     <span class="message-count">1</span>
                 </a>
-                
+
                 <a href="#" id="reports">
                     <span class="material-icons-sharp">
                         report_gmailerrorred
@@ -119,7 +119,7 @@ if (!isset($_SESSION['username'])) {
                     </span>
                     <h3>Settings</h3>
                 </a>
-                <a href="#">
+                <a href="../back-end/logout.php" id="logout">
                     <span class="material-icons-sharp">
                         logout
                     </span>
@@ -382,7 +382,7 @@ if (!isset($_SESSION['username'])) {
 
     </div>
     <script src="admin_dashboard.js"></script>
- 
+
 
 </body>
 

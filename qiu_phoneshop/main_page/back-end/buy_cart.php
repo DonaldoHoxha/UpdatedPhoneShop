@@ -55,7 +55,26 @@ try {
             break;
         }
     }
-
+    if ($product['quantity'] <= 0) {
+        throw new Exception("Prodotto non disponibile in magazzino");
+    }
+    // Se il prodotto è disponibile, diminuisci la quantità nel magazzino
+    if ($product['quantity'] < $row['quantity']) {
+        throw new Exception("Quantità richiesta non disponibile in magazzino");
+    }
+    if ($product['quantity'] > $row['quantity']) {
+        $stmt = $conn->prepare("UPDATE product SET quantity = quantity - ? WHERE id = ?");
+        $stmt->bind_param("ii", $quantity, $product_id);
+    }
+    // Rimuovere i prodotti dal magazzino
+    $stmt = $conn->prepare("UPDATE product SET quantity = quantity - ? WHERE id = ?");
+    foreach ($result as $row) {
+        $stmt->bind_param("ii", $row['quantity'], $row['product_id']);
+        if (!$stmt->execute()) {
+            $all_success = false;
+            break;
+        }
+    }
     if ($all_success) {
         // Svuota il carrello
         $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
