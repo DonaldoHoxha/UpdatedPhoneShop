@@ -348,15 +348,17 @@ main .new-users .user-list .user img {
     margin-bottom: 0.4rem;
 }
 
-main .recent-orders  {
+main .recent-orders {
     margin-top: 1.3rem;
 }
 
-main .recent-orders h2 , .tempBox h1 {
+main .recent-orders h2,
+.tempBox h1 {
     margin-bottom: 0.8rem;
 }
 
-main .recent-orders table , .tempTable{
+main .recent-orders table,
+.tempTable {
     background-color: var(--color-white);
     width: 100%;
     padding: var(--card-padding);
@@ -366,17 +368,20 @@ main .recent-orders table , .tempTable{
     transition: all 0.3s ease;
 }
 
-main .recent-orders table:hover, .tempTable:hover {
+main .recent-orders table:hover,
+.tempTable:hover {
     box-shadow: none;
 }
 
-main table tbody td ,.tempTable tbody td {
+main table tbody td,
+.tempTable tbody td {
     height: 2.8rem;
     border-bottom: 1px solid var(--color-light);
     color: var(--color-dark-variant);
 }
 
-main table tbody tr:last-child td , .tempTable tbody tr:last-child td {
+main table tbody tr:last-child td,
+.tempTable tbody tr:last-child td {
     border-bottom: none;
 }
 
@@ -395,6 +400,87 @@ main .recent-orders a {
     display: none;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: var(--border-radius-1);
+    box-shadow: var(--box-shadow);
+    width: 50%;
+    max-width: 500px;
+}
+
+.close-modal {
+    color: var(--color-dark);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: var(--color-danger);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-dark);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-light);
+    border-radius: var(--border-radius-1);
+    background-color: var(--color-background);
+    color: var(--color-dark);
+}
+
+.submit-btn {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.submit-btn:hover {
+    background-color: var(--color-dark-variant);
+}
+
+.btn {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.btn:hover {
+    background-color: var(--color-dark-variant);
+}
 
 .right-section {
     margin-top: 1.4rem;
@@ -590,7 +676,7 @@ main .recent-orders a {
         flex-basis: 40%;
     }
 
-  
+
 
     @media screen and (max-width: 768px) {
         .container {
@@ -653,7 +739,8 @@ main .recent-orders a {
             cursor: pointer;
         }
 
-        main, .tempBox {
+        main,
+        .tempBox {
             margin-top: 8rem;
             padding: 0 1rem;
         }
