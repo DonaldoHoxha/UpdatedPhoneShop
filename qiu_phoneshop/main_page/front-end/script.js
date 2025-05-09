@@ -30,6 +30,21 @@ document.addEventListener('DOMContentLoaded', () => {
             profileOptions.classList.remove('show');
         }
     });
+    // Add to cart button animation
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.add-to-cart')) {
+            const button = e.target.closest('.add-to-cart');
+            const icon = button.querySelector('i');
+            if (icon) {
+                icon.classList.replace('fa-cart-plus', 'fa-check-circle');
+                button.disabled = true;
+                setTimeout(() => {
+                    icon.classList.replace('fa-check-circle', 'fa-cart-plus');
+                    button.disabled = false;
+                }, 700);
+            }
+        }
+    });
 
     // Search bar 
     const searchInput = document.getElementById("search-input");
@@ -124,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
             productsGrid.appendChild(buttonShowAll);
 
-        
-           
+
+
         } else {
             // If there aren't products that match the search, display a message
             productsGrid.innerHTML = `
@@ -137,22 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                 </div>`;
         }
-        //change the add-to-cart's icon status to checked after the click, and return to before when mouse left
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            const icon = button.querySelector('i');
-            const originalIconClass = 'fa-cart-plus';
-            const clickedIconClass = 'fa-check-circle';
-            document.addEventListener('click', (e) => {
-                if (event.target.closest('.add-to-cart')) {
-                    const button = event.target.closest('.add-to-cart');
-                    const icon = button.querySelector('i');
-                    icon.classList.replace('fa-cart-plus', 'fa-check-circle');
-                    setTimeout(() => {
-                        icon.classList.replace('fa-check-circle', 'fa-cart-plus');
-                    }, 700);
-                }
-            });
-        });
     }
 });
 // Add an item to the cart 
