@@ -117,6 +117,7 @@ if (!isset($_SESSION['username'])) {
                 <li><a href="#offerte">Offerte</a></li>
                 <li><a href="#usato">Usato Certificato</a></li>
                 <li><a href="#assistenza">Assistenza</a></li>
+                <li><a href="../../login_register_admin/front-end/admin_login.html">Become a Seller</a></li>
             </ul>
         </nav>
     </header>

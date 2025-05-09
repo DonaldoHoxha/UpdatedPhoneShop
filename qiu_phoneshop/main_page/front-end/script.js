@@ -114,17 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 productsGrid.appendChild(productCard);
             });
-            const buttonShowAll = document.createElement('button');
-            buttonShowAll.innerHTML = `<div class="no-results">
-                    <h3>Nessun prodotto trovato per: "${query}"</h3>
-                    <button class="cta-btn" onclick="document.getElementById('search-input').value='';
-                    document.getElementById('search-btn').click();">
-                    Mostra tutti i prodotti
-                    </button>
-                </div>`;
-            productsGrid.appendChild(buttonShowAll);
-
-        
            
         } else {
             // If there aren't products that match the search, display a message
