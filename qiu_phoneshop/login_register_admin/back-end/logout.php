@@ -1,14 +1,15 @@
 <?php
-
+// logout.php for admin
 session_start();
 
-session_unset();
+// Clear admin-specific session variables
+unset($_SESSION['admin_user']);
 
-session_destroy();
-
-foreach ($_COOKIE as $key => $value) {
-    setcookie($key, '', time() - 3600, '/');
-    unset($_COOKIE[$key]);
+// Clear admin-specific cookies
+if (isset($_COOKIE['admin_user'])) {
+    setcookie('admin_user', '', time() - 3600, '/');
 }
 
-header("Location: ../front-end/admin_login.html");
+// Redirect to login page
+header('Location: ../front-end/admin_login.html');
+exit();

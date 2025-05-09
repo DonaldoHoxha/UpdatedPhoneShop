@@ -2,7 +2,7 @@
 session_start();
 
 // Verifica che l'utente sia loggato come admin
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['admin_user'])) {
     header('Location: admin_login.html');
     exit();
 }
@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 include '../../main_page/back-end/db_conn.php';
 
 // Otteniamo l'id dell'admin loggato
-$admin_username = $_SESSION['username'];
+$admin_username = $_SESSION['admin_user'];
 $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
 $stmt->bind_param("s", $admin_username);
 $stmt->execute();
@@ -28,7 +28,7 @@ if ($result->num_rows === 1) {
 // Controlla se il metodo è POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Prendi i dati dal form
-    $product_id = $_POST['id']; 
+    $product_id = $_POST['id'];
     $name = $_POST['name'];
     $brand = $_POST['brand'];
     $ram = $_POST['ram'];

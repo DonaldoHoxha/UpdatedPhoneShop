@@ -14,10 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Clear any session data from previous attempts
             unset($_SESSION['errors']);
             unset($_SESSION['form_data']);
-            // Redirect to success page or login page
-            $_SESSION['logged_in'] = true;
-            $_SESSION['username'] = $_POST['name'];
-            header("Location: ../front-end/admin_dashboard.php"); //nome del file in cui deve andare dopo aver creato l'user
+
+            // Use admin-specific session variable
+            $_SESSION['admin_user'] = $_POST['name'];
+
+            header("Location: ../front-end/admin_dashboard.php");
             exit();
         } else {
             $errors[] = "Registration failed: " . $stmt->error;
@@ -25,8 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (Exception $e) {
         $errors[] = "Registration failed: " . $e->getMessage();
     }
-
-
 
     // If there are errors, store them in session and redirect back to registration page
     if (!empty($errors)) {

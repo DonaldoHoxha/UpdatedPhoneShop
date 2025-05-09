@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 include '../../main_page/back-end/db_conn.php';
 // get the user id from the session
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['admin_user'])) {
     echo json_encode(["status" => "error", "message" => "Utente non autenticato"]);
     exit();
 }
@@ -49,7 +49,7 @@ function loadUsers($conn)
 function loadOrders($conn)
 {
 
-    $user = $_SESSION['user'];
+    $user = $_SESSION['admin_user'];
     $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
     $stmt->bind_param("s", $user);
     $stmt->execute();
@@ -84,7 +84,7 @@ function loadOrders($conn)
 
 function loadProducts($conn)
 {
-    $user = $_SESSION['user'];
+    $user = $_SESSION['admin_user'];
     $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
     $stmt->bind_param("s", $user);
     $stmt->execute();

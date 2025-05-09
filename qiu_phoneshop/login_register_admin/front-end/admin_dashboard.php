@@ -1,25 +1,25 @@
 <?php
 session_start();
-// Check if the user is logged in via session
-if (!isset($_SESSION['username'])) {
-    // Session doesn't exist, check for cookies
-    if (isset($_COOKIE['user'])) {
+// Check if the admin user is logged in via session
+if (!isset($_SESSION['admin_user'])) {
+    // Session doesn't exist, check for admin cookies
+    if (isset($_COOKIE['admin_user'])) {
         // Validate the cookie against the database for security
         include '../../main_page/back-end/db_conn.php';
         $stmt = $conn->prepare("SELECT name FROM administrator_user WHERE name = ?");
         if ($stmt) {
-            $stmt->bind_param("s", $_COOKIE['user']);
+            $stmt->bind_param("s", $_COOKIE['admin_user']);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows === 1) {
                 // Cookie is valid, recreate the session
-                $_SESSION['username'] = $_COOKIE['user'];
+                $_SESSION['admin_user'] = $_COOKIE['admin_user'];
                 // Regenerate session ID for security
                 session_regenerate_id(true);
                 $stmt->close();
             } else {
                 // Invalid cookie, clear it and redirect
-                setcookie("user", "", time() - 3600, "/");
+                setcookie("admin_user", "", time() - 3600, "/");
                 header('Location: admin_login.html?error=invalid_cookie');
                 exit();
             }
@@ -296,7 +296,7 @@ if (!isset($_SESSION['username'])) {
                         <p>Hey,
                             <b>
                                 <?php
-                                echo $_SESSION['username'];
+                                echo $_SESSION['admin_user']; // Changed from username to admin_user
                                 ?>
                             </b>
                         </p>
