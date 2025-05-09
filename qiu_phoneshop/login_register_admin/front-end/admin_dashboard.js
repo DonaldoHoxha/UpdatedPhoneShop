@@ -192,7 +192,7 @@ function showProducts() {
         <button id="updateProductBtn" class="btn">Update Product</button>
     `;
 
-   
+
     const tempTbody = document.getElementById('tempTbody');
     const modal = document.getElementById("productModal");
     const form = document.getElementById("addProductForm");
@@ -204,7 +204,7 @@ function showProducts() {
     const addBtn = document.getElementById("addProductBtn");
     const updateBtn = document.getElementById("updateProductBtn");
 
- 
+
     addBtn.onclick = function () {
         modalTitle.textContent = "Add New Product";
         form.action = "../back-end/add_product.php";
@@ -231,72 +231,72 @@ function showProducts() {
         modal.style.display = "none";
     };
 
-  
+
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     };
 
-  
+
     tempTbody.innerHTML = '';
 
     fetch('../back-end/load.php?action=products', {
-    method: 'GET',
-    credentials: 'include' // 🔒 Importante per mantenere la sessione
-})
-.then(response => {
-    if (!response.ok) {
-        throw new Error(`Errore nella risposta: ${response.status}`);
-    }
-    return response.json();
-})
-.then(data => {
-    if (!Array.isArray(data)) {
-        console.error('Dati non validi ricevuti:', data);
-        return;
-    }
+        method: 'GET',
+        credentials: 'include' // 🔒 Importante per mantenere la sessione
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Errore nella risposta: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data)) {
+                console.error('Dati non validi ricevuti:', data);
+                return;
+            }
 
-    data.forEach(product => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
+            data.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
             <td>${product.id}</td>
             <td>${product.name}</td>
             <td>${product.brand}</td>
             <td>$${product.price}</td>
             <td>${product.quantity}</td>
         `;
-        tempTbody.appendChild(row);
+                tempTbody.appendChild(row);
 
-        
-        row.addEventListener('click', () => {
-            modalTitle.textContent = "Update Product";
-            form.action = "../back-end/update_product.php";
-            submitBtn.textContent = "Update Product";
 
-            productID.style.display = "block";
-            productID.innerHTML = `
+                row.addEventListener('click', () => {
+                    modalTitle.textContent = "Update Product";
+                    form.action = "../back-end/update_product.php";
+                    submitBtn.textContent = "Update Product";
+
+                    productID.style.display = "block";
+                    productID.innerHTML = `
                 <label for="id">ID:</label>
                 <input type="number" id="id" name="id" required value="${product.id}">
             `;
 
-            // Precompilazione completa
-            document.getElementById("name").value = product.name || '';
-            document.getElementById("brand").value = product.brand || '';
-            document.getElementById("ram").value = product.ram || '';
-            document.getElementById("rom").value = product.rom || '';
-            document.getElementById("camera").value = product.camera || '';
-            document.getElementById("battery").value = product.battery || '';
-            document.getElementById("price").value = product.price || '';
-            document.getElementById("quantity").value = product.quantity || '';
+                    // Precompilazione completa
+                    document.getElementById("name").value = product.name || '';
+                    document.getElementById("brand").value = product.brand || '';
+                    document.getElementById("ram").value = product.ram || '';
+                    document.getElementById("rom").value = product.rom || '';
+                    document.getElementById("camera").value = product.camera || '';
+                    document.getElementById("battery").value = product.battery || '';
+                    document.getElementById("price").value = product.price || '';
+                    document.getElementById("quantity").value = product.quantity || '';
 
-            modal.style.display = "block";
+                    modal.style.display = "block";
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Errore durante il caricamento dei prodotti:', error);
         });
-    });
-})
-.catch(error => {
-    console.error('Errore durante il caricamento dei prodotti:', error);
-});
 }
 
 function showOrders() {

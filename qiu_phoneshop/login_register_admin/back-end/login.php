@@ -1,4 +1,5 @@
 <?php
+// Modified login.php for admin
 session_start();
 include '../../main_page/back-end/db_conn.php';
 if ($conn->connect_error) {
@@ -16,8 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($_POST['password'], $user['password'])) {
             // Clear any session data from previous attempts
             session_regenerate_id(true);
+
+            // Use a different session variable name for admin
+            $_SESSION['admin_user'] = $user['name'];
+
             if (isset($_POST['remember'])) {
-                // Set secure cookie (BEFORE ANY OUTPUT)
+                // Set secure cookie with a different name for admin
                 $cookie_options = [
                     'expires'  => time() + 86400 * 30,
                     'path'     => '/',
@@ -25,9 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'httponly' => true,
                     'samesite' => 'Strict'
                 ];
-                setcookie("user", $user['name'], $cookie_options);
+                setcookie("admin_user", $user['name'], $cookie_options);
             }
-            $_SESSION['user'] = $user['name'];
+
             // Redirect to dashboard
             header("Location: ../front-end/admin_dashboard.php");
         } else {
