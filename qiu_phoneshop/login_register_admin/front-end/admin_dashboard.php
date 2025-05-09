@@ -233,13 +233,22 @@ if (!isset($_SESSION['admin_user'])) {
                     <tbody>
                         <?php
                         include '../../main_page/back-end/db_conn.php';
+                        $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+                        $stmt->bind_param("s", $_SESSION['admin_user']);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $admin_id = $row['id'];
                         // Fetch the latest 5 orders from the database
                         $query = "SELECT o.id,u.username,p.name,
                         o.order_date,o.quantity,o.total_price FROM orders o 
                         join product p on o.product_id = p.id
-                        join user u on o.user_id = u.id order by o.order_date desc limit 3;";
+                        join user u on o.user_id = u.id 
+                        where p.fk_admin = ?
+                        order by o.order_date desc limit 3;";
 
                         $stmt = $conn->prepare($query);
+                        $stmt->bind_param("i", $admin_id);
                         if ($stmt) {
                             $stmt->execute();
                             $result = $stmt->get_result();
