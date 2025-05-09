@@ -344,7 +344,6 @@ if (!isset($_SESSION['admin_user'])) {
                         </span>
                     </div>
                 </div>
-
                 <div class="notification deactive">
                     <div class="icon">
                         <span class="material-icons-sharp">
@@ -363,7 +362,6 @@ if (!isset($_SESSION['admin_user'])) {
                         </span>
                     </div>
                 </div>
-
                 <div class="notification add-reminder">
                     <div>
                         <span class="material-icons-sharp">
@@ -372,18 +370,10 @@ if (!isset($_SESSION['admin_user'])) {
                         <h3>Add Reminder</h3>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
-    </div>
-
-
     </div>
     <script src="admin_dashboard.js"></script>
-
-
 </body>
 
 </html>
