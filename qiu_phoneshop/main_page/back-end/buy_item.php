@@ -1,19 +1,19 @@
 <?php
-// Start the session
 session_start();
-// Include database connection
 include 'db_conn.php';
 
-// Specify the type of the content received 
 header('Content-Type: application/json');
 
-// Check if there is a user problem
 if (!isset($_SESSION['username'])) {
     echo json_encode(["status" => "error", "message" => "Utente non autenticato"]);
     exit();
 }
 
-// Get the user ID
+if (!isset($_POST['product_id'])) {
+    echo json_encode(["status" => "error", "message" => "ID prodotto mancante"]);
+    exit();
+}
+
 $username = $_SESSION['username'];
 $stmt = $conn->prepare("SELECT id, shipping_address FROM user WHERE username = ?");
 if (!$stmt) {
@@ -33,14 +33,32 @@ if (!$user) {
 
 $user_id = $user['id'];
 $shipping_address = $user['shipping_address'];
+$product_id = $_POST['product_id'];
 
-// Inizia una transazione
 $conn->begin_transaction();
 
 try {
-    // Recupera il prodotto nel carrello
-    $stmt = $conn->prepare("SELECT c.quantity, p.price FROM cart c JOIN product p ON c.product_id = p.id WHERE c.user_id = ? and c.product_id = ?");
-    $stmt->bind_param("ii", $user_id, $_POST['product_id']);
+    // Verifica disponibilità magazzino (usiamo FOR UPDATE per bloccare la riga)
+    $stmt = $conn->prepare("SELECT quantity FROM product WHERE id = ? FOR UPDATE");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $product = $result->fetch_assoc();
+
+    if (!$product) {
+        throw new Exception("Prodotto non trovato");
+    }
+
+    if ($product['quantity'] < 1) {
+        throw new Exception("Prodotto non disponibile in magazzino");
+    }
+
+    // Recupera prodotto dal carrello (specificando esplicitamente c.quantity per il carrello)
+    $stmt = $conn->prepare("SELECT c.quantity as cart_quantity, p.price 
+                          FROM cart c 
+                          JOIN product p ON c.product_id = p.id 
+                          WHERE c.user_id = ? AND c.product_id = ?");
+    $stmt->bind_param("ii", $user_id, $product_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -49,47 +67,37 @@ try {
         throw new Exception("Prodotto non trovato nel carrello");
     }
 
-    $quantity = $row['quantity'];
-    $total_price = $row['price']; // Prezzo per un singolo prodotto
+    $quantity_in_cart = $row['cart_quantity']; // Ora usiamo l'alias cart_quantity
+    $price = $row['price'];
+    $quantity_to_buy = 1;
 
-    // Inserisci l'ordine
-    $stmt = $conn->prepare("INSERT INTO orders (user_id, product_id, total_price, shipping_address) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("iids", $user_id, $_POST['product_id'], $total_price, $shipping_address);
+    // Inserisci ordine
+    $stmt = $conn->prepare("INSERT INTO orders (user_id, product_id, quantity, total_price, shipping_address) 
+                                VALUES (?, ?, ?, ?, ?)");
+    $total_price = $quantity_to_buy * $price;
+    $stmt->bind_param("iiids", $user_id, $product_id, $quantity_to_buy, $total_price, $shipping_address);
     $stmt->execute();
 
-    // Gestisci la quantità nel carrello
-    if ($quantity == 1) {
-        // Se la quantità è 1, elimina la riga
+    // Aggiorna carrello
+    if ($quantity_in_cart == 1) {
         $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ? AND product_id = ?");
-        $stmt->bind_param("ii", $user_id, $_POST['product_id']);
-        $stmt->execute();
+        $stmt->bind_param("ii", $user_id, $product_id);
     } else {
-        // Altrimenti decrementa la quantità
         $stmt = $conn->prepare("UPDATE cart SET quantity = quantity - 1 WHERE user_id = ? AND product_id = ?");
-        $stmt->bind_param("ii", $user_id, $_POST['product_id']);
-        $stmt->execute();
+        $stmt->bind_param("ii", $user_id, $product_id);
     }
-    // Controlla se il prodotto è disponibile in magazzino
-    $stmt = $conn->prepare("SELECT quantity FROM product WHERE id = ?");
-    $stmt->bind_param("i", $_POST['product_id']);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $product = $result->fetch_assoc();
-    if ($product['quantity'] <= 0) {
-        throw new Exception("Prodotto non disponibile in magazzino");
-    }
-    // Se il prodotto è disponibile, diminuisci la quantità nel magazzino
-    if ($product['quantity'] < $quantity) {
-        throw new Exception("Quantità richiesta non disponibile in magazzino");
-    }
-    // Diminuisci la quantità del prodotto nel magazzino
+
+    // Aggiorna magazzino
     $stmt = $conn->prepare("UPDATE product SET quantity = quantity - 1 WHERE id = ?");
-    $stmt->bind_param("i", $_POST['product_id']);
+    $stmt->bind_param("i", $product_id);
     $stmt->execute();
 
     $conn->commit();
-    echo json_encode(["status" => "success", "message" => "Prodotto acquistato"]);
+    echo json_encode(["status" => "success", "message" => "Prodotto acquistato con successo"]);
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(["status" => "error", "message" => "Errore: " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }
+
+$conn->close();

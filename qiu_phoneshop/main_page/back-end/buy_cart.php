@@ -35,46 +35,49 @@ $conn->begin_transaction();
 
 try {
     // Recupera i prodotti nel carrello
-    $stmt = $conn->prepare("SELECT c.product_id, c.quantity, p.price FROM cart c JOIN product p ON c.product_id = p.id WHERE c.user_id = ?");
+    $stmt = $conn->prepare("SELECT c.product_id, c.quantity, p.price, p.quantity as stock_quantity FROM cart c JOIN product p ON c.product_id = p.id WHERE c.user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $all_success = true;
     $total_price = 0;
+    $products = [];
 
+    // Prima verifica la disponibilità di tutti i prodotti
     while ($row = $result->fetch_assoc()) {
+        if ($row['stock_quantity'] <= 0) {
+            throw new Exception("Prodotto ID {$row['product_id']} non disponibile in magazzino");
+        }
+        if ($row['stock_quantity'] < $row['quantity']) {
+            throw new Exception("Quantità richiesta non disponibile per il prodotto ID {$row['product_id']}");
+        }
+        $products[] = $row;
+    }
+
+    // Se tutto è disponibile, procedi con l'ordine
+    foreach ($products as $row) {
         $product_total = $row['quantity'] * $row['price'];
         $total_price += $product_total;
 
+        // Aggiungi l'ordine
         $stmt = $conn->prepare("INSERT INTO orders (user_id, product_id, quantity, total_price, shipping_address) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("iiids", $user_id, $row['product_id'], $row['quantity'], $product_total, $shipping_address);
 
         if (!$stmt->execute()) {
             $all_success = false;
-            break;
+            throw new Exception("Errore nell'inserimento dell'ordine");
         }
-    }
-    if ($product['quantity'] <= 0) {
-        throw new Exception("Prodotto non disponibile in magazzino");
-    }
-    // Se il prodotto è disponibile, diminuisci la quantità nel magazzino
-    if ($product['quantity'] < $row['quantity']) {
-        throw new Exception("Quantità richiesta non disponibile in magazzino");
-    }
-    if ($product['quantity'] > $row['quantity']) {
+
+        // Aggiorna il magazzino
         $stmt = $conn->prepare("UPDATE product SET quantity = quantity - ? WHERE id = ?");
-        $stmt->bind_param("ii", $quantity, $product_id);
-    }
-    // Rimuovere i prodotti dal magazzino
-    $stmt = $conn->prepare("UPDATE product SET quantity = quantity - ? WHERE id = ?");
-    foreach ($result as $row) {
         $stmt->bind_param("ii", $row['quantity'], $row['product_id']);
         if (!$stmt->execute()) {
             $all_success = false;
-            break;
+            throw new Exception("Errore nell'aggiornamento del magazzino");
         }
     }
+
     if ($all_success) {
         // Svuota il carrello
         $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
@@ -89,5 +92,7 @@ try {
     }
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(["status" => "error", "message" => "Errore: " . $e->getMessage()]);
+    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }
+
+$conn->close();
