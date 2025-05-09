@@ -51,6 +51,7 @@ if (!isset($_SESSION['username'])) {
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-count">
                             <?php
+                            // Otteniamo l'id dell'utente  connesso
                             $username = $_SESSION['username'];
                             $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
                             $stmt->bind_param("s", $username);
@@ -58,6 +59,7 @@ if (!isset($_SESSION['username'])) {
                             $result = $stmt->get_result();
                             $user = $result->fetch_assoc();
                             $user_id = $user['id'];
+                            // Otteniamo il numero totale di prodotti nel carrello
                             $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = ?;");
                             $stmt->bind_param("i", $user_id);
                             $stmt->execute();
