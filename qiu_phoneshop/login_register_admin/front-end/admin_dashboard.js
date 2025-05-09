@@ -105,7 +105,7 @@ function showUsers() {
 
     tempTbody.innerHTML = '';
 
-    fetch('load.php?action=users')
+    fetch('../back-end/load.php?action=users')
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -241,7 +241,7 @@ function showProducts() {
   
     tempTbody.innerHTML = '';
 
-    fetch('load.php?action=products', {
+    fetch('../back-end/load.php?action=products', {
     method: 'GET',
     credentials: 'include' // 🔒 Importante per mantenere la sessione
 })
@@ -268,7 +268,7 @@ function showProducts() {
         `;
         tempTbody.appendChild(row);
 
-        // ✅ Listener su riga → apre modale con campi precompilati
+        
         row.addEventListener('click', () => {
             modalTitle.textContent = "Update Product";
             form.action = "../back-end/update_product.php";
