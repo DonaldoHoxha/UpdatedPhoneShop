@@ -331,7 +331,7 @@ function showOrders() {
 
     tempTbody.innerHTML = '';
 
-    fetch('load.php?action=orders')
+    fetch('../back-end/load.php?action=orders')
         .then(response => response.json())
         .then(data => {
             console.log(data);
