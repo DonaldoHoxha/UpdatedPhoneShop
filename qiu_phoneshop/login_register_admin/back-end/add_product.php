@@ -2,7 +2,7 @@
 session_start();
 
 // Verifica che l'utente sia loggato come admin
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['admin_user'])) {
     header('Location: admin_login.html');
     exit();
 }
@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 include '../../main_page/back-end/db_conn.php';
 
 // Otteniamo l'id dell'admin loggato
-$admin_id = $_SESSION['username'];
+$admin_id = $_SESSION['admin_user'];
 $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
 $stmt->bind_param("s", $admin_id);
 $stmt->execute();
