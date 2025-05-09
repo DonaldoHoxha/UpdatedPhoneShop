@@ -54,7 +54,7 @@ if (!isset($_SESSION['admin_user'])) {
         <aside>
             <div class="toggle">
                 <div class="logo">
-                    <img src="" alt="logo">
+                    <img src="logo.png" alt="logo">
                     <h2>Phone<span class="danger">Shop</span></h2>
                 </div>
                 <div class="close" id="close-btn">
