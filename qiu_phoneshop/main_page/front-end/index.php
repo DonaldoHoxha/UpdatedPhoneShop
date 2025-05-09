@@ -83,10 +83,8 @@ if (!isset($_SESSION['username'])) {
                 echo "<h3>" . $row['name'] . "</h3>";
                 echo "<p class='product-price'>€" . $row['price'] . "</p>";
                 echo "<div class='product-actions'>";
-                echo "<button class='quick-view'><i class='fas fa-eye'></i></button>";
-
-                echo "<button class='add-to-cart' onclick='addItem(" . $row['id'] . ")'><i class='fas fa-cart-plus'></i></button>";
-
+                echo "<a href='../../login_register_user/login_register.html'><button class='quick-view'><i class='fas fa-eye'></i></button></a>";
+                echo "<a href='../../login_register_user/login_register.html'><button class='add-to-cart'><i class='fas fa-cart-plus'></i></button></a>";
                 echo "</div>";
                 echo "</div>";
                 echo "</article>";
