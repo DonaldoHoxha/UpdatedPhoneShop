@@ -299,9 +299,63 @@ function showProducts() {
         });
 }
 
+function showOrders() {
+    hiddenMain();
+    tempBox.classList.remove('tempBox_inactive');
+    tempBox.classList.add('tempBox');
+    tempBox.innerHTML = `   
+                        <h1>Order list</h1>
+                            <table class="tempTable">
+                            <thead>
+                                <tr class="tempData">
+                                    <th>ID</th>
+                                    <th>CustomerID</th>
+                                    <th>Customer</th>
+                                    <th>ProductID</th>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>OrderDate</th>
+                                    <th>ShippingAddress</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempTbody">
+                            </tbody>
+                        </table>`;
+
+    const tempTbody = document.getElementById('tempTbody');
+    if (!tempTbody) {
+        console.error('tempTbody element not found');
+        return;
+    }
+
+    tempTbody.innerHTML = '';
+
+    fetch('load.php?action=orders')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            data.forEach(orders => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td >${orders.orderID}</td>
+                    <td >${orders.userID}</td>
+                    <td >${orders.username}</td>
+                    <td >${orders.productID}</td>
+                    <td >${orders.name}</td>
+                    <td >${orders.quantity}</td>
+                    <td >${orders.total_price}</td>  
+                    <td >${orders.order_date}</td>
+                    <td >${orders.shipping_address}</td>
+                    
+                    `;
+                tempTbody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error:', error));
 
 
-
+    }
 function showAnalytics() {
 }
 
