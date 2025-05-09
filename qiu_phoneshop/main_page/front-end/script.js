@@ -113,6 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>`;
                 productsGrid.appendChild(productCard);
             });
+
+        
+           
         } else {
             // If there aren't products that match the search, display a message
             productsGrid.innerHTML = `
