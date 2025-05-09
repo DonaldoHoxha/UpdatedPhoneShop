@@ -127,168 +127,183 @@ function showProducts() {
     hiddenMain();
     tempBox.classList.remove('tempBox_inactive');
     tempBox.classList.add('tempBox');
+
+    // Inserisco l'HTML
     tempBox.innerHTML = `   
-                        <h1>Product list</h1>
-                            <table class="tempTable">
-                            <thead>
-                                <tr class="tempData">
-                                    <th>ProductID</th>
-                                    <th>Product</th>
-                                    <th>Brand</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tempTbody">
-                            </tbody>
-                        </table>
-                        <div id="productModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close-modal">&times;</span>
-                                <h2>Add New Product</h2>
-                                <form id="addProductForm" action="../back-end/add_product.php" method="POST">
-                                    <div class="form-group">
-                                        <label for="name">Name:</label>
-                                        <input type="text" id="name" name="name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="brand">Brand:</label>
-                                        <input type="text" id="brand" name="brand" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="ram">RAM (GB):</label>
-                                        <input type="number" id="ram" name="ram" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="rom">ROM (GB):</label>
-                                        <input type="number" id="rom" name="rom" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="camera">Camera (MP):</label>
-                                        <input type="number" step="0.1" id="camera" name="camera" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="battery">Battery (mAh):</label>
-                                        <input type="number" id="battery" name="battery" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="price">Price ($):</label>
-                                        <input type="number" step="0.01" id="price" name="price" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="quantity">Quantity:</label>
-                                        <input type="number" id="quantity" name="quantity" required>
-                                    </div>
-                                    <button type="submit" class="submit-btn">Add Product</button>
-                                </form>
-                            </div>
-                        </div>
-                        <button id="addProductBtn" class="btn">Add Product</button>`;
+        <h1>Product list</h1>
+        <table class="tempTable">
+            <thead>
+                <tr class="tempData">
+                    <th>ProductID</th>
+                    <th>Product</th>
+                    <th>Brand</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody id="tempTbody"></tbody>
+        </table>
 
-    // Carica i prodotti esistenti
+        <div id="productModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2></h2>
+                <form id="addProductForm" method="POST">
+                    <div class="form-group" id="productID" style="display:none;">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="brand">Brand:</label>
+                        <input type="text" id="brand" name="brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ram">RAM (GB):</label>
+                        <input type="number" id="ram" name="ram" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rom">ROM (GB):</label>
+                        <input type="number" id="rom" name="rom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="camera">Camera (MP):</label>
+                        <input type="number" step="0.1" id="camera" name="camera" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="battery">Battery (mAh):</label>
+                        <input type="number" id="battery" name="battery" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price ($):</label>
+                        <input type="number" step="0.01" id="price" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
+                    <button type="submit" class="submit-btn"></button>
+                </form>
+            </div>
+        </div>
+
+        <button id="addProductBtn" class="btn">Add Product</button>
+        <button id="updateProductBtn" class="btn">Update Product</button>
+    `;
+
+   
     const tempTbody = document.getElementById('tempTbody');
-    tempTbody.innerHTML = '';
-
-    fetch('load.php?action=products')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(product => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${product.id}</td>
-                    <td>${product.name}</td>
-                    <td>${product.brand}</td>
-                    <td>$${product.price}</td>
-                    <td>${product.quantity}</td>`;
-                tempTbody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-
-    // Gestione della modale
     const modal = document.getElementById("productModal");
-    const btn = document.getElementById("addProductBtn");
-    const span = document.getElementsByClassName("close-modal")[0];
+    const form = document.getElementById("addProductForm");
+    const modalTitle = modal.querySelector("h2");
+    const span = document.querySelector(".close-modal");
+    const submitBtn = document.querySelector(".submit-btn");
+    const productID = document.getElementById("productID");
 
-    // Quando viene cliccato il pulsante add product allora il form diventa visibile
-    btn.onclick = function () {
+    const addBtn = document.getElementById("addProductBtn");
+    const updateBtn = document.getElementById("updateProductBtn");
+
+ 
+    addBtn.onclick = function () {
+        modalTitle.textContent = "Add New Product";
+        form.action = "../back-end/add_product.php";
+        submitBtn.textContent = "Add Product";
+        productID.style.display = "none";
+        form.reset();
         modal.style.display = "block";
-    }
+    };
 
-    // Quando viene cliccato il pulsante di chiusura della modale, la modale viene nascosta
+
+    updateBtn.onclick = function () {
+        modalTitle.textContent = "Update Product";
+        form.action = "../back-end/update_product.php";
+        submitBtn.textContent = "Update Product";
+        productID.style.display = "block";
+        productID.innerHTML = `<label for="id">ID:</label>
+                               <input type="number" id="id" name="id" required>`;
+        form.reset();
+        modal.style.display = "block";
+    };
+
+
     span.onclick = function () {
         modal.style.display = "none";
-    }
+    };
 
-    // Quando viene cliccato qualunque parte della pagina, la modale viene nascosta
+  
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    };
+
+  
+    tempTbody.innerHTML = '';
+
+    fetch('load.php?action=products', {
+    method: 'GET',
+    credentials: 'include' // 🔒 Importante per mantenere la sessione
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`Errore nella risposta: ${response.status}`);
     }
-}
-
-function showOrders() {
-    hiddenMain();
-    tempBox.classList.remove('tempBox_inactive');
-    tempBox.classList.add('tempBox');
-    tempBox.innerHTML = `   
-                        <h1>Order list</h1>
-                            <table class="tempTable">
-                            <thead>
-                                <tr class="tempData">
-                                    <th>ID</th>
-                                    <th>CustomerID</th>
-                                    <th>Customer</th>
-                                    <th>ProductID</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>OrderDate</th>
-                                    <th>ShippingAddress</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tempTbody">
-                            </tbody>
-                        </table>`;
-
-    const tempTbody = document.getElementById('tempTbody');
-    if (!tempTbody) {
-        console.error('tempTbody element not found');
+    return response.json();
+})
+.then(data => {
+    if (!Array.isArray(data)) {
+        console.error('Dati non validi ricevuti:', data);
         return;
     }
 
-    tempTbody.innerHTML = '';
+    data.forEach(product => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td>${product.brand}</td>
+            <td>$${product.price}</td>
+            <td>${product.quantity}</td>
+        `;
+        tempTbody.appendChild(row);
 
-    fetch('load.php?action=orders')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            data.forEach(orders => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td >${orders.orderID}</td>
-                    <td >${orders.userID}</td>
-                    <td >${orders.username}</td>
-                    <td >${orders.productID}</td>
-                    <td >${orders.name}</td>
-                    <td >${orders.quantity}</td>
-                    <td >${orders.total_price}</td>  
-                    <td >${orders.order_date}</td>
-                    <td >${orders.shipping_address}</td>
-                    
-                    `;
-                tempTbody.appendChild(row);
-            });
-        })
-        .catch(error => console.error('Error:', error));
+        // ✅ Listener su riga → apre modale con campi precompilati
+        row.addEventListener('click', () => {
+            modalTitle.textContent = "Update Product";
+            form.action = "../back-end/update_product.php";
+            submitBtn.textContent = "Update Product";
+
+            productID.style.display = "block";
+            productID.innerHTML = `
+                <label for="id">ID:</label>
+                <input type="number" id="id" name="id" required value="${product.id}">
+            `;
+
+            // Precompilazione completa
+            document.getElementById("name").value = product.name || '';
+            document.getElementById("brand").value = product.brand || '';
+            document.getElementById("ram").value = product.ram || '';
+            document.getElementById("rom").value = product.rom || '';
+            document.getElementById("camera").value = product.camera || '';
+            document.getElementById("battery").value = product.battery || '';
+            document.getElementById("price").value = product.price || '';
+            document.getElementById("quantity").value = product.quantity || '';
+
+            modal.style.display = "block";
+        });
+    });
+})
+.catch(error => {
+    console.error('Errore durante il caricamento dei prodotti:', error);
+});
 }
+
+
+
 
 function showAnalytics() {
 }
 
 function showSettings() {
-}
-
-function showSales() {
 }

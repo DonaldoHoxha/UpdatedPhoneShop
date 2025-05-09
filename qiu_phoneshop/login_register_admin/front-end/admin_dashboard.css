@@ -453,6 +453,10 @@ main .recent-orders a {
     color: var(--color-dark);
 }
 
+.hiddenID {
+    display: none;
+}
+
 .submit-btn {
     background-color: var(--color-primary);
     color: var(--color-white);
