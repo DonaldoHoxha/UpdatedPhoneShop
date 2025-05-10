@@ -88,7 +88,7 @@ if (!isset($_SESSION['username'])) {
         <h1 class="orders-title">I tuoi ordini</h1>
 
         <?php
-        // Get the user ID
+        // Otteniamo l'id dell'utente connesso
         $username = $_SESSION['username'];
         $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
         $stmt->bind_param("s", $username);
@@ -97,20 +97,39 @@ if (!isset($_SESSION['username'])) {
         $user = $result->fetch_assoc();
         $user_id = $user['id'];
 
-        // Get user orders
+        // Configurazione paginazione
+        $orders_per_page = 7; // Numero di ordini per pagina
+        $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($current_page < 1) $current_page = 1;
+
+        // Conta il numero totale di ordini
+        $count_stmt = $conn->prepare("SELECT COUNT(*) as total FROM orders WHERE user_id = ?");
+        $count_stmt->bind_param("i", $user_id);
+        $count_stmt->execute();
+        $count_result = $count_stmt->get_result();
+        $total_orders = $count_result->fetch_assoc()['total'];
+
+        // Calcola il numero totale di pagine
+        $total_pages = ceil($total_orders / $orders_per_page);
+        if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
+
+        // Modifica la query per includere LIMIT e OFFSET
         $stmt = $conn->prepare("SELECT 
-                                    o.id as order_id,
-                                    DATE_FORMAT(o.order_date, '%d/%m/%Y %H:%i') as formatted_date,
-                                    o.quantity, 
-                                    o.total_price, 
-                                    p.name
-                                FROM orders o
-                                JOIN product p ON p.id = o.product_id
-                                WHERE user_id = ? 
-                                ORDER BY o.order_date DESC");
-        $stmt->bind_param("i", $user_id);
+                        o.id as order_id,
+                        DATE_FORMAT(o.order_date, '%d/%m/%Y %H:%i') as formatted_date,
+                        o.quantity, 
+                        o.total_price, 
+                        p.name
+                    FROM orders o
+                    JOIN product p ON p.id = o.product_id
+                    WHERE user_id = ? 
+                    ORDER BY o.order_date DESC
+                    LIMIT ? OFFSET ?");
+        $offset = ($current_page - 1) * $orders_per_page;
+        $stmt->bind_param("iii", $user_id, $orders_per_page, $offset);
         $stmt->execute();
         $result = $stmt->get_result();
+
 
         if ($result->num_rows > 0): ?>
             <table class="orders-table">
@@ -133,6 +152,54 @@ if (!isset($_SESSION['username'])) {
                     <?php endwhile; ?>
                 </tbody>
             </table>
+            <?php if ($result->num_rows > 0 && $total_pages > 1): ?>
+                <div class="pagination">
+                    <?php if ($current_page > 1): ?>
+                        <a href="?page=<?= $current_page - 1 ?>" class="page-link page-nav">
+                            <i class="fas fa-chevron-left"></i> Precedente
+                        </a>
+                    <?php else: ?>
+                        <span class="page-link page-nav" disabled>
+                            <i class="fas fa-chevron-left"></i> Precedente
+                        </span>
+                    <?php endif; ?>
+
+                    <?php
+                    // Mostra i numeri di pagina
+                    $start_page = max(1, $current_page - 2);
+                    $end_page = min($total_pages, $current_page + 2);
+
+                    if ($start_page > 1): ?>
+                        <a href="?page=1" class="page-link">1</a>
+                        <?php if ($start_page > 2): ?>
+                            <span class="page-dots">...</span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
+                        <a href="?page=<?= $i ?>" class="page-link <?= $i == $current_page ? 'active' : '' ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
+
+                    <?php if ($end_page < $total_pages): ?>
+                        <?php if ($end_page < $total_pages - 1): ?>
+                            <span class="page-dots">...</span>
+                        <?php endif; ?>
+                        <a href="?page=<?= $total_pages ?>" class="page-link"><?= $total_pages ?></a>
+                    <?php endif; ?>
+
+                    <?php if ($current_page < $total_pages): ?>
+                        <a href="?page=<?= $current_page + 1 ?>" class="page-link page-nav">
+                            Successiva <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <?php else: ?>
+                        <span class="page-link page-nav" disabled>
+                            Successiva <i class="fas fa-chevron-right"></i>
+                        </span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         <?php else: ?>
             <div class="no-orders">
                 <div class="no-orders-icon">
