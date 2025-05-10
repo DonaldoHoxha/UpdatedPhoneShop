@@ -212,11 +212,16 @@ function loadProducts(page) {
 
     // Mostra loader
     tempTbody.innerHTML = '<tr><td colspan="9" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading products...</td></tr>';
+    //l'API moderna di js per effettuare richieste HTTP (AJAX= Asynchronous JavaScript and XML)
+    //XML(eXtensible markup language) è un linguaggio di markup, e con il suo formato di dati 
+    // viene ampiamente usato per lo scambio di dati tra client e server
+    //AJAX è una tecnica js usato da lato client per comunicare con il server senza ricaricare la pagina
 
     fetch(`../back-end/load.php?action=products&page=${page}`, {
         method: 'GET',
         credentials: 'include'
     })
+    //gestione della risposta
         .then(response => {
             if (!response.ok) throw new Error(`Errore nella risposta: ${response.status}`);
             return response.json();
@@ -387,7 +392,8 @@ function initProductModal() {
 
     // Gestione submit form
     form.addEventListener('submit', function (e) {
-        e.preventDefault();
+        e.preventDefault(); //Impedisce al browser di eseguire l'azione standard associata a un evento.
+                            // In questo caso, impedisce l'invio del form e gestisco manualmente l'invio tramite JavaScript.
         const formData = new FormData(this);
 
         fetch(this.action, {
@@ -519,6 +525,7 @@ function loadOrders(page) {
                     <td>${order.quantity}</td>
                     <td>$${order.total_price}</td>
                     <td>${new Date(order.order_date).toLocaleDateString()}</td>
+                    //Metodo degli oggetti Date in js che formatta la data secondo le impostazioni locali del browser/ambiente
                     <td>${order.shipping_address}</td>`;
                 tempTbody.appendChild(row);
             });
