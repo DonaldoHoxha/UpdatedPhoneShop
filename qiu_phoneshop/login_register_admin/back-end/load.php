@@ -7,6 +7,7 @@ if (!isset($_SESSION['admin_user'])) {
     echo json_encode(["status" => "error", "message" => "Utente non autenticato"]);
     exit();
 }
+
 $action = $_GET['action'] ?? '';
 if (empty($action)) {
     echo json_encode(["status" => "error", "message" => "Azione non valida"]);
@@ -21,6 +22,9 @@ switch ($action) {
         break;
     case 'orders':
         loadOrders($conn);
+        break;
+    case 'analytics':
+        analytics($conn);
         break;
     default:
         echo json_encode(["status" => "error", "message" => "Azione non valida"]);
@@ -167,4 +171,26 @@ function loadProducts($conn)
     ];
 
     echo json_encode($response);
+}
+function analytics($conn) {
+        // Get admin ID from session
+        $admin_id = $_SESSION['admin_user']; // Assuming this is the ID
+        
+        $stmt = $conn->prepare("SELECT SUM(o.total_price) as total, 
+                               FROM orders o 
+                               JOIN product p ON o.product_id = p.id 
+                               WHERE p.fk_admin = ?");
+        $stmt->bind_param("i", $admin_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        // Fetch the result properly
+        $row = $result->fetch_assoc();
+        $total = $row['total'] ?? 0;
+        
+        echo json_encode([
+            'totalSales' => (float)$total,
+            'status' => 'success'
+        ]);
+        
 }

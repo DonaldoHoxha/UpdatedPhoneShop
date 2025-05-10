@@ -139,7 +139,7 @@ if (!isset($_SESSION['admin_user'])) {
                     <div class="status">
                         <div class="info">
                             <h3>Total Sales</h3>
-                            <h1>$100000</h1>
+                            <h1 class="totalSales">$100000</h1>
                         </div>
                         <div class="progress">
                             <svg>

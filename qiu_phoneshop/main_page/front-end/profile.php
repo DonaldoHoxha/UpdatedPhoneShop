@@ -105,6 +105,8 @@ if (!isset($_SESSION['username'])) {
                             echo '<div class="order-card">';
                             echo '<div class="order-header">';
                             echo '<span>Ordine #' . $order['id'] . '</span>';
+                            //Prende una stringa di data/ora (es. "2023-12-25 14:30:00").
+                            //La converte in un timestamp numerico (utile per calcoli o formattazioni).
                             echo '<span class="order-date">' . date('d/m/Y', strtotime($order['order_date'])) . '</span>';
                             echo '</div>';
                             echo '<div class="order-details">';

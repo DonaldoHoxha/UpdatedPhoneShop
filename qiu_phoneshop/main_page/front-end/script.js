@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = searchInput.value.trim();
         if (query !== '') {
             // AJAX call to search the prdoducts
+            // encodeURIComponent is a function that encodes special characters in a string
+            // so that it can be safely included in a URL
             fetch('../back-end/search_products.php?query=' + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
