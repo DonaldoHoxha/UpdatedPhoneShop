@@ -581,6 +581,25 @@ function showAnalytics() {
                         </div>
                     </div>
                 </div>
+
+                <!--Searches-->
+                <div class="searches">
+                    <div class="status">
+                        <div class="info">
+                            <h3>Searches</h3>
+                            <h1 class="totalSearches">${data.totalSearches}</h1>
+                        </div>
+                        <div class="progress">
+                            <svg>
+                                <circle cx="38" cy="38" r="36"></circle>
+                            </svg>
+                            <div class="percentage">
+                                -2%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
     `;
       } else {

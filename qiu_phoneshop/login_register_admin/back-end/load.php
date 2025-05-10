@@ -174,22 +174,36 @@ function loadProducts($conn)
 }
 function analytics($conn) {
         // Get admin ID from session
-        $admin_id = $_SESSION['admin_user']; // Assuming this is the ID
+        $admin_id = $_SESSION['admin_user']; 
         
-        $stmt = $conn->prepare("SELECT SUM(o.total_price) as total, 
+        $stmtSales = $conn->prepare("SELECT SUM(o.total_price) as total, 
                                FROM orders o 
                                JOIN product p ON o.product_id = p.id 
                                WHERE p.fk_admin = ?");
-        $stmt->bind_param("i", $admin_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $stmtSales->bind_param("i", $admin_id);
+        $stmtSales->execute();
+        $result = $stmtSales->get_result();
         
         // Fetch the result properly
         $row = $result->fetch_assoc();
-        $total = $row['total'] ?? 0;
+        $totalSales = $row['total'] ?? 0;
+
+        $stmtSearches = $conn->prepare("SELECT count(*) as total, 
+                               FROM user u
+                               JOIN searches s ON u.id = s.user_id
+                               JOIN product p ON s.product_id = p.id 
+                               where p.fk_admin = ?");
+        $stmtSearches->bind_param("i", $admin_id);
+        $stmtSearches->execute();
+        $result = $stmtSearches->get_result();
+        
+        // Fetch the result properly
+        $row = $result->fetch_assoc();
+        $totalSearches = $row['total'] ?? 0;
         
         echo json_encode([
-            'totalSales' => (float)$total,
+            'totalSales' => (float)$totalSales,
+            'totalSearches' => (int)$totalSearches,
             'status' => 'success'
         ]);
         
