@@ -1,57 +1,96 @@
 <?php
 session_start();
+header('Content-Type: application/json'); // Imposta il content type JSON
 
 // Verifica che l'utente sia loggato come admin
 if (!isset($_SESSION['admin_user'])) {
-    header('Location: admin_login.html');
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
 
-// Connessione al database
 include '../../main_page/back-end/db_conn.php';
 
-// Otteniamo l'id dell'admin loggato
-$admin_username = $_SESSION['admin_user'];
-$stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
-$stmt->bind_param("s", $admin_username);
-$stmt->execute();
-$result = $stmt->get_result();
+try {
+    // Ottieni l'ID admin
+    $admin_username = $_SESSION['admin_user'];
+    $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+    $stmt->bind_param("s", $admin_username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows === 1) {
+    if ($result->num_rows !== 1) {
+        throw new Exception('Admin non trovato');
+    }
+
     $admin = $result->fetch_assoc();
     $admin_id = $admin['id'];
-} else {
-    header('Location: admin_login.html');
-    exit();
-}
 
-// Controlla se il metodo è POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Prendi i dati dal form
+    // Verifica il metodo POST
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Metodo non consentito');
+    }
+
+    // Valida i campi obbligatori
+    $required_fields = ['id', 'name', 'brand', 'ram', 'rom', 'camera', 'battery', 'price', 'quantity'];
+    foreach ($required_fields as $field) {
+        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+            throw new Exception("Il campo $field è obbligatorio");
+        }
+    }
+
+    // Assegna i valori
     $product_id = $_POST['id'];
     $name = $_POST['name'];
     $brand = $_POST['brand'];
-    $ram = $_POST['ram'];
-    $rom = $_POST['rom'];
-    $camera = $_POST['camera'];
-    $battery = $_POST['battery'];
-    $price = $_POST['price'];
-    $quantity = $_POST['quantity'];
+    $ram = (int)$_POST['ram'];
+    $rom = (int)$_POST['rom'];
+    $camera = (float)$_POST['camera'];
+    $battery = (int)$_POST['battery'];
+    $price = (float)$_POST['price'];
+    $quantity = (int)$_POST['quantity'];
 
-    // Prepara la query SQL per l'UPDATE
-    $stmt = $conn->prepare("UPDATE product SET name = ?, brand = ?, ram = ?, rom = ?, camera = ?, battery = ?, price = ?, quantity = ?, fk_admin = ? WHERE id = ?");
-    $stmt->bind_param("ssiiiiiiii", $name, $brand, $ram, $rom, $camera, $battery, $price, $quantity, $admin_id, $product_id);
+    // Prepara ed esegui la query
+    $stmt = $conn->prepare("UPDATE product SET 
+        name = ?, 
+        brand = ?, 
+        ram = ?, 
+        rom = ?, 
+        camera = ?, 
+        battery = ?, 
+        price = ?, 
+        quantity = ?, 
+        fk_admin = ? 
+        WHERE id = ?");
 
-    // Esegui la query
+    $stmt->bind_param(
+        "ssiiiiiiii",
+        $name,
+        $brand,
+        $ram,
+        $rom,
+        $camera,
+        $battery,
+        $price,
+        $quantity,
+        $admin_id,
+        $product_id
+    );
+
     if ($stmt->execute()) {
-        header('Location: ../front-end/admin_dashboard.php?success=product_updated');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Prodotto aggiornato con successo',
+            'product_id' => $product_id
+        ]);
     } else {
-        header('Location: ../front-end/admin_dashboard.php?error=product_update_failed');
+        throw new Exception('Errore durante l\'aggiornamento: ' . $conn->error);
     }
-
-    $stmt->close();
-    $conn->close();
-} else {
-    // Reindirizza se non è POST
-    header('Location: admin_dashboard.php');
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+} finally {
+    if (isset($conn)) $conn->close();
 }

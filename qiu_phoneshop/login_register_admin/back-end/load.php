@@ -48,38 +48,62 @@ function loadUsers($conn)
 
 function loadOrders($conn)
 {
-
     $user = $_SESSION['admin_user'];
     $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
     $stmt->bind_param("s", $user);
     $stmt->execute();
     $result = $stmt->get_result();
     $admin = $result->fetch_assoc();
+
     if (!$admin) {
         echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
         exit();
     }
-    $user_id = $admin['id'];
-    $query = "SELECT o.id as orderID,u.id as userID,u.username,p.id as productID,p.name,
-                    o.order_date,o.quantity,o.total_price,o.shipping_address FROM orders o 
-                    join product p on o.product_id = p.id
-                    join user u on o.user_id = u.id 
-                    where p.fk_admin = ?
-                    order by o.order_date desc;";
-    $orders = [];
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $user_id);
-    if (!$stmt) {
-        echo json_encode(["status" => "error", "message" => "Errore nel preparare la query"]);
-        exit();
-    }
 
+    $user_id = $admin['id'];
+
+    // Configurazione paginazione
+    $orders_per_page = 10;
+    $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($current_page < 1) $current_page = 1;
+
+    // Conta ordini totali
+    $count_stmt = $conn->prepare("SELECT COUNT(*) as total FROM orders o 
+                                 JOIN product p ON o.product_id = p.id 
+                                 WHERE p.fk_admin = ?");
+    $count_stmt->bind_param("i", $user_id);
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $total_orders = $count_result->fetch_assoc()['total'];
+
+    $total_pages = ceil($total_orders / $orders_per_page);
+    if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
+
+    $offset = ($current_page - 1) * $orders_per_page;
+
+    $query = "SELECT o.id as orderID, u.id as userID, u.username, p.id as productID, p.name,
+                     o.order_date, o.quantity, o.total_price, o.shipping_address 
+              FROM orders o 
+              JOIN product p ON o.product_id = p.id
+              JOIN user u ON o.user_id = u.id 
+              WHERE p.fk_admin = ?
+              ORDER BY o.order_date DESC
+              LIMIT ? OFFSET ?";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("iii", $user_id, $orders_per_page, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
     $orders = $result->fetch_all(MYSQLI_ASSOC);
 
-    $stmt->close();
-    echo json_encode($orders);
+    echo json_encode([
+        'orders' => $orders,
+        'pagination' => [
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'total_orders' => $total_orders
+        ]
+    ]);
 }
 
 function loadProducts($conn)
@@ -95,11 +119,35 @@ function loadProducts($conn)
         exit();
     }
     $user_id = $admin['id'];
-    $query = "SELECT p.id, p.name,p.brand,p.price,p.quantity FROM product p WHERE p.fk_admin = ?
-                    order by p.name asc;";
+
+    // Configurazione paginazione
+    $products_per_page = 10;
+    $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($current_page < 1) $current_page = 1;
+
+    // Conta il numero totale di prodotti
+    $count_stmt = $conn->prepare("SELECT COUNT(*) as total FROM product WHERE fk_admin = ?");
+    $count_stmt->bind_param("i", $user_id);
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $total_products = $count_result->fetch_assoc()['total'];
+
+    // Calcola il numero totale di pagine
+    $total_pages = ceil($total_products / $products_per_page);
+    if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
+
+    $offset = ($current_page - 1) * $products_per_page;
+
+    $query = "SELECT p.id, p.name, p.brand, p.price, p.quantity, p.ram, p.rom, p.camera, p.battery 
+              FROM product p 
+              WHERE p.fk_admin = ?
+              ORDER BY p.id ASC
+              LIMIT ? OFFSET ?";
+
     $products = [];
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("iii", $user_id, $products_per_page, $offset);
+
     if (!$stmt) {
         echo json_encode(["status" => "error", "message" => "Errore nel preparare la query"]);
         exit();
@@ -109,8 +157,14 @@ function loadProducts($conn)
     $result = $stmt->get_result();
     $products = $result->fetch_all(MYSQLI_ASSOC);
 
-    $stmt->close();
-    echo json_encode($products);
-}
+    $response = [
+        'products' => $products,
+        'pagination' => [
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'total_products' => $total_products
+        ]
+    ];
 
-// crud funtions for products
+    echo json_encode($response);
+}

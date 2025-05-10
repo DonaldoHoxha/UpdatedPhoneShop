@@ -1,57 +1,64 @@
 <?php
 session_start();
+header('Content-Type: application/json'); // Aggiungi questa riga
 
 // Verifica che l'utente sia loggato come admin
 if (!isset($_SESSION['admin_user'])) {
-    header('Location: admin_login.html');
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
 
-// Connessione al database
 include '../../main_page/back-end/db_conn.php';
 
-// Otteniamo l'id dell'admin loggato
-$admin_id = $_SESSION['admin_user'];
-$stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
-$stmt->bind_param("s", $admin_id);
-$stmt->execute();
-$result = $stmt->get_result();
-if ($result->num_rows === 1) {
-    $admin = $result->fetch_assoc();
-    $admin_id = $admin['id'];
-} else {
-    // Se non troviamo l'admin, reindirizza
-    header('Location: admin_login.html');
-    exit();
-}
+try {
+    $admin_id = $_SESSION['admin_user'];
+    $stmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+    $stmt->bind_param("s", $admin_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Prendi i dati dal form
-    $name = $_POST['name'];
-    $brand = $_POST['brand'];
-    $ram = $_POST['ram'];
-    $rom = $_POST['rom'];
-    $camera = $_POST['camera'];
-    $battery = $_POST['battery'];
-    $price = $_POST['price'];
-    $quantity = $_POST['quantity'];
-
-    // Prepara la query SQL
-    $stmt = $conn->prepare("INSERT INTO product (name, brand, ram, rom, camera, battery, price, quantity, fk_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssiiiiiii", $name, $brand, $ram, $rom, $camera, $battery, $price, $quantity, $admin_id);
-
-    // Esegui la query
-    if ($stmt->execute()) {
-        // Successo - reindirizza alla dashboard con messaggio di successo
-        header('Location: ../front-end/admin_dashboard.php?success=product_added');
-    } else {
-        // Errore - reindirizza con messaggio di errore
-        header('Location: ../front-end/admin_dashboard.php?error=product_add_failed');
+    if ($result->num_rows !== 1) {
+        throw new Exception('Admin non trovato');
     }
 
-    $stmt->close();
-    $conn->close();
-} else {
-    // Se non è una richiesta POST, reindirizza
-    header('Location: admin_dashboard.php');
+    $admin = $result->fetch_assoc();
+    $admin_id = $admin['id'];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $name = $_POST['name'] ?? null;
+        $brand = $_POST['brand'] ?? null;
+        $ram = $_POST['ram'] ?? null;
+        $rom = $_POST['rom'] ?? null;
+        $camera = $_POST['camera'] ?? null;
+        $battery = $_POST['battery'] ?? null;
+        $price = $_POST['price'] ?? null;
+        $quantity = $_POST['quantity'] ?? null;
+
+        // Validazione campi obbligatori
+        $required = ['name', 'brand', 'ram', 'rom', 'camera', 'battery', 'price', 'quantity'];
+        foreach ($required as $field) {
+            if (empty($_POST[$field])) {
+                throw new Exception("Il campo $field è obbligatorio");
+            }
+        }
+        // Prepara la query SQL
+        $stmt = $conn->prepare("INSERT INTO product (name, brand, ram, rom, camera, battery, price, quantity, fk_admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssiiiiiii", $name, $brand, $ram, $rom, $camera, $battery, $price, $quantity, $admin_id);
+
+        if ($stmt->execute()) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Prodotto aggiunto con successo',
+                'product_id' => $conn->insert_id
+            ]);
+        } else {
+            throw new Exception('Errore nel database: ' . $conn->error);
+        }
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
 }
