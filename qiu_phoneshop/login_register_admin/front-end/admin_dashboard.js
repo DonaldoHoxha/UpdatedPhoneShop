@@ -1,3 +1,10 @@
+document.addEventListener("DOMContentLoaded", () => {
+  dashboardDate();
+});
+
+
+
+
 const sideMenu = document.querySelector("aside");
 const menuBtn = document.getElementById("menu-btn");
 const closeBtn = document.getElementById("close-btn");
@@ -62,7 +69,25 @@ sidebarSection.forEach((link) => {
     }
   });
 });
-
+// Load the dashboard data when the page loads
+function dashboardDate(){
+  fetch('../back-end/load.php?action=analytics')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.querySelector('.totalSales').innerText = data.totalSales.toLocaleString();
+                document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
+                } else if (data.status === 'error') {
+                    console.error('Error fetching analytics data:', data.message);
+                    document.querySelector('.totalSales').innerText = 'Error';
+                    document.querySelector('.totalSearches').innerText = 'Error';
+                }
+                else {
+                  console.error('Error fetching analytics data:',error) ;
+                }
+            })
+            .catch(error => console.error('Error fetching analytics data:', error));
+}
 function hiddenMain() {
   const main = document.querySelector("main");
   main.style.display = "none";

@@ -33,7 +33,7 @@ if (!isset($_SESSION['admin_user'])) {
         // No session or cookies, redirect to login
         header('Location: admin_login.html');
         exit();
-    }
+    } 
 }
 ?>
 <!DOCTYPE html>
@@ -139,7 +139,7 @@ if (!isset($_SESSION['admin_user'])) {
                     <div class="status">
                         <div class="info">
                             <h3>Total Sales</h3>
-                            <h1 class="totalSales">$100000</h1>
+                            <h1 class="totalSales"></h1>
                         </div>
                         <div class="progress">
                             <svg>
@@ -173,7 +173,7 @@ if (!isset($_SESSION['admin_user'])) {
                     <div class="status">
                         <div class="info">
                             <h3>Searches</h3>
-                            <h1>14,143</h1>
+                            <h1 class="totalSearches"></h1>
                         </div>
                         <div class="progress">
                             <svg>

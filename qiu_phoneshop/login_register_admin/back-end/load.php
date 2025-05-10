@@ -173,38 +173,54 @@ function loadProducts($conn)
     echo json_encode($response);
 }
 function analytics($conn) {
-        // Get admin ID from session
-        $admin_id = $_SESSION['admin_user']; 
-        
-        $stmtSales = $conn->prepare("SELECT SUM(o.total_price) as total, 
-                               FROM orders o 
-                               JOIN product p ON o.product_id = p.id 
-                               WHERE p.fk_admin = ?");
-        $stmtSales->bind_param("i", $admin_id);
-        $stmtSales->execute();
-        $result = $stmtSales->get_result();
-        
-        // Fetch the result properly
-        $row = $result->fetch_assoc();
-        $totalSales = $row['total'] ?? 0;
+    // Get admin ID from session
+    $user = $_SESSION['admin_user']; 
+    
+    // First get the admin ID from the name
+    $adminStmt = $conn->prepare("SELECT id FROM administrator_user WHERE name = ?");
+    $adminStmt->bind_param("s", $user);
+    $adminStmt->execute();
+    $result = $adminStmt->get_result();
+    $admin = $result->fetch_assoc();
+    
+    if (!$admin) {
+        echo json_encode(["status" => "error", "message" => "Admin not found"]);
+        exit();
+    }
+    
+    $admin_id = $admin['id'];
+    
+    // Get total sales
+    $stmtSales = $conn->prepare("SELECT SUM(o.total_price) as total
+                           FROM orders o 
+                           JOIN product p ON o.product_id = p.id 
+                           WHERE p.fk_admin = ?");
+    $stmtSales->bind_param("i", $admin_id);
+    $stmtSales->execute();
+    $result = $stmtSales->get_result();
+    
+    // Fetch the result properly
+    $row = $result->fetch_assoc();
+    $totalSales = $row['total'] ?? 0;
 
-        $stmtSearches = $conn->prepare("SELECT count(*) as total, 
-                               FROM user u
-                               JOIN searches s ON u.id = s.user_id
-                               JOIN product p ON s.product_id = p.id 
-                               where p.fk_admin = ?");
-        $stmtSearches->bind_param("i", $admin_id);
-        $stmtSearches->execute();
-        $result = $stmtSearches->get_result();
-        
-        // Fetch the result properly
-        $row = $result->fetch_assoc();
-        $totalSearches = $row['total'] ?? 0;
-        
-        echo json_encode([
-            'totalSales' => (float)$totalSales,
-            'totalSearches' => (int)$totalSearches,
-            'status' => 'success'
-        ]);
-        
+    // Get total searches
+    $stmtSearches = $conn->prepare("SELECT COUNT(*) as total
+                           FROM searches s
+                           JOIN product p ON s.product_id = p.id 
+                           WHERE p.fk_admin = ?");
+    $stmtSearches->bind_param("i", $admin_id);
+    $stmtSearches->execute();
+    $result = $stmtSearches->get_result();
+    
+    // Fetch the result properly
+    $row = $result->fetch_assoc();
+    $totalSearches = $row['total'] ?? 0;
+    
+    echo json_encode([
+        'totalSales' => (float)$totalSales,
+        'totalSearches' => (int)$totalSearches,
+        'status' => 'success'
+    ]);
 }
+
+        
