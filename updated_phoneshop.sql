@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2025 at 09:15 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Creato il: Mag 11, 2025 alle 15:06
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `administrator_user`
+-- Struttura della tabella `administrator_user`
 --
 
 CREATE TABLE `administrator_user` (
@@ -34,19 +34,25 @@ CREATE TABLE `administrator_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `administrator_user`
+-- Dump dei dati per la tabella `administrator_user`
 --
 
 INSERT INTO `administrator_user` (`id`, `name`, `password`) VALUES
 (1, 'try', 'try'),
 (2, 'try2', 'try'),
 (3, 'donald', '12345678'),
-(4, 'donald1', '$2y$10$0bw1CJ8azmJvnhWcAZ1Y/OQC7bJYaY6Wn4y/JE00FIjTR/KxEK7IO');
+(4, 'donald1', '$2y$10$0bw1CJ8azmJvnhWcAZ1Y/OQC7bJYaY6Wn4y/JE00FIjTR/KxEK7IO'),
+(9, 'qiu@gmail.com', '$2y$10$1eHAAvJDXW/AdbTQcScv1uU4t/n6HaDXl/s4oEMYpV/g2bL0taC/e'),
+(10, 'qiu100@gmail.com', '$2y$10$UTuuJgY/Fh58537T4BxuouhRaTTGr3nZFzaj4J7U2GgrAci6riwju'),
+(11, 'prova@gmail.com', '$2y$10$2nJaiRrZgp2EbrUaUmQIJu5nTHjmB5nXY.z9Q1mdFJPR/Kn3YWQVe'),
+(12, 'qiu1232@gmail.com', '$2y$10$YZjg7Ysj9Jh7ItHKPbUyZOvu0SjC8oSeemaxUaKlaWl6g4upUhEf.'),
+(13, 'qiu12333', '$2y$10$c8sHUGaLEuuAP1gPs8qx..z6hvVxMVOI0S.jbQo0RR.sdKc82AVtG'),
+(14, 'qiu2797223631@gmail.com', '$2y$10$HN.R..pdHDOwFb/zChzE6ux/dJu1oVFJbilaz6b1qiYnJ88GQUURO');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Struttura della tabella `cart`
 --
 
 CREATE TABLE `cart` (
@@ -56,7 +62,7 @@ CREATE TABLE `cart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cart`
+-- Dump dei dati per la tabella `cart`
 --
 
 INSERT INTO `cart` (`user_id`, `product_id`, `quantity`) VALUES
@@ -78,7 +84,7 @@ INSERT INTO `cart` (`user_id`, `product_id`, `quantity`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Struttura della tabella `orders`
 --
 
 CREATE TABLE `orders` (
@@ -92,7 +98,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Dump dei dati per la tabella `orders`
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `product_id`, `order_date`, `quantity`, `total_price`, `shipping_address`) VALUES
@@ -123,12 +129,15 @@ INSERT INTO `orders` (`id`, `user_id`, `product_id`, `order_date`, `quantity`, `
 (27, 10, 5, '2025-04-18 12:51:37', 1, 600.00, '1234567890'),
 (28, 10, 1, '2025-04-18 12:51:48', 1, 1199.00, '1234567890'),
 (29, 10, 1, '2025-04-18 12:51:48', 1, 1199.00, '1234567890'),
-(30, 10, 2, '2025-04-18 12:51:48', 1, 500.00, '1234567890');
+(30, 10, 2, '2025-04-18 12:51:48', 1, 500.00, '1234567890'),
+(38, 12, 6, '2025-05-08 20:01:27', 1, 700.00, 'vias fashfaei'),
+(39, 13, 10, '2025-05-09 12:10:33', 1, 1200.00, 'via ss'),
+(40, 13, 10, '2025-05-11 00:09:33', 1, 1200.00, 'via ss');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product`
+-- Struttura della tabella `product`
 --
 
 CREATE TABLE `product` (
@@ -145,7 +154,7 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product`
+-- Dump dei dati per la tabella `product`
 --
 
 INSERT INTO `product` (`id`, `name`, `brand`, `ram`, `rom`, `camera`, `battery`, `price`, `quantity`, `fk_admin`) VALUES
@@ -153,12 +162,47 @@ INSERT INTO `product` (`id`, `name`, `brand`, `ram`, `rom`, `camera`, `battery`,
 (2, 'Samsung Galaxy A24', 'Samsung', 12, 256, 10, 5000, 500, 15, 1),
 (3, 'xiaomi 1', 'xiaomi', 6, 64, 12, 2000, 200, 500, 1),
 (4, 'huawei', 'huawei', 8, 128, 4, 4242, 40, 2, 2),
-(5, 'iphone 12 pro ', 'apple', 12, 128, 8, 4444, 600, 30, 2);
+(5, 'iphone 12 pro ', 'apple', 12, 128, 8, 4444, 600, 30, 2),
+(6, 'iphone 14', 'iphone', 6, 128, 2, 4220, 700, 99, 9),
+(7, 'iphone15', 'iphone', 8, 256, 4, 3300, 1300, 50, 10),
+(8, 'iphone15', 'iphone', 6, 128, 3, 3000, 4000, 20, 13),
+(9, 'iphone15', 'iphone', 6, 64, 2, 3000, 900, 20, 13),
+(10, 'xiaomi13pro', 'xiaomi', 10, 512, 3, 5000, 1200, 99, 14),
+(11, '23', '345', 345, 34, 34, 2345, 45, 2345, 14),
+(12, '3', '3', 3, 3, 3, 3, 3, 3, 14),
+(13, '5', '5', 5, 5, 5, 5, 5, 5, 14),
+(14, '5', '5', 6, 6, 6, 6, 6, 7, 14),
+(15, '5', '5', 5, 5, 5, 5, 5, 5, 14),
+(16, '3', '3', 2, 1, 3, 3, 4, 5, 14),
+(17, '3', '3', 3, 3, 3, 3, 3, 3, 14),
+(18, '2', '2', 2, 2, 2, 2, 2, 2, 14),
+(19, '22', '2', 22, 11, 22, 33, 44, 55, 14),
+(20, '1', '2', 3, 4, 5, 6, 7, 8, 14);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struttura della tabella `searches`
+--
+
+CREATE TABLE `searches` (
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `searched_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `searches`
+--
+
+INSERT INTO `searches` (`user_id`, `product_id`, `searched_at`) VALUES
+(13, 10, '2025-05-10 22:09:20'),
+(13, 11, '2025-05-10 21:52:38');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `user`
 --
 
 CREATE TABLE `user` (
@@ -167,11 +211,11 @@ CREATE TABLE `user` (
   `password` varchar(100) DEFAULT NULL,
   `email` varchar(50) NOT NULL,
   `shipping_address` varchar(100) DEFAULT NULL,
-  `registration_date` date NOT NULL DEFAULT (CURRENT_DATE())
+  `registration_date` date NOT NULL DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user`
+-- Dump dei dati per la tabella `user`
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `email`, `shipping_address`, `registration_date`) VALUES
@@ -182,28 +226,30 @@ INSERT INTO `user` (`id`, `username`, `password`, `email`, `shipping_address`, `
 (8, 'qiu1', '$2y$10$RPUKv1QFcrorE1S92bKJyOXcWVUlF/ORq/kKpShiXHII43kb84flO', 'qiu1@gmail.com', NULL, '2025-04-22'),
 (9, 'don9', '$2y$10$9dXM8M6B8B1I04AQl.9zJ./g3s1.ZwTi.yrCJYlbCvhigKTzddCH.', 'bkaba@gmail.com', NULL, '2025-04-22'),
 (10, 'updated_don', '$2y$10$MEiuKtAxcesR2Lul.zfySeGbzIXDBkKecfsQakTbBQ0ankEeApBMC', 'updated_don@gmail.com', '1234567890', '2025-04-22'),
-(11, '123', '$2y$10$SgEwKUEOOf8.1nw0.FNgiOgLi.LSPnePPlyXS27ZQY5iXWal1lehm', '123@gmail.com', '1234567890', '2025-04-22');
+(11, '123', '$2y$10$SgEwKUEOOf8.1nw0.FNgiOgLi.LSPnePPlyXS27ZQY5iXWal1lehm', '123@gmail.com', '1234567890', '2025-04-22'),
+(12, 'test299', '$2y$10$N.lj.CFifCNiBW6Fwr5OwuBEB59lqN0e8XgMByDDWyc9sCGRE6Yey', 'test299@gmail.com', 'vias fashfaei', '2025-05-08'),
+(13, 'prova', '$2y$10$UDpPa5I.VJNk0DsUUcmFBO0fp6p9K/cvmT6C7BYlxJvv/elkgbn6a', 'prova@gmail.com', 'via ss', '2025-05-09');
 
 --
--- Indexes for dumped tables
+-- Indici per le tabelle scaricate
 --
 
 --
--- Indexes for table `administrator_user`
+-- Indici per le tabelle `administrator_user`
 --
 ALTER TABLE `administrator_user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `cart`
+-- Indici per le tabelle `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`user_id`,`product_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `orders`
+-- Indici per le tabelle `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
@@ -211,14 +257,22 @@ ALTER TABLE `orders`
   ADD KEY `FK_product_id` (`product_id`);
 
 --
--- Indexes for table `product`
+-- Indici per le tabelle `product`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_admin` (`fk_admin`);
 
 --
--- Indexes for table `user`
+-- Indici per le tabelle `searches`
+--
+ALTER TABLE `searches`
+  ADD PRIMARY KEY (`user_id`,`product_id`,`searched_at`),
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `searched_at` (`searched_at`);
+
+--
+-- Indici per le tabelle `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
@@ -226,56 +280,63 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `password` (`password`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
--- AUTO_INCREMENT for table `administrator_user`
+-- AUTO_INCREMENT per la tabella `administrator_user`
 --
 ALTER TABLE `administrator_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT per la tabella `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
--- AUTO_INCREMENT for table `product`
+-- AUTO_INCREMENT per la tabella `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT per la tabella `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- Constraints for dumped tables
+-- Limiti per le tabelle scaricate
 --
 
 --
--- Constraints for table `cart`
+-- Limiti per la tabella `cart`
 --
 ALTER TABLE `cart`
   ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Limiti per la tabella `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `FK_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   ADD CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `product`
+-- Limiti per la tabella `product`
 --
 ALTER TABLE `product`
   ADD CONSTRAINT `fk_admin` FOREIGN KEY (`fk_admin`) REFERENCES `administrator_user` (`id`);
+
+--
+-- Limiti per la tabella `searches`
+--
+ALTER TABLE `searches`
+  ADD CONSTRAINT `searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `searches_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
