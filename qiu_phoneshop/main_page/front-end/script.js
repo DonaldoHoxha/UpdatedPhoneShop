@@ -3,18 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileContainer = document.querySelector('.user-btn');
     const profileOptions = document.querySelector('.profile-options');
     let hoverTimeout;
-    // Show on hover
+    // event listeners quando il mouse entra nel profilo
     profileContainer.addEventListener('mouseenter', () => {
         clearTimeout(hoverTimeout);
         profileOptions.classList.add('show');
     });
-    // Hide with delay
+    // quando il mouse esce dal profilo
     profileContainer.addEventListener('mouseleave', () => {
         hoverTimeout = setTimeout(() => {
             profileOptions.classList.remove('show');
         }, 300);
     });
-    // Keep open if hovering over options
+    // quando il mouse entra nel profile options
     profileOptions.addEventListener('mouseenter', () => {
         clearTimeout(hoverTimeout);
         profileOptions.classList.add('show');
@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
             profileOptions.classList.remove('show');
         }, 200);
     });
-    // Close when clicking outside
+    // chiude il profile options se clicco fuori
     document.addEventListener('click', (e) => {
         if (!profileContainer.contains(e.target)) {
             profileOptions.classList.remove('show');
         }
     });
-    // Add to cart button animation
+    // animazione del aggiungi al carrello
     document.addEventListener('click', (e) => {
         if (e.target.closest('.add-to-cart')) {
             const button = e.target.closest('.add-to-cart');
@@ -46,37 +46,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Search bar 
+    // barra di ricerca
     const searchInput = document.getElementById("search-input");
     const searchBtn = document.getElementById('search-btn');
 
-    // Function to execute the search when we click the search icon
+    // viene eseguita la funzione quando clicchiamo sull' icona di ricerca
     searchBtn.addEventListener('click', performSearch);
 
-    // Function to execute the search when we press the enter key
+    // funzione che viene eseguita quando premiamo il tasto invio
     searchInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             performSearch();
         }
     });
 
-    // Function to perform the search
+    // funzione che viene eseguita quando clicchiamo sul bottone di ricerca
     function performSearch() {
-        // We first need the query that the user wrote and we trim it for eventual spaces
+        // ottenere il valore della barra di ricerca
+        // trim() è un metodo che rimuove gli spazi bianchi all'inizio e alla fine di una stringa
         const query = searchInput.value.trim();
         if (query !== '') {
-            // AJAX call to search the prdoducts
-            // encodeURIComponent is a function that encodes special characters in a string
-            // so that it can be safely included in a URL
+            // AJAX chiede al server di cercare i prodotti
+            // encodeURIComponent è una funzione che codifica una stringa in un formato valido per l'URL
             fetch('../back-end/search_products.php?query=' + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
-                    // Update the product grid to display the products
+                    // aggiorna la griglia dei prodotti con i risultati della ricerca
                     updateProductGrid(data, query);
                 })
                 .catch(error => console.error('Errore:', error));
         } else {
-            // If the search-bar is null, we display every product
+            // se la barra di ricerca è vuota, mostra tutti i prodotti
             fetch('../back-end/search_products.php')
                 .then(response => response.json())
                 .then(data => {
@@ -86,22 +86,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to update the product grid
+    // funzione per aggiornare la griglia dei prodotti
     function updateProductGrid(products, query) {
         const productsGrid = document.querySelector('.products-grid');
 
-        // Clean the attual grid
+        // cancella i contenuti della griglia dei prodotti
         productsGrid.innerHTML = '';
 
-        // If there are products that match the search, we display them
+        // se ci sono prodotti che corrispondono alla ricerca
         if (products.length > 0) {
-            // Add a header if it is a search
+            // crea un header per i risultati della ricerca
             if (query) {
                 const searchHeader = document.createElement('div');
                 searchHeader.className = 'search-results-header';
                 searchHeader.innerHTML = `<h2>Risultati per: "${query}"</h2>`;
                 productsGrid.before(searchHeader);
-                // Remove eventual headers of prior searches
+                // rimuovi eventuali header precedenti
                 const oldHeaders = document.querySelectorAll('.search-results-header');
                 if (oldHeaders.length > 1) {
                     for (let i = 0; i < oldHeaders.length - 1; i++) {
@@ -109,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             } else {
-                // Remove eventual search header if we display every product
+                // rimuovi l'header se non ci sono risultati
                 const oldHeaders = document.querySelectorAll('.search-results-header');
                 oldHeaders.forEach(header => header.remove());
             }
-            // Add the products to the grid
+            // crea un articolo per ogni prodotto
             products.forEach(product => {
                 const productCard = document.createElement('article');
                 productCard.className = 'product-card';
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
            
         } else {
-            // If there aren't products that match the search, display a message
+            // se non ci sono prodotti che corrispondono alla ricerca
             productsGrid.innerHTML = `
                 <div class="no-results">
                     <h3>Nessun prodotto trovato per: "${query}"</h3>
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-// Add an item to the cart 
+// aggiunge un prodotto al carrello
 function addItem(productId) {
     fetch('../back-end/add_to_cart.php', {
         method: 'POST',
@@ -157,7 +157,7 @@ function addItem(productId) {
         .then(response => response.json())
         .then(data => {
             if (data.status === "success") {
-                // update the cart items count
+                // aggiorna il numero totale dei prodotti del carrello
                 let cartCount = document.querySelector('.cart-count');
                 cartCount.textContent = parseInt(cartCount.textContent) + 1;
             } else {
@@ -166,7 +166,7 @@ function addItem(productId) {
         })
         .catch(error => console.error('Errore:', error));
 }
-// Function to show the description of the selected phone
+// mostra la descrizione del prodotto
 function showDesc(productId) {
     fetch('../back-end/display_product.php', {
         method: 'POST',
@@ -184,10 +184,10 @@ function showDesc(productId) {
 function showDescInGrid(productDesc) {
     const productsGrid = document.querySelector('.products-grid');
 
-    // Clear the grid
+    // cancella i contenuti della griglia dei prodotti
     productsGrid.innerHTML = '';
 
-    // Create a detailed product view container
+    // creare un div per la visualizzazione dei dettagli del prodotto
     const productDetailContainer = document.createElement('div');
     productDetailContainer.className = 'product-detail-view';
 

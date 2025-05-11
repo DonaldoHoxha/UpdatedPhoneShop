@@ -1,13 +1,13 @@
 <?php
-// We check if the user has logged in 
+//start la session
 session_start();
+//controllo se nella sessione è stato salvato il nome utente
 if (!isset($_SESSION['username'])) {
-    // Session doesn't exist, check for cookies
+    // controllo se c'è nel cookie
     if (isset($_COOKIE['user'])) {
-        // Validate these cookies (potentially against database)
-        // If valid, recreate the session
+        // se c'è nel cookie, la uso per creare la sessione
         $_SESSION['username'] = $_COOKIE['user'];
-        // Additional session setup as needed
+        // e reindirizzo alla pagina principale
         header("Location: logged_Index.php");
     }
 }
@@ -74,11 +74,13 @@ if (!isset($_SESSION['username'])) {
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
+            // Query per ottenere i prodotti
             $stmt = $conn->prepare("SELECT * FROM product");
             $stmt->execute();
             $result = $stmt->get_result();
+            // Controllo se ci sono risultati
             while ($row = $result->fetch_assoc()) {
-
+                // Stampo i prodotti
                 echo "<article class='product-card'>";
                 echo "<div class='product-info'>";
                 echo "<h3>" . $row['name'] . "</h3>";

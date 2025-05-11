@@ -1,10 +1,11 @@
 <?php
 session_start();
-// Check if the admin user is logged in via session
+// controllo se l'aministratore è loggato
 if (!isset($_SESSION['admin_user'])) {
-    // Session doesn't exist, check for admin cookies
+    // se non è loggato, controllo se ha un cookie valido
     if (isset($_COOKIE['admin_user'])) {
-        // Validate the cookie against the database for security
+        // verifica la validità del cookie
+        // Includi il file di connessione al database
         include '../../main_page/back-end/db_conn.php';
         $stmt = $conn->prepare("SELECT name FROM administrator_user WHERE name = ?");
         if ($stmt) {
@@ -12,13 +13,13 @@ if (!isset($_SESSION['admin_user'])) {
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows === 1) {
-                // Cookie is valid, recreate the session
+                // se il cookie è valido, lo uso per creare la sessione
                 $_SESSION['admin_user'] = $_COOKIE['admin_user'];
-                // Regenerate session ID for security
+                // rigenero l'id di sessione per sicurezza
                 session_regenerate_id(true);
                 $stmt->close();
             } else {
-                // Invalid cookie, clear it and redirect
+                // se il cookie non è valido, lo elimino e reindirizzo alla pagina di login
                 setcookie("admin_user", "", time() - 3600, "/");
                 header('Location: admin_login.html?error=invalid_cookie');
                 exit();
@@ -30,7 +31,7 @@ if (!isset($_SESSION['admin_user'])) {
             exit();
         }
     } else {
-        // No session or cookies, redirect to login
+        // se non c'è cookie, reindirizzo alla pagina di login
         header('Location: admin_login.html');
         exit();
     } 

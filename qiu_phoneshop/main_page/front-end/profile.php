@@ -1,6 +1,9 @@
 <?php
+//inizio la sessione
 session_start();
 include '../back-end/db_conn.php';
+// controllo se la sessione è presente username dell'utente
+// se non c'è, reindirizzo alla pagina di login
 if (!isset($_SESSION['username'])) {
     header('Location: ../../login_register_user/login_register.html');
     exit();
@@ -19,14 +22,16 @@ if (!isset($_SESSION['username'])) {
 
 <body>
     <?php
-    // Get the user ID
+    // ottengo username dell'utente dalla sessione
     $username = $_SESSION['username'];
+    // informazioni dell'utente
     $stmt = $conn->prepare("SELECT id, username, email, shipping_address FROM user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
+    // se l'utente non esiste, reindirizzo alla pagina principale
     if (!$user) {
         echo "<script>alert('Utente non trovato'); window.location.href='logged_index.php';</script>";
         exit();
@@ -34,7 +39,7 @@ if (!isset($_SESSION['username'])) {
 
     $user_id = $user['id'];
 
-    // Get total orders count
+    // ottengo il numero totale di ordini dell'utente
     $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -94,7 +99,7 @@ if (!isset($_SESSION['username'])) {
                 <div class="profile-section orders-summary">
                     <h2>Ultimi ordini</h2>
                     <?php
-                    // Get last 3 orders
+                    // ottengo gli ultimi 3 ordini dell'utente
                     $stmt = $conn->prepare("SELECT id, order_date, total_price FROM orders WHERE user_id = ? ORDER BY order_date DESC LIMIT 3");
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();

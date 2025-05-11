@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize dashboard
+  // inizializzare dashboard
   loadAnalyticsData();
   initializeSidebar();
   initializeDarkMode();

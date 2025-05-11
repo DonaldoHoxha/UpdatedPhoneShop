@@ -1,6 +1,9 @@
 <?php
+// start la session
 session_start();
 include '../back-end/db_conn.php';
+// controllo se nella sessione è stato salvato il nome utente,se non c'è, reindirizzo alla pagina di login
+
 if (!isset($_SESSION['username'])) {
     header('Location: ../../login_register_user/login_register.html');
     exit();
@@ -114,6 +117,8 @@ if (!isset($_SESSION['username'])) {
         if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
 
         // Modifica la query per includere LIMIT e OFFSET
+        // LIMIT è il numero di ordini per pagina
+        // OFFSET è il numero di ordini da saltare
         $stmt = $conn->prepare("SELECT 
                         o.id as order_id,
                         DATE_FORMAT(o.order_date, '%d/%m/%Y %H:%i') as formatted_date,
@@ -142,6 +147,8 @@ if (!isset($_SESSION['username'])) {
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Ciclo per stampare gli ordini -->
+                    <!-- Questo è una funzionalità del php, che permette di usare direttamente i tag del html,senza echo/print -->
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td class="order-date"><?= htmlspecialchars($row['formatted_date']) ?></td>

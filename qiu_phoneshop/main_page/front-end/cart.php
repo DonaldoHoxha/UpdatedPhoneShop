@@ -49,6 +49,7 @@ if (!isset($_SESSION['username'])) {
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-count">
                             <?php
+                            //trovo l'ID dell'utente
                             $username = $_SESSION['username'];
                             $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
                             $stmt->bind_param("s", $username);
@@ -56,6 +57,7 @@ if (!isset($_SESSION['username'])) {
                             $result = $stmt->get_result();
                             $user = $result->fetch_assoc();
                             $user_id = $user['id'];
+                            //trovo il numero di prodotti nel carrello dell'utente
                             $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = ?;");
                             $stmt->bind_param("i", $user_id);
                             $stmt->execute();
@@ -84,7 +86,7 @@ if (!isset($_SESSION['username'])) {
         <h1 class="cart-title">Il tuo carrello</h1>
 
         <?php
-        // Get the user ID
+        // trovo l'ID dell'utente
         $username = $_SESSION['username'];
         $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
         $stmt->bind_param("s", $username);
@@ -93,7 +95,7 @@ if (!isset($_SESSION['username'])) {
         $user = $result->fetch_assoc();
         $user_id = $user['id'];
 
-        // Get cart items
+        // trovo i prodotti nel carrello dell'utente
         $stmt = $conn->prepare("SELECT c.product_id, p.name, c.quantity, p.price FROM product p JOIN cart c ON p.id = c.product_id WHERE c.user_id = ?");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
@@ -194,14 +196,17 @@ if (!isset($_SESSION['username'])) {
     </footer>
 
     <script>
-        // Function to buy a singular item from the cart
+        // funzione per comprare un singolo prodotto
         function buyItem(productId) {
+            // fetch è una funzione per fare richieste HTTP
+            // in questo caso stiamo facendo una richiesta POST
             fetch('../back-end/buy_item.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: 'product_id=' + encodeURIComponent(productId)
+                    body: 'product_id=' + encodeURIComponent(productId) // codifichiamo l'ID del prodotto,
+                                                                        // per evitare problemi con caratteri speciali
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -214,7 +219,7 @@ if (!isset($_SESSION['username'])) {
                 .catch(error => console.error('Errore: ', error));
         }
 
-        // Function to remove an item from the cart
+        // funzione per rimuovere un prodotto dal carrello
         function removeItem(productId) {
             fetch('../back-end/remove_from_cart.php', {
                     method: 'POST',

@@ -1,11 +1,11 @@
 <?php
-// Start the session at the very beginning
+//Start la session
 session_start();
-// Check if the user is logged in via session
+// controllo se nella sessione è stato salvato il nome utente
 if (!isset($_SESSION['username'])) {
-    // Session doesn't exist, check for cookies
+    // controllo se c'è nel cookie
     if (isset($_COOKIE['user'])) {
-        // Validate the cookie against the database for security
+        // se c'è nel cookie, la uso per creare la sessione
         include '../back-end/db_conn.php';
         $stmt = $conn->prepare("SELECT username FROM user WHERE username = ?");
         if ($stmt) {
@@ -13,25 +13,25 @@ if (!isset($_SESSION['username'])) {
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows === 1) {
-                // Cookie is valid, recreate the session
+                // se nel database c'è l'user del cookie, lo uso per creare la sessione
                 $_SESSION['username'] = $_COOKIE['user'];
-                // Regenerate session ID for security
+                //rigenero l'id di sessione per sicurezza
                 session_regenerate_id(true);
                 $stmt->close();
             } else {
-                // Invalid cookie, clear it and redirect
+                //se non c'è, elimino il cookie e reindirizzo alla pagina di logins
                 setcookie("user", "", time() - 3600, "/");
                 header('Location: ../../login_register_user/login_register.html?error=invalid_cookie');
                 exit();
             }
             $conn->close();
         } else {
-            // Database error
+            // errore della query
             header('Location: ../../login_register_user/login_register.html?error=db_error');
             exit();
         }
     } else {
-        // No session or cookies, redirect to login
+        // non c'è cookie, quindi reindirizzo alla pagina di login
         header('Location: ../../login_register_user/login_register.html');
         exit();
     }
@@ -82,19 +82,21 @@ if (!isset($_SESSION['username'])) {
                             if ($conn->connect_error) {
                                 die("Connection failed: " . $conn->connect_error);
                             }
-                            // Ottieni l'ID dell'utente
+                            // Ottengo l'ID dell'utente
                             $username = $_SESSION['username'];
                             $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
                             $stmt->bind_param("s", $username);
                             $stmt->execute();
                             $result = $stmt->get_result();
                             $user = $result->fetch_assoc();
+                            // Se l'utente non esiste, reindirizzo alla pagina principale
                             if (!$user) {
                                 header("Location: index.php");
                                 echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
                                 exit();
                             }
                             $user_id = $user['id'];
+                            // Ottengo il numero totale di articoli nel carrello
                             $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = ?;");
                             $stmt->bind_param("i", $user_id);
                             $stmt->execute();
@@ -141,10 +143,12 @@ if (!isset($_SESSION['username'])) {
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
+            // Query per ottenere tutti i prodotti
             $stmt = $conn->prepare("SELECT * FROM product");
             $stmt->execute();
             $result = $stmt->get_result();
             while ($row = $result->fetch_assoc()) {
+                // Stampo i prodotti
                 echo "<article class='product-card'>";
                 echo "<div class='product-info'>";
                 echo "<h3>" . $row['name'] . "</h3>";

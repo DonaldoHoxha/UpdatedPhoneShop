@@ -1,5 +1,5 @@
 <?php
-// We check if the user has logged in
+// avvio la sessione
 session_start();
 include 'db_conn.php';
 
@@ -8,7 +8,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-// Get the user ID
+// ottengo l'ID dell'utente dalla sessione
 $username = $_SESSION['username'];
 $stmt = $conn->prepare("SELECT id FROM user WHERE username = ?");
 $stmt->bind_param("s", $username);
@@ -16,7 +16,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// If we didn't find a user we send back a error message
+//se l'utente non esiste, restituisco un errore
 if (!$user) {
     echo json_encode(["status" => "error", "message" => "Utente non trovato"]);
     exit();
@@ -24,7 +24,7 @@ if (!$user) {
 
 $user_id = $user['id'];
 
-// Get the product ID from the POST
+// ottengo l'ID del prodotto dalla richiesta POST
 if (!isset($_POST['product_id'])) {
     echo json_encode(["status" => "error", "message" => "ID prodotto non valido"]);
     exit();
@@ -32,14 +32,14 @@ if (!isset($_POST['product_id'])) {
 
 $product_id = intval($_POST['product_id']);
 
-// Check if the product is already in the cart
+// controllo se il prodotto esiste nel carello
 $check_stmt = $conn->prepare("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
 $check_stmt->bind_param("ii", $user_id, $product_id);
 $check_stmt->execute();
 $check_result = $check_stmt->get_result();
 
 if ($check_result->num_rows > 0) {
-    // If it is already in the cart, we update the quantity
+    // se il prodotto esiste, aggiorno la quantità
     $update_stmt = $conn->prepare("UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?");
     $update_stmt->bind_param("ii", $user_id, $product_id);
     if ($update_stmt->execute()) {
@@ -48,7 +48,7 @@ if ($check_result->num_rows > 0) {
         echo json_encode(["status" => "error", "message" => "Errore nell'aggiornamento del carrello"]);
     }
 } else {
-    // If it is not, we insert it
+    // se il prodotto non esiste, lo inserisco nel carrello
     $insert_stmt = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, 1)");
     $insert_stmt->bind_param("ii", $user_id, $product_id);
     if ($insert_stmt->execute()) {
