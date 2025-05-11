@@ -70,23 +70,23 @@ sidebarSection.forEach((link) => {
   });
 });
 // Load the dashboard data when the page loads
-function dashboardDate(){
+function dashboardDate() {
   fetch('../back-end/load.php?action=analytics')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    document.querySelector('.totalSales').innerText = data.totalSales.toLocaleString();
-                document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
-                } else if (data.status === 'error') {
-                    console.error('Error fetching analytics data:', data.message);
-                    document.querySelector('.totalSales').innerText = 'Error';
-                    document.querySelector('.totalSearches').innerText = 'Error';
-                }
-                else {
-                  console.error('Error fetching analytics data:',error) ;
-                }
-            })
-            .catch(error => console.error('Error fetching analytics data:', error));
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        document.querySelector('.totalSales').innerText = "$" + data.totalSales.toLocaleString();
+        document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
+      } else if (data.status === 'error') {
+        console.error('Error fetching analytics data:', data.message);
+        document.querySelector('.totalSales').innerText = 'Error';
+        document.querySelector('.totalSearches').innerText = 'Error';
+      }
+      else {
+        console.error('Error fetching analytics data:', error);
+      }
+    })
+    .catch(error => console.error('Error fetching analytics data:', error));
 }
 function hiddenMain() {
   const main = document.querySelector("main");
@@ -315,9 +315,8 @@ function generatePagination(currentPage, totalPages, contentType) {
 
   // Link "Previous"
   if (currentPage > 1) {
-    html += `<a href="#" class="page-link page-nav" data-page="${
-      currentPage - 1
-    }" data-type="${contentType}">
+    html += `<a href="#" class="page-link page-nav" data-page="${currentPage - 1
+      }" data-type="${contentType}">
                     <i class="fas fa-chevron-left"></i> Previous
                 </a>`;
   } else {
@@ -347,9 +346,8 @@ function generatePagination(currentPage, totalPages, contentType) {
 
   // Link "Next"
   if (currentPage < totalPages) {
-    html += `<a href="#" class="page-link page-nav" data-page="${
-      currentPage + 1
-    }" data-type="${contentType}">
+    html += `<a href="#" class="page-link page-nav" data-page="${currentPage + 1
+      }" data-type="${contentType}">
                     Next <i class="fas fa-chevron-right"></i>
                 </a>`;
   } else {
@@ -634,4 +632,4 @@ function showAnalytics() {
 
 }
 
-function showSettings() {}
+function showSettings() { }
