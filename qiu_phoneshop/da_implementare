@@ -1,11 +1,8 @@
 QUANDO FAI QUALCOSA, METTI UN SIMBOLO A DESTRA, NON CANCELLARE
 
-FONDAMENTALE:
-
--dashboard e login per amministratore
-
 DA IMPLEMENTARE IN PIù:
--logo
+-visite totali al sito
+-qualcosa su analytics
 
 FATTI✅:
 -fare funzionare il remember me ✅
@@ -18,9 +15,7 @@ FATTI✅:
 -occhio per visualizzare le caratteristiche dei telefoni e immagine del telefono✅
 -possibilità di acquistare un singolo telefono all'interno del carrello✅
 -acquistare un telefono✅
+-logo✅
+-dashboard e login per amministratore✅
 
 IN SVOLGIMENTO⚒️:
--css per la pagina di carrello⚒️
--amministratore dashboard⚒️
--amministratore login(manca parte php)⚒️
-try
