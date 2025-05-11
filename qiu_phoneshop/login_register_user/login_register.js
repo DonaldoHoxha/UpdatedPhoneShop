@@ -46,4 +46,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 break;
         }
     }
+
+    // Add input focus effects
+    const formInputs = document.querySelectorAll('input:not([type="checkbox"])');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.parentNode.querySelector('i').style.color = 'var(--secondary-color)';
+        });
+
+        input.addEventListener('blur', () => {
+            input.parentNode.querySelector('i').style.color = 'var(--dark-gray)';
+        });
+    });
 });
