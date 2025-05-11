@@ -156,8 +156,16 @@ function showProducts() {
   tempBox.classList.remove("tempBox_inactive");
   tempBox.classList.add("tempBox");
 
-  tempBox.innerHTML = `   
+  tempBox.innerHTML = ` 
+      <div class="title-btn">
         <h1>Product list</h1>
+
+         <div class="product-actions">
+            <button id="addProductBtn" class="btn">Add Product</button>
+            <button id="updateProductBtn" class="btn">Update Product</button>
+          </div>
+        </div>  
+        
         <div class="table-container">
             <table class="tempTable">
                 <thead>
@@ -221,10 +229,7 @@ function showProducts() {
             </div>
         </div>
 
-        <div class="product-actions">
-            <button id="addProductBtn" class="btn">Add Product</button>
-            <button id="updateProductBtn" class="btn">Update Product</button>
-        </div>
+       
     `;
 
   // Carica la prima pagina

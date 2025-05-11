@@ -33,10 +33,34 @@ switch ($action) {
 
 function loadUsers($conn)
 {
-    $query = "SELECT id, username, email, 
-    shipping_address,registration_date FROM user";
-    $users = [];
+    // Configurazione paginazione
+    $users_per_page = 10;
+    $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    if ($current_page < 1) $current_page = 1;
+
+    // Conta il numero totale di utenti
+    $count_stmt = $conn->prepare("SELECT COUNT(*) as total FROM user");
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $total_users = $count_result->fetch_assoc()['total'];
+
+    // Calcola il numero totale di pagine
+    $total_pages = ceil($total_users / $users_per_page);
+    if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
+
+    $offset = ($current_page - 1) * $users_per_page;
+
+    // Query con limite e offset per la paginazione
+    $query = "SELECT id, username, email, shipping_address, registration_date 
+              FROM user 
+              ORDER BY id ASC
+              LIMIT ? OFFSET ?";
+    //OFFSET è il numero di righe da saltare prima di iniziare a restituire le righe
+    //LIMIT è il numero massimo di righe da restituire
+              
     $stmt = $conn->prepare($query);
+    $stmt->bind_param("ii", $users_per_page, $offset);
+    
     if (!$stmt) {
         echo json_encode(["status" => "error", "message" => "Errore nel preparare la query"]);
         exit();
@@ -46,8 +70,17 @@ function loadUsers($conn)
     $result = $stmt->get_result();
     $users = $result->fetch_all(MYSQLI_ASSOC);
 
+    $response = [
+        'users' => $users,
+        'pagination' => [
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'total_users' => $total_users
+        ]
+    ];
+
     $stmt->close();
-    echo json_encode($users);
+    echo json_encode($response);
 }
 
 function loadOrders($conn)
@@ -172,6 +205,7 @@ function loadProducts($conn)
 
     echo json_encode($response);
 }
+
 function analytics($conn) {
     // Get admin ID from session
     $user = $_SESSION['admin_user']; 
@@ -222,5 +256,3 @@ function analytics($conn) {
         'status' => 'success'
     ]);
 }
-
-        

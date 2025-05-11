@@ -135,11 +135,15 @@ aside .toggle {
 aside .toggle .logo {
     display: flex;
     gap: 0.5rem;
+    
 }
 
 aside .toggle .logo img {
     width: 2rem;
     height: 2rem;
+    background-color: var(--color-dark);
+    border-radius: 50%;
+    margin-right: 1rem;
 }
 
 aside .toggle .close {
@@ -669,6 +673,8 @@ main .recent-orders a {
     box-shadow: var(--box-shadow);
     margin-bottom: 1.5rem;
     overflow-x: auto;
+    min-height: 592px;
+    position: relative;
 }
 
 .pagination {
@@ -677,6 +683,11 @@ main .recent-orders a {
     margin-top: 2rem;
     gap: 0.5rem;
     flex-wrap: wrap;
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
 }
 
 .page-link {
@@ -730,11 +741,16 @@ main .recent-orders a {
     color: var(--color-dark-variant);
     font-weight: 700;
 }
-
+.title-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
 .product-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 1.5rem;
+    
     justify-content: center;
 }
 
@@ -878,6 +894,7 @@ main .recent-orders a {
             margin-top: 8rem;
             padding: 0 1rem;
         }
+       
 
         main .new-users .user-list .user {
             flex-basis: 35%;

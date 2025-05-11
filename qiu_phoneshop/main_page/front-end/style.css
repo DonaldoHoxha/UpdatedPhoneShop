@@ -40,11 +40,16 @@ body {
 .logo-container {
     display: flex;
     align-items: center;
+    width: auto;
+    margin-right: 4rem;
 }
 
 .logo {
     height: 50px;
     width: auto;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    margin-right: 2rem;
 }
 
 .search-container {
