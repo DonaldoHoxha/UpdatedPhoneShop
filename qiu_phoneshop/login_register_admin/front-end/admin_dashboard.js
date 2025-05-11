@@ -1,313 +1,496 @@
 document.addEventListener("DOMContentLoaded", () => {
-  dashboardDate();
+  // Initialize dashboard
+  loadAnalyticsData();
+  initializeSidebar();
+  initializeDarkMode();
+  
+  // Check if a section is specified in the URL hash, otherwise default to dashboard
+  const hash = window.location.hash.substring(1) || 'dashboard';
+  
+  // Find the matching sidebar link and set it as active
+  const activeLink = document.querySelector(`.sidebar a#${hash}`);
+  if (activeLink) {
+    document.querySelectorAll(".sidebar a").forEach(l => l.classList.remove("active"));
+    activeLink.classList.add("active");
+  }
+  
+  // Load the appropriate section
+  handleSectionChange(hash);
 });
 
-
-
-
-const sideMenu = document.querySelector("aside");
-const menuBtn = document.getElementById("menu-btn");
-const closeBtn = document.getElementById("close-btn");
-
-const darkMode = document.querySelector(".dark-mode");
-
-menuBtn.addEventListener("click", () => {
-  sideMenu.style.display = "block";
-});
-
-closeBtn.addEventListener("click", () => {
-  sideMenu.style.display = "none";
-});
-
-darkMode.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode-variables");
-  darkMode.querySelector("span:nth-child(1)").classList.toggle("active");
-  darkMode.querySelector("span:nth-child(2)").classList.toggle("active");
-});
-
-const sidebarSection = document.querySelectorAll(".sidebar a");
-const dashboardSection = document.getElementById("dashboard");
-const container = document.querySelector(".container");
-const tempBox = document.querySelector(".tempBox_inactive");
-//an empty div to temporaly store the content of the selected section
-const totalSales = document.querySelector(".totalSales");
-sidebarSection.forEach((link) => {
-  link.addEventListener("click", function () {
-    sidebarSection.forEach((link) => {
-      link.classList.remove("active");
-    });
-    this.classList.add("active");
-
-    switch (this.id) {
-      case "dashboard":
-        const main = document.querySelector("main");
-
-        main.style.display = "block";
-        tempBox.classList.remove("tempBox");
-        tempBox.classList.add("tempBox_inactive");
-        break;
-      case "users":
-        showUsers();
-        break;
-      case "products":
-        showProducts();
-        break;
-      case "orders":
-        showOrders();
-        break;
-      case "analytics":
-        showAnalytics();
-        break;
-      case "settings":
-        showSettings();
-        break;
-      case "sales":
-        showSales();
-        break;
-      default:
-        break;
+// ===== UTILITY FUNCTIONS =====
+// Generic fetch wrapper with error handling
+const fetchData = async (url, options = {}) => {
+  try {
+    const response = await fetch(url, { credentials: 'include', ...options });
+    if (!response.ok) {
+      throw new Error(`Network error: ${response.status}`);
     }
-  });
-});
-// Load the dashboard data when the page loads
-function dashboardDate() {
-  fetch('../back-end/load.php?action=analytics')
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        document.querySelector('.totalSales').innerText = "$" + data.totalSales.toLocaleString();
-        document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
-      } else if (data.status === 'error') {
-        console.error('Error fetching analytics data:', data.message);
-        document.querySelector('.totalSales').innerText = 'Error';
-        document.querySelector('.totalSearches').innerText = 'Error';
-      }
-      else {
-        console.error('Error fetching analytics data:', error);
-      }
-    })
-    .catch(error => console.error('Error fetching analytics data:', error));
-}
-function hiddenMain() {
-  const main = document.querySelector("main");
-  main.style.display = "none";
-}
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching data from ${url}:`, error);
+    showNotification('error', `Failed to load data: ${error.message}`);
+    return { status: 'error', message: error.message };
+  }
+};
 
-function showTotalSales() {
-  fetch("../back-end/load.php?action=totalSales")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      data.forEach((users) => {
-        totalSales.innerHTML = `
-                  `;
-      });
-    })
-    .catch((error) => console.error("Error:", error));
-}
-function showUsers() {
-  hiddenMain();
+// Show notification messages
+const showNotification = (type, message) => {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.remove(), 5000);
+};
+
+// ===== UI SETUP =====
+const initializeSidebar = () => {
+  const sideMenu = document.querySelector("aside");
+  const menuBtn = document.getElementById("menu-btn");
+  const closeBtn = document.getElementById("close-btn");
+  
+  menuBtn.addEventListener("click", () => sideMenu.style.display = "block");
+  closeBtn.addEventListener("click", () => sideMenu.style.display = "none");
+  
+  // Set up sidebar navigation
+  const sidebarLinks = document.querySelectorAll(".sidebar a");
+  sidebarLinks.forEach(link => {
+    link.addEventListener("click", function(e) {
+      // Don't apply to logout link
+      if (this.id === "logout") return;
+      
+      e.preventDefault();
+      
+      // Update URL hash to reflect current section
+      window.location.hash = this.id;
+      
+      // Remove active class from all links
+      sidebarLinks.forEach(l => l.classList.remove("active"));
+      // Add active class to clicked link
+      this.classList.add("active");
+      
+      // Handle section display based on ID
+      const sectionId = this.id;
+      handleSectionChange(sectionId);
+    });
+  });
+};
+
+const initializeDarkMode = () => {
+  const darkMode = document.querySelector(".dark-mode");
+  darkMode.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode-variables");
+    darkMode.querySelector("span:nth-child(1)").classList.toggle("active");
+    darkMode.querySelector("span:nth-child(2)").classList.toggle("active");
+  });
+};
+
+// ===== SECTION MANAGEMENT =====
+const handleSectionChange = (sectionId) => {
+  const main = document.querySelector("main");
+  const tempBox = document.getElementById("tempBox");
+  
+  // Default to showing main and hiding tempBox
+  main.style.display = "none";
   tempBox.classList.remove("tempBox_inactive");
   tempBox.classList.add("tempBox");
-  tempBox.innerHTML = `   
-                        <h1>User list</h1>
-                            <table class="tempTable">
-                            <thead>
-                                <tr class="tempData">
-                                    <th >ID</th>
-                                    <th >Username</th>
-                                    <th >Email</th>
-                                    <th >Shipping address</th>
-                                    <th >Registration date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tempTbody">
-                            </tbody>
-                        </table>`;
+  
+  // Handle different sections
+  switch (sectionId) {
+    case "dashboard":
+      main.style.display = "block";
+      tempBox.classList.remove("tempBox");
+      tempBox.classList.add("tempBox_inactive");
+      loadAnalyticsData();
+      break;
+    case "users":
+      renderUsersSection(tempBox);
+      loadPagedData('users', 1);
+      break;
+    case "products":
+      renderProductsSection(tempBox);
+      loadPagedData('products', 1);
+      break;
+    case "orders":
+      renderOrdersSection(tempBox);
+      loadPagedData('orders', 1);
+      break;
+    case "analytics":
+      renderAnalyticsSection(tempBox);
+      break;
+    case "settings":
+      renderSettingsSection(tempBox);
+      break;
+    case "tickets":
+      renderTicketsSection(tempBox);
+      break;
+    case "reports":
+      renderReportsSection(tempBox);
+      break;
+    default:
+      main.style.display = "block";
+      tempBox.classList.remove("tempBox");
+      tempBox.classList.add("tempBox_inactive");
+      break;
+  }
+};
 
+// ===== DATA LOADING =====
+const loadAnalyticsData = async () => {
+  const data = await fetchData('../back-end/load.php?action=analytics');
+  
+  if (data.status === 'success') {
+    document.querySelector('.totalSales').innerText = "$" + data.totalSales.toLocaleString();
+    document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
+  }
+};
+
+// Generic function to load paginated data
+const loadPagedData = async (dataType, page = 1) => {
   const tempTbody = document.getElementById("tempTbody");
+  
   if (!tempTbody) {
-    console.error("tempTbody element not found");
+    console.error(`Cannot find tbody element for ${dataType}`);
     return;
   }
-
-  tempTbody.innerHTML = "";
-
-  fetch("../back-end/load.php?action=users")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      data.forEach((users) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                    <td class="columnUser">${users.id}</td>
-                    <td class="columnUser">${users.username}</td>
-                    <td class="columnUser">${users.email}</td>
-                    <td class="columnUser">${users.shipping_address}</td>
-                    <td class="columnUser">${users.registration_date}</td>`;
-        tempTbody.appendChild(row);
-      });
-    })
-    .catch((error) => console.error("Error:", error));
-}
-
-function showProducts() {
-  hiddenMain();
-  tempBox.classList.remove("tempBox_inactive");
-  tempBox.classList.add("tempBox");
-
-  tempBox.innerHTML = ` 
-      <div class="title-btn">
-        <h1>Product list</h1>
-
-         <div class="product-actions">
-            <button id="addProductBtn" class="btn">Add Product</button>
-            <button id="updateProductBtn" class="btn">Update Product</button>
-          </div>
-        </div>  
-        
-        <div class="table-container">
-            <table class="tempTable">
-                <thead>
-                    <tr class="tempData">
-                        <th>ProductID</th>
-                        <th>Product</th>
-                        <th>Brand</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>RAM</th>
-                        <th>Storage</th>
-                        <th>Camera</th>
-                        <th>Battery</th>
-                    </tr>
-                </thead>
-                <tbody id="tempTbody"></tbody>
-            </table>
-            <div id="pagination" class="pagination"></div>
-        </div>
-
-        <div id="productModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2></h2>
-                <form id="addProductForm" method="POST">
-                    <div class="form-group" id="productID"></div>
-                    <div class="form-group">
-                        <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="brand">Brand:</label>
-                        <input type="text" id="brand" name="brand" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ram">RAM (GB):</label>
-                        <input type="number" id="ram" name="ram" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="rom">Storage (GB):</label>
-                        <input type="number" id="rom" name="rom" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="camera">Camera (MP):</label>
-                        <input type="number" step="0.1" id="camera" name="camera" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="battery">Battery (mAh):</label>
-                        <input type="number" id="battery" name="battery" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price">Price ($):</label>
-                        <input type="number" step="0.01" id="price" name="price" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" required>
-                    </div>
-                    <button type="submit" class="submit-btn"></button>
-                </form>
-            </div>
-        </div>
-
-       
-    `;
-
-  // Carica la prima pagina
-  loadProducts(1);
-
-  // Inizializza la modal
-  initProductModal();
-}
-
-function loadProducts(page) {
-  const tempTbody = document.getElementById("tempTbody");
-  const pagination = document.getElementById("pagination");
-
-  // Mostra loader
-  tempTbody.innerHTML =
-    '<tr><td colspan="9" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading products...</td></tr>';
-  //l'API moderna di js per effettuare richieste HTTP (AJAX= Asynchronous JavaScript and XML)
-  //XML(eXtensible markup language) è un linguaggio di markup, e con il suo formato di dati
-  // viene ampiamente usato per lo scambio di dati tra client e server
-  //AJAX è una tecnica js usato da lato client per comunicare con il server senza ricaricare la pagina
-
-  fetch(`../back-end/load.php?action=products&page=${page}`, {
-    method: "GET",
-    credentials: "include",
-  })
-    //gestione della risposta
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`Errore nella risposta: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      if (!data.products || !Array.isArray(data.products)) {
-        throw new Error("Dati non validi ricevuti");
+  
+  // Show loading state
+  tempTbody.innerHTML = `<tr><td colspan="10" class="loading">
+    <i class="material-icons-sharp">hourglass_empty</i> Loading ${dataType}...</td></tr>`;
+  
+  const data = await fetchData(`../back-end/load.php?action=${dataType}&page=${page}`);
+  
+  // Log data response for debugging
+  console.log(`Loaded ${dataType} data:`, data);
+  
+  // Handle error state
+  if (data.status === 'error') {
+    tempTbody.innerHTML = `<tr><td colspan="10" class="error">
+      Error loading ${dataType}: ${data.message}</td></tr>`;
+    return;
+  }
+  
+  // Clear table body
+  tempTbody.innerHTML = '';
+  
+  // Use appropriate renderer based on data type
+  switch (dataType) {
+    case 'users':
+      if (data.users && data.users.length > 0) {
+        renderUserRows(data.users, tempTbody);
+      } else {
+        tempTbody.innerHTML = `<tr><td colspan="10">No users found</td></tr>`;
       }
+      break;
+    case 'products':
+      if (data.products && data.products.length > 0) {
+        renderProductRows(data.products, tempTbody);
+      } else {
+        tempTbody.innerHTML = `<tr><td colspan="10">No products found</td></tr>`;
+      }
+      break;
+    case 'orders':
+      if (data.orders && data.orders.length > 0) {
+        renderOrderRows(data.orders, tempTbody);
+      } else {
+        tempTbody.innerHTML = `<tr><td colspan="10">No orders found</td></tr>`;
+      }
+      break;
+  }
+  
+  // Generate pagination controls
+  if (data.pagination) {
+    console.log(`Generating pagination for ${dataType}:`, data.pagination);
+    generatePagination(
+      data.pagination.current_page,
+      data.pagination.total_pages,
+      dataType
+    );
+  } else {
+    console.error(`No pagination data for ${dataType}`);
+    document.getElementById("pagination").innerHTML = "";
+  }
+};
 
-      // Popola la tabella
-      tempTbody.innerHTML = "";
-      data.products.forEach((product) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                <td>${product.id}</td>
-                <td>${product.name}</td>
-                <td>${product.brand}</td>
-                <td>$${product.price}</td>
-                <td>${product.quantity}</td>
-                <td>${product.ram} GB</td>
-                <td>${product.rom} GB</td>
-                <td>${product.camera} MP</td>
-                <td>${product.battery} mAh</td>
-            `;
-        tempTbody.appendChild(row);
+// ===== SECTION RENDERERS =====
+const renderUsersSection = (container) => {
+  container.innerHTML = `   
+    <h1>User list</h1>
+    <div class="table-container">
+      <table class="tempTable">
+        <thead>
+          <tr class="tempData">
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Shipping address</th>
+            <th>Registration date</th>
+          </tr>
+        </thead>
+        <tbody id="tempTbody"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </div>`;
+};
 
-        // Aggiungi click handler per l'update
-        row.addEventListener("click", () => {
-          openUpdateModal(product);
-        });
-      });
+const renderProductsSection = (container) => {
+  container.innerHTML = `
+    <div class="title-btn">
+      <h1>Product list</h1>
+      <div class="product-actions">
+        <button id="addProductBtn" class="btn">Add Product</button>
+        <button id="updateProductBtn" class="btn">Update Product</button>
+      </div>
+    </div>  
+    
+    <div class="table-container">
+      <table class="tempTable">
+        <thead>
+          <tr class="tempData">
+            <th>ProductID</th>
+            <th>Product</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>RAM</th>
+            <th>Storage</th>
+            <th>Camera</th>
+            <th>Battery</th>
+          </tr>
+        </thead>
+        <tbody id="tempTbody"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </div>
 
-      // Genera la paginazione
-      generatePagination(
-        data.pagination.current_page,
-        data.pagination.total_pages,
-        "products"
-      );
-    })
-    .catch((error) => {
-      console.error("Errore durante il caricamento dei prodotti:", error);
-      tempTbody.innerHTML = `<tr><td colspan="9" class="error">Error loading products: ${error.message}</td></tr>`;
-    });
-}
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2></h2>
+        <form id="addProductForm" method="POST">
+          <div class="form-group" id="productID"></div>
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" required>
+          </div>
+          <div class="form-group">
+            <label for="ram">RAM (GB):</label>
+            <input type="number" id="ram" name="ram" required>
+          </div>
+          <div class="form-group">
+            <label for="rom">Storage (GB):</label>
+            <input type="number" id="rom" name="rom" required>
+          </div>
+          <div class="form-group">
+            <label for="camera">Camera (MP):</label>
+            <input type="number" step="0.1" id="camera" name="camera" required>
+          </div>
+          <div class="form-group">
+            <label for="battery">Battery (mAh):</label>
+            <input type="number" id="battery" name="battery" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Price ($):</label>
+            <input type="number" step="0.01" id="price" name="price" required>
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" required>
+          </div>
+          <button type="submit" class="submit-btn"></button>
+        </form>
+      </div>
+    </div>`;
+  
+  // Initialize the product modal functionality
+  initProductModal();
+};
 
-function generatePagination(currentPage, totalPages, contentType) {
+const renderOrdersSection = (container) => {
+  container.innerHTML = `
+    <h1>Order list</h1>
+    <div class="table-container">
+      <table class="tempTable">
+        <thead>
+          <tr class="tempData">
+            <th>ID</th>
+            <th>CustomerID</th>
+            <th>Customer</th>
+            <th>ProductID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>OrderDate</th>
+            <th>ShippingAddress</th>
+          </tr>
+        </thead>
+        <tbody id="tempTbody"></tbody>
+      </table>
+      <div id="pagination" class="pagination"></div>
+    </div>`;
+};
+
+const renderAnalyticsSection = async (container) => {
+  const data = await fetchData('../back-end/load.php?action=analytics');
+  
+  if (data.status === 'success') {
+    container.innerHTML = `
+      <h1>Analytics</h1>
+      <div class="analyse">
+        <div class="sales">
+          <div class="status">
+            <div class="info">
+              <h3>Total Sales</h3>
+              <h1 class="totalSales">$${data.totalSales.toLocaleString()}</h1>
+            </div>
+            <div class="progress">
+              <svg>
+                <circle cx="38" cy="38" r="36"></circle>
+              </svg>
+              <div class="percentage">+81%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visits">
+          <div class="status">
+            <div class="info">
+              <h3>Site visits</h3>
+              <h1>12,345</h1>
+            </div>
+            <div class="progress">
+              <svg>
+                <circle cx="38" cy="38" r="36"></circle>
+              </svg>
+              <div class="percentage">+12%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="searches">
+          <div class="status">
+            <div class="info">
+              <h3>Searches</h3>
+              <h1 class="totalSearches">${data.totalSearches.toLocaleString()}</h1>
+            </div>
+            <div class="progress">
+              <svg>
+                <circle cx="38" cy="38" r="36"></circle>
+              </svg>
+              <div class="percentage">-2%</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    container.innerHTML = `<h1>Analytics</h1><p>Error loading analytics data: ${data.message}</p>`;
+  }
+};
+
+const renderSettingsSection = (container) => {
+  container.innerHTML = `<h1>Settings</h1><p>Settings functionality coming soon</p>`;
+};
+
+const renderTicketsSection = (container) => {
+  container.innerHTML = `<h1>Tickets</h1><p>Ticket management functionality coming soon</p>`;
+};
+
+const renderReportsSection = (container) => {
+  container.innerHTML = `<h1>Reports</h1><p>Reports functionality coming soon</p>`;
+};
+
+// ===== DATA ROW RENDERERS =====
+const renderUserRows = (users, tbody) => {
+  if (!users || users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">No users found</td></tr>';
+    return;
+  }
+  
+  users.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="columnUser">${user.id}</td>
+      <td class="columnUser">${user.username}</td>
+      <td class="columnUser">${user.email}</td>
+      <td class="columnUser">${user.shipping_address}</td>
+      <td class="columnUser">${user.registration_date}</td>`;
+    tbody.appendChild(row);
+  });
+};
+
+const renderProductRows = (products, tbody) => {
+  if (!products || products.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9">No products found</td></tr>';
+    return;
+  }
+  
+  products.forEach(product => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${product.id}</td>
+      <td>${product.name}</td>
+      <td>${product.brand}</td>
+      <td>$${product.price}</td>
+      <td>${product.quantity}</td>
+      <td>${product.ram} GB</td>
+      <td>${product.rom} GB</td>
+      <td>${product.camera} MP</td>
+      <td>${product.battery} mAh</td>`;
+    tbody.appendChild(row);
+    
+    // Add click handler for product update
+    row.addEventListener('click', () => openUpdateModal(product));
+  });
+};
+
+const renderOrderRows = (orders, tbody) => {
+  if (!orders || orders.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9">No orders found</td></tr>';
+    return;
+  }
+  
+  orders.forEach(order => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${order.orderID || order.id}</td>
+      <td>${order.userID || order.user_id}</td>
+      <td>${order.username}</td>
+      <td>${order.productID || order.product_id}</td>
+      <td>${order.name || order.product_name}</td>
+      <td>${order.quantity}</td>
+      <td>$${order.total_price}</td>
+      <td>${formatDate(order.order_date)}</td>
+      <td>${order.shipping_address}</td>`;
+    tbody.appendChild(row);
+  });
+};
+
+// Format date helper
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString; // Return original if invalid
+  return date.toLocaleDateString();
+};
+
+// ===== PAGINATION =====
+const generatePagination = (currentPage, totalPages, contentType) => {
   const pagination = document.getElementById("pagination");
-  if (!pagination || totalPages <= 1) {
+  if (!pagination) {
+    console.error("Pagination container not found");
+    return;
+  }
+  
+  if (totalPages <= 1) {
     pagination.innerHTML = "";
     return;
   }
+
+  console.log(`Generating pagination for ${contentType}. Current page: ${currentPage}, Total pages: ${totalPages}`);
 
   let html = "";
   const maxVisiblePages = 5;
@@ -318,19 +501,18 @@ function generatePagination(currentPage, totalPages, contentType) {
     startPage = Math.max(1, endPage - maxVisiblePages + 1);
   }
 
-  // Link "Previous"
+  // Previous link
   if (currentPage > 1) {
-    html += `<a href="#" class="page-link page-nav" data-page="${currentPage - 1
-      }" data-type="${contentType}">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </a>`;
+    html += `<a href="#" class="page-link page-nav" data-page="${currentPage - 1}" data-type="${contentType}">
+              <span class="material-icons-sharp">chevron_left</span> Previous
+            </a>`;
   } else {
     html += `<span class="page-link page-nav disabled">
-                    <i class="fas fa-chevron-left"></i> Previous
-                </span>`;
+              <span class="material-icons-sharp">chevron_left</span> Previous
+            </span>`;
   }
 
-  // Numeri pagina
+  // Page numbers
   if (startPage > 1) {
     html += `<a href="#" class="page-link" data-page="1" data-type="${contentType}">1</a>`;
     if (startPage > 2) html += `<span class="page-dots">...</span>`;
@@ -349,138 +531,126 @@ function generatePagination(currentPage, totalPages, contentType) {
     html += `<a href="#" class="page-link" data-page="${totalPages}" data-type="${contentType}">${totalPages}</a>`;
   }
 
-  // Link "Next"
+  // Next link
   if (currentPage < totalPages) {
-    html += `<a href="#" class="page-link page-nav" data-page="${currentPage + 1
-      }" data-type="${contentType}">
-                    Next <i class="fas fa-chevron-right"></i>
-                </a>`;
+    html += `<a href="#" class="page-link page-nav" data-page="${currentPage + 1}" data-type="${contentType}">
+              Next <span class="material-icons-sharp">chevron_right</span>
+            </a>`;
   } else {
     html += `<span class="page-link page-nav disabled">
-                    Next <i class="fas fa-chevron-right"></i>
-                </span>`;
+              Next <span class="material-icons-sharp">chevron_right</span>
+            </span>`;
   }
 
   pagination.innerHTML = html;
 
-  // Aggiungi event listener
-  document.querySelectorAll(".page-link[data-page]").forEach((link) => {
-    link.addEventListener("click", function (e) {
+  // Add event listeners to page links
+  document.querySelectorAll(".page-link[data-page]").forEach(link => {
+    link.addEventListener("click", function(e) {
       e.preventDefault();
       const page = parseInt(this.dataset.page);
       const type = this.dataset.type;
-
-      if (type === "products") {
-        loadProducts(page);
-      } else if (type === "orders") {
-        loadOrders(page);
-      }
-
+      console.log(`Clicked on page ${page} for ${type}`);
+      
+      loadPagedData(type, page);
+      
       document.querySelector(".table-container").scrollIntoView({
-        behavior: "smooth",
+        behavior: "smooth"
       });
     });
   });
-}
+};
 
-function initProductModal() {
+// ===== PRODUCT MODALS =====
+const initProductModal = () => {
   const modal = document.getElementById("productModal");
+  if (!modal) return;
+  
   const form = document.getElementById("addProductForm");
   const modalTitle = modal.querySelector("h2");
-  const span = document.querySelector(".close-modal");
+  const closeBtn = document.querySelector(".close-modal");
   const submitBtn = document.querySelector(".submit-btn");
   const productID = document.getElementById("productID");
 
   const addBtn = document.getElementById("addProductBtn");
   const updateBtn = document.getElementById("updateProductBtn");
 
-  addBtn.onclick = function () {
-    modalTitle.textContent = "Add New Product";
-    form.action = "../back-end/add_product.php";
-    submitBtn.textContent = "Add Product";
-    productID.style.display = "none";
-    productID.innerHTML = "";
-    form.reset();
-    modal.style.display = "block";
-  };
+  // Add Product button functionality
+  if (addBtn) {
+    addBtn.onclick = function() {
+      modalTitle.textContent = "Add New Product";
+      form.action = "../back-end/add_product.php";
+      submitBtn.textContent = "Add Product";
+      productID.style.display = "none";
+      productID.innerHTML = "";
+      form.reset();
+      modal.style.display = "block";
+    };
+  }
 
-  updateBtn.onclick = function () {
-    modalTitle.textContent = "Update Product";
-    form.action = "../back-end/update_product.php";
-    submitBtn.textContent = "Update Product";
-    productID.style.display = "block";
-    productID.innerHTML = `
-            <label for="id">ID:</label>
-            <input type="number" id="id" name="id" required>
-        `;
-    form.reset();
-    modal.style.display = "block";
-  };
+  // Update Product button functionality
+  if (updateBtn) {
+    updateBtn.onclick = function() {
+      modalTitle.textContent = "Update Product";
+      form.action = "../back-end/update_product.php";
+      submitBtn.textContent = "Update Product";
+      productID.style.display = "block";
+      productID.innerHTML = `
+        <label for="id">ID:</label>
+        <input type="number" id="id" name="id" required>
+      `;
+      form.reset();
+      modal.style.display = "block";
+    };
+  }
 
-  span.onclick = function () {
-    modal.style.display = "none";
-  };
+  // Close modal functionality
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.style.display = "none";
+    window.onclick = event => {
+      if (event.target == modal) modal.style.display = "none";
+    };
+  }
 
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-
-  // Gestione submit form
-  form.addEventListener("submit", function (e) {
-    e.preventDefault(); //Impedisce al browser di eseguire l'azione standard associata a un evento.
-    // In questo caso, impedisce l'invio del form e gestisco manualmente l'invio tramite JavaScript.
-    const formData = new FormData(this);
-
-    fetch(this.action, {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((err) => Promise.reject(err));
-        }
-        return response.json();
-      })
-      .then((data) => {
+  // Form submission handling
+  if (form) {
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      try {
+        const response = await fetch(this.action, {
+          method: "POST",
+          body: formData,
+          credentials: "include"
+        });
+        
+        const data = await response.json();
+        
         if (data.status === "success") {
-          // Mostra messaggio di successo
           showNotification("success", data.message);
-
-          // Ricarica i prodotti
-          const currentPage =
-            document.querySelector(".page-link.active")?.textContent || 1;
-          loadProducts(currentPage);
-
-          // Chiudi modal
+          
+          // Reload products list with current page
+          const currentPage = document.querySelector(".page-link.active")?.textContent || 1;
+          loadPagedData("products", parseInt(currentPage));
+          
+          // Close modal
           modal.style.display = "none";
         } else {
-          showNotification("error", data.message || "Errore sconosciuto");
+          showNotification("error", data.message || "Unknown error");
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error:", error);
-        showNotification("error", error.message || "Errore di connessione");
-      });
-  });
-
-  function showNotification(type, message) {
-    const notification = document.createElement("div");
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-
-    document.body.appendChild(notification);
-
-    setTimeout(() => {
-      notification.remove();
-    }, 5000);
+        showNotification("error", error.message || "Connection error");
+      }
+    });
   }
-}
+};
 
-function openUpdateModal(product) {
+const openUpdateModal = (product) => {
   const modal = document.getElementById("productModal");
+  if (!modal) return;
+  
   const form = document.getElementById("addProductForm");
   const modalTitle = modal.querySelector("h2");
 
@@ -491,16 +661,16 @@ function openUpdateModal(product) {
   const productID = document.getElementById("productID");
   productID.style.display = "block";
   productID.innerHTML = `
-        <div class="form-group">
-            <label for="id">ID:</label>
-            <input type="number" id="id" name="id" 
-                   value="${product.id}" 
-                   readonly 
-                   style="background-color: #f0f0f0;">
-        </div>
-    `;
+    <div class="form-group">
+      <label for="id">ID:</label>
+      <input type="number" id="id" name="id" 
+             value="${product.id}" 
+             readonly 
+             style="background-color: #f0f0f0;">
+    </div>
+  `;
 
-  // Precompila il form
+  // Populate form with product data
   document.getElementById("name").value = product.name || "";
   document.getElementById("brand").value = product.brand || "";
   document.getElementById("ram").value = product.ram || "";
@@ -511,130 +681,4 @@ function openUpdateModal(product) {
   document.getElementById("quantity").value = product.quantity || "";
 
   modal.style.display = "block";
-}
-
-function showOrders() {
-  hiddenMain();
-  tempBox.classList.remove("tempBox_inactive");
-  tempBox.classList.add("tempBox");
-  tempBox.innerHTML = `   
-        <h1>Order list</h1>
-        <div class="table-container">
-            <table class="tempTable">
-                <thead>
-                    <tr class="tempData">
-                        <th>ID</th>
-                        <th>CustomerID</th>
-                        <th>Customer</th>
-                        <th>ProductID</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>OrderDate</th>
-                        <th>ShippingAddress</th>
-                    </tr>
-                </thead>
-                <tbody id="tempTbody"></tbody>
-            </table>
-            <div id="pagination" class="pagination"></div>
-        </div>`;
-
-  loadOrders(1); // Carica la prima pagina degli ordini
-}
-
-function loadOrders(page) {
-  const tempTbody = document.getElementById("tempTbody");
-  const pagination = document.getElementById("pagination");
-
-  tempTbody.innerHTML =
-    '<tr><td colspan="9" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading orders...</td></tr>';
-
-  fetch(`../back-end/load.php?action=orders&page=${page}`)
-    .then((response) => response.json())
-    .then((data) => {
-      tempTbody.innerHTML = "";
-      data.orders.forEach((order) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-                    <td>${order.orderID}</td>
-                    <td>${order.userID}</td>
-                    <td>${order.username}</td>
-                    <td>${order.productID}</td>
-                    <td>${order.name}</td>
-                    <td>${order.quantity}</td>
-                    <td>$${order.total_price}</td>
-                    <td>${new Date(order.order_date).toLocaleDateString()}</td>
-                    <!--Metodo degli oggetti Date in js che formatta la data secondo le impostazioni locali del browser/ambiente-->
-                    <td>${order.shipping_address}</td>`;
-        tempTbody.appendChild(row);
-      });
-
-      generatePagination(
-        data.pagination.current_page,
-        data.pagination.total_pages,
-        "orders"
-      );
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      tempTbody.innerHTML = `<tr><td colspan="9" class="error">Error loading orders: ${error.message}</td></tr>`;
-    });
-}
-function showAnalytics() {
-  hiddenMain();
-  tempBox.classList.remove("tempBox_inactive");
-  tempBox.classList.add("tempBox");
-
-  fetch("../back-end/load.php?action=analytics")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      if (data.status === "success") {
-        tempBox.innerHTML = `   
-        <h1>Analytics</h1>
-            <div class="analyse">
-                <div class="sales">
-                    <div class="status">
-                        <div class="info">
-                            <h3>Total Sales</h3>
-                            <h1 class="totalSales">$${data.totalSales}</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx="38" cy="38" r="36"></circle>
-                            </svg>
-                            <div class="percentage">
-                                +81%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--Searches-->
-                <div class="searches">
-                    <div class="status">
-                        <div class="info">
-                            <h3>Searches</h3>
-                            <h1 class="totalSearches">${data.totalSearches}</h1>
-                        </div>
-                        <div class="progress">
-                            <svg>
-                                <circle cx="38" cy="38" r="36"></circle>
-                            </svg>
-                            <div class="percentage">
-                                -2%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-    `;
-      } else {
-        console.error("Error loading analytics:", data.message);
-      }
-    });
-
-}
-
-function showSettings() { }
+};
