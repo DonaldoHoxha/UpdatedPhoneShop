@@ -89,14 +89,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add input focus effects
-    const formInputs = document.querySelectorAll('input:not([type="checkbox"])');
+    const formInputs = document.querySelectorAll(
+        'input:not([type="checkbox"]):not([type="submit"])'
+    );
+
     formInputs.forEach(input => {
         input.addEventListener('focus', () => {
-            input.parentNode.querySelector('i').style.color = 'var(--secondary-color)';
+            const icon = input.parentNode.querySelector('i');
+            if (icon) { // Safety check
+                icon.style.color = 'var(--secondary-color)';
+            }
         });
 
         input.addEventListener('blur', () => {
-            input.parentNode.querySelector('i').style.color = 'var(--dark-gray)';
+            const icon = input.parentNode.querySelector('i');
+            if (icon) { // Safety check
+                icon.style.color = 'var(--dark-gray)';
+            }
         });
     });
 });
