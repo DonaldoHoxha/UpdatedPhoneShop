@@ -3,8 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAnalyticsData();
   initializeSidebar();
   initializeDarkMode();
+  check();
+
   
-  // Check if a section is specified in the URL hash, otherwise default to dashboard
+});
+
+  function check(){
+    // Check if a section is specified in the URL hash, otherwise default to dashboard
   const hash = window.location.hash.substring(1) || 'dashboard';
   
   // Find the matching sidebar link and set it as active
@@ -15,9 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // Load the appropriate section
-  handleSectionChange(hash);
-});
-
+  handleSectionChange(hash);  }
 // ===== UTILITY FUNCTIONS =====
 // Generic fetch wrapper with error handling
 const fetchData = async (url, options = {}) => {
@@ -665,8 +668,7 @@ const openUpdateModal = (product) => {
       <label for="id">ID:</label>
       <input type="number" id="id" name="id" 
              value="${product.id}" 
-             readonly 
-             style="background-color: #f0f0f0;">
+             readonly ">
     </div>
   `;
 

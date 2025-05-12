@@ -364,6 +364,18 @@ main .new-users .user-list .user img {
     margin-bottom: 0.4rem;
 }
 
+main .new-users .user-list .user a span.material-icons-sharp {
+    font-size: 4rem; /* Adjust this value to your preferred size */
+    display: inline-block;
+    width: 5rem; /* Match the image dimensions if you want consistency */
+    height: 5rem; /* Match the image dimensions if you want consistency */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-dark-variant) ;
+}
+
+
 main .recent-orders {
     margin-top: 1.3rem;
 }

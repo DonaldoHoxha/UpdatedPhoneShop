@@ -34,7 +34,7 @@ if (!isset($_SESSION['admin_user'])) {
         // se non c'è cookie, reindirizzo alla pagina di login
         header('Location: admin_login.html');
         exit();
-    } 
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -193,25 +193,70 @@ if (!isset($_SESSION['admin_user'])) {
             <div class="new-users">
                 <h2>New Users</h2>
                 <div class="user-list">
-                    <div class="user">
-                        <img src="" alt="">
-                        <h2>Tommy</h2>
-                        <p>1h ago</p>
-                    </div>
-                    <div class="user">
-                        <img src="" alt="">
-                        <h2>Jack</h2>
-                        <p>1h 30m ago</p>
-                    </div>
-                    <div class="user">
-                        <img src="" alt="">
-                        <h2>John</h2>
-                        <p>2h ago</p>
-                    </div>
-                    <div class="user">
-                        <img src="../login_register_admin/img/add_24dp_666666.png">
-                        <h2>See more</h2>
 
+                    <?php
+                    include '../../main_page/back-end/db_conn.php';
+                    // preparare la query per ottenere gli ultimi 3 utenti registrati
+                    $query = "SELECT username, registration_date FROM user ORDER BY registration_date DESC LIMIT 3";
+                    $stmt = $conn->prepare($query);
+                    if ($stmt) {
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        // controllo se ci sono risultati
+                        if ($result->num_rows > 0) {
+                            // ottenere la data e ora attuale
+                            $now = new DateTime();
+
+                            // while per scorrere i risultati e visualizzarli
+                            while ($row = $result->fetch_assoc()) {
+                                $registrationDate = new DateTime($row['registration_date']);
+                                $interval = $registrationDate->diff($now);
+
+                                // formattare il tempo in un formato leggibile
+                                $timeAgo = '';
+
+                                if ($interval->d > 0) {
+                                    $timeAgo .= $interval->d . 'd ';
+                                }
+                                if ($interval->h > 0) {
+                                    $timeAgo .= $interval->h . 'h ';
+                                }
+                                if ($interval->i > 0) {
+                                    $timeAgo .= $interval->i . 'm ';
+                                }
+                                if ($interval->s > 0 && $interval->d == 0) { // mostra i secondi solo se non ci sono giorni
+                                    $timeAgo .= $interval->s . 's ';
+                                }
+
+                                $timeAgo = trim($timeAgo);
+                                if (empty($timeAgo)) {
+                                    $timeAgo = 'Just now';
+                                } else {
+                                    $timeAgo .= ' ago';
+                                }
+
+                                echo "<div class='user'>";
+                                echo "<img src='' alt=''>";
+                                echo "<h2>" . htmlspecialchars($row['username']) . "</h2>";
+                                echo "<p>" . htmlspecialchars($timeAgo) . "</p>";
+                                echo "</div>";
+                            }
+                        } else {
+                            echo "<p>No new users found.</p>";
+                        }
+                        $stmt->close();
+                    } else {
+                        echo "<p>Error fetching users.</p>";
+                    }
+                    ?>
+                    <div class="user">
+                        <a href="admin_dashboard.php#users" onclick="check()" id="products">
+
+                            <span class="material-icons-sharp">
+                                add
+                            </span>
+                        </a>
                     </div>
                 </div>
             </div>
