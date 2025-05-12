@@ -55,10 +55,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 // Restituisci i prodotti in formato JSON
-echo json_encode([
-    "status" => "success",
-    "data" => $products
-]);
+echo json_encode($products);
 
 // Chiudi le risorse
 $stmt->close();
