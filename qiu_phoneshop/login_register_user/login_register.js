@@ -1,78 +1,100 @@
-// Attende che il DOM sia completamente caricato
-document.addEventListener('DOMContentLoaded', (event) => {
-    // Seleziona l'elemento per il recupero password
-    const forgot_psw = document.querySelector('.forgot_psw');
-
-    // Seleziona gli elementi principali dell'interfaccia
+document.addEventListener('DOMContentLoaded', () => {
+    // Elements for panel switching
     const registerBefore = document.querySelector('.register_before');
     const signUpBox = document.querySelector('.signupBox');
     const loginAfter = document.querySelector('.login_after');
     const loginBox = document.querySelector('.loginBox');
-    
-    // Aggiunge transizioni CSS per un effetto fluido
-    signUpBox.style.transition = 'background-color 2s ease';
-    loginBox.style.transition = 'background-color 2s ease';
 
-    // 1. Gestione degli eventi hover per il toggle tra login e registrazione
-    // ----------------------------------------------------------------
-    registerBefore.addEventListener('mouseenter', () => {
-        // Nasconde il pulsante "registrati" e mostra il form di registrazione
+    // Buttons for triggering panel switches
+    const signupTrigger = document.querySelector('.signup-trigger');
+    const loginTrigger = document.querySelector('.login-trigger');
+    const mobileSignupTrigger = document.querySelector('.mobile-signup-trigger');
+    const backArrow = document.querySelector('.back-arrow');
+
+    // Apply smooth transitions
+    document.querySelectorAll('.box').forEach(box => {
+        box.style.transition = 'opacity 0.4s ease, visibility 0.4s ease';
+    });
+
+    // Show signup panel
+    const showSignup = () => {
         registerBefore.classList.add('hidden');
         signUpBox.classList.remove('hidden');
-        signUpBox.style.backgroundColor = '#f1f1f1';
-        
-        // Nasconde il form di login e mostra il pulsante "login"
         loginBox.classList.add('hidden');
         loginAfter.classList.remove('hidden');
-        loginAfter.style.backgroundColor = "#ddd";
-    });
+    };
 
-    loginAfter.addEventListener('mouseenter', () => {
-        // Nasconde il pulsante "login" e mostra il form di login
+    // Show login panel
+    const showLogin = () => {
         loginAfter.classList.add('hidden');
         loginBox.classList.remove('hidden');
-        
-        // Nasconde il form di registrazione e mostra il pulsante "registrati"
         signUpBox.classList.add('hidden');
         registerBefore.classList.remove('hidden');
-    });
+    };
 
-    // 2. Gestione degli errori provenienti dal server
-    // ----------------------------------------------------------------
+    // Event listeners for desktop view
+    signupTrigger.addEventListener('click', showSignup);
+    loginTrigger.addEventListener('click', showLogin);
+
+    // Event listener for mobile view signup
+    if (mobileSignupTrigger) {
+        mobileSignupTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Create mobile signup form
+            loginBox.classList.add('hidden');
+            signUpBox.classList.remove('hidden');
+            signUpBox.style.position = 'relative';
+        });
+    }
+
+    // Back arrow to return to login on mobile
+    if (backArrow) {
+        backArrow.addEventListener('click', () => {
+            signUpBox.classList.add('hidden');
+            loginBox.classList.remove('hidden');
+        });
+    }
+
+    // Check for error parameters on page load
     const urlParams = new URLSearchParams(window.location.search);
-    const newP = document.createElement('p');
-    newP.className = 'error';
 
     if (urlParams.has('error')) {
         const error = urlParams.get('error');
         console.log(error);
-        
-        // Gestione dei diversi tipi di errore
-        switch (error) {
-            case 'email_exists':
-                const signupEmail = document.querySelector('.signupEmail');
-                newP.textContent = 'Email already exists';
-                signupEmail.appendChild(newP.cloneNode(true));
-                break;
-                
-            case 'username_exists':
-                const signupUsername = document.querySelector('.signupUsername');
-                newP.textContent = 'Username already exists';
-                signupUsername.appendChild(newP.cloneNode(true));
-                break;
+
+        // Show signup form if there are signup errors
+        if (error === 'email_exists' || error === 'username_exists') {
+            showSignup();
+
+            // Create error message
+            const newP = document.createElement('p');
+            newP.className = 'error';
+
+            switch (error) {
+                case 'email_exists':
+                    const emailInput = document.getElementById('signupEmail');
+                    newP.textContent = 'Email already exists';
+                    emailInput.parentNode.insertAdjacentElement('afterend', newP);
+                    emailInput.style.borderColor = '#e74c3c';
+                    break;
+
+                case 'username_exists':
+                    const usernameInput = document.getElementById('signupUsername');
+                    newP.textContent = 'Username already exists';
+                    usernameInput.parentNode.insertAdjacentElement('afterend', newP);
+                    usernameInput.style.borderColor = '#e74c3c';
+                    break;
+            }
         }
     }
 
-    // 3. Effetti visivi per gli input del form
-    // ----------------------------------------------------------------
+    // Add input focus effects
     const formInputs = document.querySelectorAll('input:not([type="checkbox"])');
     formInputs.forEach(input => {
-        // Cambia colore dell'icona quando l'input è in focus
         input.addEventListener('focus', () => {
             input.parentNode.querySelector('i').style.color = 'var(--secondary-color)';
         });
 
-        // Ripristina il colore originale quando perde il focus
         input.addEventListener('blur', () => {
             input.parentNode.querySelector('i').style.color = 'var(--dark-gray)';
         });
