@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `phoneshop`
+-- Database: `my_donalmichel`
 --
 
 -- --------------------------------------------------------
@@ -211,7 +211,7 @@ CREATE TABLE `user` (
   `password` varchar(100) DEFAULT NULL,
   `email` varchar(50) NOT NULL,
   `shipping_address` varchar(100) DEFAULT NULL,
-  `registration_date` date NOT NULL DEFAULT curdate()
+  `registration_date` date NOT NULL DEFAULT (curdate())
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
