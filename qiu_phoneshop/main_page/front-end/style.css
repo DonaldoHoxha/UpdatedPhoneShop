@@ -42,6 +42,19 @@ body {
     align-items: center;
 }
 
+.header-top a:has(.logo-container) {
+    /* :has() selector, good browser support now */
+    text-decoration: none;
+}
+
+.logo-container h1 {
+    color: #000000;
+}
+
+.logo-container a:visited h1 {
+    color: #000000;
+}
+
 .logo {
     height: 50px;
     width: auto;

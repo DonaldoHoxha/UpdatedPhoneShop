@@ -28,21 +28,29 @@ if (!isset($_SESSION['username'])) {
     <!-- Header -->
     <header class="main-header">
         <div class="header-top">
-            <div class="logo-container">
-                <img src="logo.png" alt="TechPhone Logo" class="logo">
-                <h1>TechPhone</h1>
-            </div>
+            <a href="index.php">
+                <div class="logo-container">
+                    <img src="logo.png" alt="TechPhone Logo" class="logo">
+                    <h1>TechPhone</h1>
+                </div>
+            </a>
+
             <div class="search-container">
                 <input type="search" placeholder="Cerca smartphone..." class="search-bar">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <button class="search-btn"><i class="fas fa-search"></i>
+                </button>
             </div>
             <div class="user-actions">
                 <div class="login-register">
                     <a href="../../login_register_user/login_register.html"><button class="login">Login</button></a>
                     <a href="../../login_register_user/login_register.html"><button class="register">SignUp</button></a>
                 </div>
-                <button class="user-btn"><i class="fas fa-user"></i></button>
-                <button class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></button>
+                <a href="../../login_register_user/login_register.html">
+                    <button class="user-btn"><i class="fas fa-user"></i></button>
+                </a>
+                <a href="../../login_register_user/login_register.html">
+                    <button class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count">0</span></button>
+                </a>
             </div>
         </div>
         <nav class="main-nav">
@@ -52,7 +60,7 @@ if (!isset($_SESSION['username'])) {
                 <li><a href="#offerte">Offerte</a></li>
                 <li><a href="#usato">Usato Certificato</a></li>
                 <li><a href="#assistenza">Assistenza</a></li>
-                <li><a href="../../login_register_admin/front-end/admin_login.html">Become a Seller</a></li>
+                <li><a href="../../login_register_admin/front-end/admin_login.html">Diventa un venditore</a></li>
             </ul>
         </nav>
     </header>

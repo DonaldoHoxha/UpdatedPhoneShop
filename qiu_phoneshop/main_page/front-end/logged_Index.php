@@ -53,10 +53,12 @@ if (!isset($_SESSION['username'])) {
     <!-- Header -->
     <header class="main-header">
         <div class="header-top">
-            <div class="logo-container">
-                <img src="logo.png" alt="TechPhone Logo" class="logo">
-                <h1>TechPhone</h1>
-            </div>
+            <a href="logged_Index.php">
+                <div class="logo-container">
+                    <img src="logo.png" alt="TechPhone Logo" class="logo">
+                    <h1>TechPhone</h1>
+                </div>
+            </a>
             <div class="search-container">
                 <input type="search" id="search-input" placeholder="Cerca smartphone..." class="search-bar">
                 <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
@@ -66,9 +68,9 @@ if (!isset($_SESSION['username'])) {
                 <button class="user-btn"><i class="fas fa-user">
                         <div class="proflie-img">
                             <div class="profile-options">
-                                <a href="profile.php" class="profile-link">Profile</a>
-                                <a href="orders.php" class="profile-link">Orders</a>
-                                <a href="/settings" class="profile-link">Settings</a>
+                                <a href="profile.php" class="profile-link">Profilo</a>
+                                <a href="orders.php" class="profile-link">Ordini</a>
+                                <a href="/settings" class="profile-link">Impostazioni</a>
                                 <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>

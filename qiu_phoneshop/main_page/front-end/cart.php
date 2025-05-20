@@ -24,10 +24,12 @@ if (!isset($_SESSION['username'])) {
     <!-- Header (uguale alla pagina principale) -->
     <header class="main-header">
         <div class="header-top">
-            <div class="logo-container">
-                <img src="logo.png" alt="TechPhone Logo" class="logo">
-                <h1>TechPhone</h1>
-            </div>
+            <a href="logged_Index.php">
+                <div class="logo-container">
+                    <img src="logo.png" alt="TechPhone Logo" class="logo">
+                    <h1>TechPhone</h1>
+                </div>
+            </a>
             <div class="search-container">
                 <input type="search" id="search-input" placeholder="Cerca smartphone..." class="search-bar">
                 <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
@@ -96,7 +98,8 @@ if (!isset($_SESSION['username'])) {
         $user_id = $user['id'];
 
         // trovo i prodotti nel carrello dell'utente
-        $stmt = $conn->prepare("SELECT c.product_id, p.name, c.quantity, p.price FROM product p JOIN cart c ON p.id = c.product_id WHERE c.user_id = ?");
+        $stmt = $conn->prepare("SELECT c.product_id, p.name, c.quantity, p.price FROM product p 
+                                        JOIN cart c ON p.id = c.product_id WHERE c.user_id = ?");
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -206,7 +209,7 @@ if (!isset($_SESSION['username'])) {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     body: 'product_id=' + encodeURIComponent(productId) // codifichiamo l'ID del prodotto,
-                                                                        // per evitare problemi con caratteri speciali
+                    // per evitare problemi con caratteri speciali
                 })
                 .then(response => response.json())
                 .then(data => {

@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 productsGrid.appendChild(productCard);
             });
-           
+
         } else {
             // se non ci sono prodotti che corrispondono alla ricerca
             productsGrid.innerHTML = `
