@@ -1,13 +1,10 @@
 QUANDO FAI QUALCOSA, METTI UN SIMBOLO A DESTRA, NON CANCELLARE
 
-FONDAMENTALE:
-
--dashboard e login per amministratore
-
 DA IMPLEMENTARE IN PIù:
--logo
+-eliminare l'account dell'utente
+-modifca del profilo dell'utente
 
-FATTI✅:s
+FATTI✅:
 -fare funzionare il remember me ✅
 -cerca smartphone per marca ✅
 -possibilità di rimuovere un telefono dal carrello ✅
@@ -18,4 +15,5 @@ FATTI✅:s
 -occhio per visualizzare le caratteristiche dei telefoni e immagine del telefono✅
 -possibilità di acquistare un singolo telefono all'interno del carrello✅
 -acquistare un telefono✅
-
+-logo✅
+-dashboard e login per amministratore✅
