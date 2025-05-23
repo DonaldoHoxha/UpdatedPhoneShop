@@ -26,7 +26,7 @@ if ($conn->connect_error) {
 
 // 4. PREPARAZIONE QUERY SQL (con prepared statement)
 // ----------------------------------------------------------------
-$stmt = $conn->prepare("SELECT username, `password` FROM user WHERE username = ?");
+$stmt = $conn->prepare("SELECT username, `password` FROM user WHERE username = ? AND deleted_at IS NULL");
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
 }
@@ -42,13 +42,13 @@ $result = $stmt->get_result();
 if ($result->num_rows === 1) {
     // Utente trovato nel database
     $user = $result->fetch_assoc();
-    
+
     // Verifica la password con password_verify (hash sicuro)
     if (password_verify($_POST['password'], $user['password'])) {
-        
+
         // Rigenera l'ID di sessione per prevenire fixation attacks
         session_regenerate_id(true);
-        
+
         // 7. GESTIONE DEL "RICORDAMI"
         // --------------------------------------------------------
         if (isset($_POST['remember'])) {
@@ -62,13 +62,12 @@ if ($result->num_rows === 1) {
             ];
             setcookie("user", $user['username'], $cookie_options);
         }
-        
+
         // Imposta la variabile di sessione
         $_SESSION['username'] = $user['username'];
-        
+
         // Reindirizza alla pagina protetta
         header("Location: ../main_page/front-end/logged_Index.php");
-        
     } else {
         // Password non valida
         header("Location: login_register.html?error=invalid_password");
