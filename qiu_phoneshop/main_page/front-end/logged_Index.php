@@ -70,7 +70,7 @@ if (!isset($_SESSION['username'])) {
                             <div class="profile-options">
                                 <a href="profile.php" class="profile-link">Profilo</a>
                                 <a href="orders.php" class="profile-link">Ordini</a>
-                                <a href="/settings" class="profile-link">Impostazioni</a>
+                                <a href="cart.php" class="profile-link">Carrello</a>
                                 <a href="../../login_register_user/logout.php" class="profile-link">Logout</a>
                             </div>
                         </div>
