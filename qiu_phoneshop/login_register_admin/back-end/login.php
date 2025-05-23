@@ -8,7 +8,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $errors = [];
-    $stmt = $conn->prepare("SELECT name,password FROM administrator_user WHERE name = ?");
+    $stmt = $conn->prepare("SELECT name,password FROM administrator_user WHERE name = ? AND deleted_at IS NULL");
     $stmt->bind_param("s", $_POST['username']);
     $stmt->execute();
     $result = $stmt->get_result();

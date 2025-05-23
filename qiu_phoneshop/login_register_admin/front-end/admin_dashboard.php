@@ -120,12 +120,18 @@ if (!isset($_SESSION['admin_user'])) {
                     </span>
                     <h3>Settings</h3>
                 </a>
-                <a href="../back-end/logout.php" id="logout">
-                    <span class="material-icons-sharp">
-                        logout
-                    </span>
-                    <h3>Logout</h3>
-                </a>
+                <div class="bottom-links">
+                    <a href="../back-end/logout.php" id="logout">
+                        <span class="material-icons-sharp">
+                            logout
+                        </span>
+                        <h3>Logout</h3>
+                    </a>
+                    <a href="#" onclick="showAdminDeleteModal(event)" class="delete">
+                        <span class="material-icons-sharp">delete</span>
+                        <h3>Delete Account</h3>
+                    </a>
+                </div>
             </div>
         </aside>
         <!--End Sidebar Section-->
@@ -425,6 +431,17 @@ if (!isset($_SESSION['admin_user'])) {
                         <h3>Add Reminder</h3>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Account Modal -->
+    <div class="delete-modal-overlay" id="adminDeleteModal" style="display: none;">
+        <div class="delete-modal">
+            <h2>Confirm Account Deletion</h2>
+            <h3>Are you sure you want to permanently delete your admin account? This action cannot be undone and will remove all your associated data.</h3>
+            <div class="modal-buttons">
+                <button class="modal-confirm danger" onclick="deleteAdminAccount()">Delete Account</button>
+                <button class="modal-cancel" onclick="closeAdminDeleteModal()">Cancel</button>
             </div>
         </div>
     </div>

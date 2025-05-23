@@ -5,22 +5,60 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeDarkMode();
   check();
 
-  
+
 });
 
-  function check(){
-    // Check if a section is specified in the URL hash, otherwise default to dashboard
+function check() {
+  // Check if a section is specified in the URL hash, otherwise default to dashboard
   const hash = window.location.hash.substring(1) || 'dashboard';
-  
   // Find the matching sidebar link and set it as active
   const activeLink = document.querySelector(`.sidebar a#${hash}`);
   if (activeLink) {
     document.querySelectorAll(".sidebar a").forEach(l => l.classList.remove("active"));
     activeLink.classList.add("active");
   }
-  
   // Load the appropriate section
-  handleSectionChange(hash);  }
+  handleSectionChange(hash);
+}
+// Admin Account Deletion Functions
+function showAdminDeleteModal(e) {
+  e.preventDefault();
+  document.getElementById('adminDeleteModal').style.display = 'flex';
+}
+
+function closeAdminDeleteModal() {
+  document.getElementById('adminDeleteModal').style.display = 'none';
+  document.querySelector('.delete').classList.remove("active");
+  const dashboard = document.getElementById('dashboard');
+  dashboard.classList.add("active");
+
+}
+
+function deleteAdminAccount() {
+  fetch('../back-end/delete_account.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Account eliminato con successo');
+        window.location.href = '../../login_register_user/logout.php';
+      } else {
+        alert('Errore durante l\'eliminazione dell\'account');
+      }
+    })
+}
+
+// Close modal when clicking outside
+document.getElementById('adminDeleteModal').addEventListener('click', function (e) {
+  if (e.target === this) {
+    closeAdminDeleteModal();
+  }
+});
+
 // ===== UTILITY FUNCTIONS =====
 // Generic fetch wrapper with error handling
 const fetchData = async (url, options = {}) => {
@@ -43,7 +81,7 @@ const showNotification = (type, message) => {
   notification.className = `notification ${type}`;
   notification.textContent = message;
   document.body.appendChild(notification);
-  
+
   setTimeout(() => notification.remove(), 5000);
 };
 
@@ -52,27 +90,27 @@ const initializeSidebar = () => {
   const sideMenu = document.querySelector("aside");
   const menuBtn = document.getElementById("menu-btn");
   const closeBtn = document.getElementById("close-btn");
-  
+
   menuBtn.addEventListener("click", () => sideMenu.style.display = "block");
   closeBtn.addEventListener("click", () => sideMenu.style.display = "none");
-  
+
   // Set up sidebar navigation
   const sidebarLinks = document.querySelectorAll(".sidebar a");
   sidebarLinks.forEach(link => {
-    link.addEventListener("click", function(e) {
+    link.addEventListener("click", function (e) {
       // Don't apply to logout link
       if (this.id === "logout") return;
-      
+
       e.preventDefault();
-      
+
       // Update URL hash to reflect current section
       window.location.hash = this.id;
-      
+
       // Remove active class from all links
       sidebarLinks.forEach(l => l.classList.remove("active"));
       // Add active class to clicked link
       this.classList.add("active");
-      
+
       // Handle section display based on ID
       const sectionId = this.id;
       handleSectionChange(sectionId);
@@ -93,12 +131,12 @@ const initializeDarkMode = () => {
 const handleSectionChange = (sectionId) => {
   const main = document.querySelector("main");
   const tempBox = document.getElementById("tempBox");
-  
+
   // Default to showing main and hiding tempBox
   main.style.display = "none";
   tempBox.classList.remove("tempBox_inactive");
   tempBox.classList.add("tempBox");
-  
+
   // Handle different sections
   switch (sectionId) {
     case "dashboard":
@@ -142,7 +180,7 @@ const handleSectionChange = (sectionId) => {
 // ===== DATA LOADING =====
 const loadAnalyticsData = async () => {
   const data = await fetchData('../back-end/load.php?action=analytics');
-  
+
   if (data.status === 'success') {
     document.querySelector('.totalSales').innerText = "$" + data.totalSales.toLocaleString();
     document.querySelector('.totalSearches').innerText = data.totalSearches.toLocaleString();
@@ -152,31 +190,31 @@ const loadAnalyticsData = async () => {
 // Generic function to load paginated data
 const loadPagedData = async (dataType, page = 1) => {
   const tempTbody = document.getElementById("tempTbody");
-  
+
   if (!tempTbody) {
     console.error(`Cannot find tbody element for ${dataType}`);
     return;
   }
-  
+
   // Show loading state
   tempTbody.innerHTML = `<tr><td colspan="10" class="loading">
     <i class="material-icons-sharp">hourglass_empty</i> Loading ${dataType}...</td></tr>`;
-  
+
   const data = await fetchData(`../back-end/load.php?action=${dataType}&page=${page}`);
-  
+
   // Log data response for debugging
   console.log(`Loaded ${dataType} data:`, data);
-  
+
   // Handle error state
   if (data.status === 'error') {
     tempTbody.innerHTML = `<tr><td colspan="10" class="error">
       Error loading ${dataType}: ${data.message}</td></tr>`;
     return;
   }
-  
+
   // Clear table body
   tempTbody.innerHTML = '';
-  
+
   // Use appropriate renderer based on data type
   switch (dataType) {
     case 'users':
@@ -201,7 +239,7 @@ const loadPagedData = async (dataType, page = 1) => {
       }
       break;
   }
-  
+
   // Generate pagination controls
   if (data.pagination) {
     console.log(`Generating pagination for ${dataType}:`, data.pagination);
@@ -309,7 +347,7 @@ const renderProductsSection = (container) => {
         </form>
       </div>
     </div>`;
-  
+
   // Initialize the product modal functionality
   initProductModal();
 };
@@ -340,7 +378,7 @@ const renderOrdersSection = (container) => {
 
 const renderAnalyticsSection = async (container) => {
   const data = await fetchData('../back-end/load.php?action=analytics');
-  
+
   if (data.status === 'success') {
     container.innerHTML = `
       <h1>Analytics</h1>
@@ -413,7 +451,7 @@ const renderUserRows = (users, tbody) => {
     tbody.innerHTML = '<tr><td colspan="5">No users found</td></tr>';
     return;
   }
-  
+
   users.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -431,7 +469,7 @@ const renderProductRows = (products, tbody) => {
     tbody.innerHTML = '<tr><td colspan="9">No products found</td></tr>';
     return;
   }
-  
+
   products.forEach(product => {
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -445,7 +483,7 @@ const renderProductRows = (products, tbody) => {
       <td>${product.camera} MP</td>
       <td>${product.battery} mAh</td>`;
     tbody.appendChild(row);
-    
+
     // Add click handler for product update
     row.addEventListener('click', () => openUpdateModal(product));
   });
@@ -456,7 +494,7 @@ const renderOrderRows = (orders, tbody) => {
     tbody.innerHTML = '<tr><td colspan="9">No orders found</td></tr>';
     return;
   }
-  
+
   orders.forEach(order => {
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -487,7 +525,7 @@ const generatePagination = (currentPage, totalPages, contentType) => {
     console.error("Pagination container not found");
     return;
   }
-  
+
   if (totalPages <= 1) {
     pagination.innerHTML = "";
     return;
@@ -549,14 +587,14 @@ const generatePagination = (currentPage, totalPages, contentType) => {
 
   // Add event listeners to page links
   document.querySelectorAll(".page-link[data-page]").forEach(link => {
-    link.addEventListener("click", function(e) {
+    link.addEventListener("click", function (e) {
       e.preventDefault();
       const page = parseInt(this.dataset.page);
       const type = this.dataset.type;
       console.log(`Clicked on page ${page} for ${type}`);
-      
+
       loadPagedData(type, page);
-      
+
       document.querySelector(".table-container").scrollIntoView({
         behavior: "smooth"
       });
@@ -568,7 +606,7 @@ const generatePagination = (currentPage, totalPages, contentType) => {
 const initProductModal = () => {
   const modal = document.getElementById("productModal");
   if (!modal) return;
-  
+
   const form = document.getElementById("addProductForm");
   const modalTitle = modal.querySelector("h2");
   const closeBtn = document.querySelector(".close-modal");
@@ -580,7 +618,7 @@ const initProductModal = () => {
 
   // Add Product button functionality
   if (addBtn) {
-    addBtn.onclick = function() {
+    addBtn.onclick = function () {
       modalTitle.textContent = "Add New Product";
       form.action = "../back-end/add_product.php";
       submitBtn.textContent = "Add Product";
@@ -593,7 +631,7 @@ const initProductModal = () => {
 
   // Update Product button functionality
   if (updateBtn) {
-    updateBtn.onclick = function() {
+    updateBtn.onclick = function () {
       modalTitle.textContent = "Update Product";
       form.action = "../back-end/update_product.php";
       submitBtn.textContent = "Update Product";
@@ -617,26 +655,26 @@ const initProductModal = () => {
 
   // Form submission handling
   if (form) {
-    form.addEventListener("submit", async function(e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
       const formData = new FormData(this);
-      
+
       try {
         const response = await fetch(this.action, {
           method: "POST",
           body: formData,
           credentials: "include"
         });
-        
+
         const data = await response.json();
-        
+
         if (data.status === "success") {
           showNotification("success", data.message);
-          
+
           // Reload products list with current page
           const currentPage = document.querySelector(".page-link.active")?.textContent || 1;
           loadPagedData("products", parseInt(currentPage));
-          
+
           // Close modal
           modal.style.display = "none";
         } else {
@@ -653,7 +691,7 @@ const initProductModal = () => {
 const openUpdateModal = (product) => {
   const modal = document.getElementById("productModal");
   if (!modal) return;
-  
+
   const form = document.getElementById("addProductForm");
   const modalTitle = modal.querySelector("h2");
 
