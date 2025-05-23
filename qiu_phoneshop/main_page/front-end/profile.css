@@ -291,6 +291,60 @@
     transform: translateY(-1px);
 }
 
+/* Add these new styles to your existing profile.css */
+.avatar-upload {
+    position: relative;
+    cursor: pointer;
+    display: block;
+    width: 150px;
+    margin: 0 auto 1.5rem;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    pointer-events: none; /* Add this to make overlay non-interactive */
+}
+
+.avatar-upload:hover .avatar-overlay {
+    opacity: 1;
+}
+
+/* Modify existing .profile-avatar class */
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 5px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin: 0; /* Remove margin from here since it's on avatar-upload */
+}
+
+.avatar-upload:hover .profile-avatar {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Add camera icon styling */
+.avatar-overlay i.fa-camera {
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
 @media (max-width: 992px) {
     .profile-content {
         grid-template-columns: 1fr;

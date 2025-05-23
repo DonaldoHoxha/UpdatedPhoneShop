@@ -1,9 +1,7 @@
 <?php
-//inizio la sessione
 session_start();
 include '../back-end/db_conn.php';
-// controllo se la sessione è presente username dell'utente
-// se non c'è, reindirizzo alla pagina di login
+
 if (!isset($_SESSION['username'])) {
     header('Location: ../../login_register_user/login_register.html');
     exit();
@@ -31,29 +29,42 @@ if (!isset($_SESSION['username'])) {
         function deleteAccount() {
             window.location.href = '../back-end/delete_acc.php';
         }
+
+        // Funzione per l'anteprima dell'avatar
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.querySelector('.profile-avatar').src = reader.result;
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+                document.getElementById('avatarForm').submit();
+            }
+        }
     </script>
 </head>
 
 <body>
+    <form id="avatarForm" action="../back-end/upload_avatar.php" method="post" enctype="multipart/form-data" style="display: none;">
+        <input type="file" id="avatarInput" name="avatar" accept="image/*" onchange="previewImage(event) ">
+    </form>
+
     <?php
-    // ottengo username dell'utente dalla sessione
     $username = $_SESSION['username'];
-    // informazioni dell'utente
-    $stmt = $conn->prepare("SELECT id, username, email, shipping_address FROM user WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, username, email, shipping_address, avatar_path FROM user WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    // se l'utente non esiste, reindirizzo alla pagina principale
     if (!$user) {
         echo "<script>alert('Utente non trovato'); window.location.href='logged_index.php';</script>";
         exit();
     }
 
     $user_id = $user['id'];
-
-    // ottengo il numero totale di ordini dell'utente
+    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/'. $user['avatar_path']) : 'default-avatar.jpg';
+    
     $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -69,13 +80,18 @@ if (!isset($_SESSION['username'])) {
 
         <div class="profile-content">
             <div class="profile-sidebar">
-                <img src="default-avatar.jpg" class="profile-avatar">
+                <label for="avatarInput" class="avatar-upload">
+                    <img src="<?php echo $avatarPath; ?>" class="profile-avatar">
+                    <div class="avatar-overlay">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </label>
                 <ul class="profile-nav">
                     <li><a href="#" class="active"><i class="fas fa-user"></i> Profilo</a></li>
                     <li><a href="orders.php"><i class="fas fa-box"></i> Ordini</a></li>
                     <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Carrello</a></li>
                     <li><a href="../../login_register_user/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    <li><a href="#" onclick="showDeleteModal(event)" class="delete"><i class="fas fa-trash"></i>Elimina account</a></li>
+                    <li><a href="#" onclick="showDeleteModal(event)" class="delete"><i class="fas fa-trash"></i> Elimina account</a></li>
                 </ul>
             </div>
 
@@ -95,11 +111,7 @@ if (!isset($_SESSION['username'])) {
                             <span class="info-label">Indirizzo di spedizione</span>
                             <span class="info-value">
                                 <?php
-                                if (!empty($user['shipping_address'])) {
-                                    echo htmlspecialchars($user['shipping_address']);
-                                } else {
-                                    echo "Nessun indirizzo registrato";
-                                }
+                                echo !empty($user['shipping_address']) ? htmlspecialchars($user['shipping_address']) : "Nessun indirizzo registrato";
                                 ?>
                             </span>
                         </div>
@@ -114,7 +126,6 @@ if (!isset($_SESSION['username'])) {
                 <div class="profile-section orders-summary">
                     <h2>Ultimi ordini</h2>
                     <?php
-                    // ottengo gli ultimi 3 ordini dell'utente
                     $stmt = $conn->prepare("SELECT id, order_date, total_price FROM orders WHERE user_id = ? ORDER BY order_date DESC LIMIT 3");
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
@@ -125,8 +136,6 @@ if (!isset($_SESSION['username'])) {
                             echo '<div class="order-card">';
                             echo '<div class="order-header">';
                             echo '<span>Ordine #' . $order['id'] . '</span>';
-                            //Prende una stringa di data/ora (es. "2023-12-25 14:30:00").
-                            //La converte in un timestamp numerico (utile per calcoli o formattazioni).
                             echo '<span class="order-date">' . date('d/m/Y', strtotime($order['order_date'])) . '</span>';
                             echo '</div>';
                             echo '<div class="order-details">';
@@ -157,6 +166,24 @@ if (!isset($_SESSION['username'])) {
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('avatarInput').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (file.size > 2097152) { // 2MB
+                    alert('La dimensione del file non deve superare 2MB');
+                    return;
+                }
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Formato file non supportato. Usa JPG, PNG o GIF');
+                    return;
+                }
+                document.getElementById('avatarForm').submit();
+            }
+        });
+    </script>
 </body>
 
 </html>
