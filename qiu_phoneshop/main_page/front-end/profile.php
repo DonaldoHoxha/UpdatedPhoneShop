@@ -27,7 +27,22 @@ if (!isset($_SESSION['username'])) {
         }
 
         function deleteAccount() {
-            window.location.href = '../back-end/delete_acc.php';
+            //window.location.href = '../back-end/delete_account.php';
+            fetch('../back-end/delete_account.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Account eliminato con successo');
+                        window.location.href = '../../login_register_user/logout.php';
+                    } else {
+                        alert('Errore durante l\'eliminazione dell\'account');
+                    }
+                })
         }
 
         // Funzione per l'anteprima dell'avatar

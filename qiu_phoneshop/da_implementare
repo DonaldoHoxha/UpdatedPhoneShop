@@ -1,10 +1,10 @@
 QUANDO FAI QUALCOSA, METTI UN SIMBOLO A DESTRA, NON CANCELLARE
 
 DA IMPLEMENTARE IN PIù:
--eliminare l'account dell'utente
+
 -modifca del profilo dell'utente,admin
-1)inserimento dell'immagine
-2)modificare dati personali
+-inserimento dell'immagine
+-modificare dati personali
 -gestione le visite del sito
 
 FATTI✅:
@@ -20,3 +20,5 @@ FATTI✅:
 -acquistare un telefono✅
 -logo✅
 -dashboard e login per amministratore✅
+-eliminare l'account dell'utente✅
+-eliminare l'account dell'admin✅
