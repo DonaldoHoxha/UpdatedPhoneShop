@@ -18,6 +18,20 @@ if (!isset($_SESSION['username'])) {
     <title>TechPhone - Profilo Utente</title>
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        function showDeleteModal(e) {
+            e.preventDefault();
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        function deleteAccount() {
+            window.location.href = '../back-end/delete_acc.php';
+        }
+    </script>
 </head>
 
 <body>
@@ -59,8 +73,9 @@ if (!isset($_SESSION['username'])) {
                 <ul class="profile-nav">
                     <li><a href="#" class="active"><i class="fas fa-user"></i> Profilo</a></li>
                     <li><a href="orders.php"><i class="fas fa-box"></i> Ordini</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Impostazioni</a></li>
+                    <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Carrello</a></li>
                     <li><a href="../../login_register_user/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a href="#" onclick="showDeleteModal(event)" class="delete"><i class="fas fa-trash"></i>Elimina account</a></li>
                 </ul>
             </div>
 
@@ -129,6 +144,16 @@ if (!isset($_SESSION['username'])) {
                         </div>
                     <?php endif; ?>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="delete-modal-overlay" id="deleteModal" style="display: none;">
+        <div class="delete-modal">
+            <h3>Conferma eliminazione</h3>
+            <p>Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.</p>
+            <div class="modal-buttons">
+                <button class="modal-confirm" onclick="deleteAccount()">Conferma</button>
+                <button class="modal-cancel" onclick="closeDeleteModal()">Annulla</button>
             </div>
         </div>
     </div>
