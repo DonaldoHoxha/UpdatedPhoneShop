@@ -203,7 +203,7 @@ if (!isset($_SESSION['admin_user'])) {
                     <?php
                     include '../../main_page/back-end/db_conn.php';
                     // preparare la query per ottenere gli ultimi 3 utenti registrati
-                    $query = "SELECT username, registration_date FROM user ORDER BY registration_date DESC LIMIT 3";
+                    $query = "SELECT username, registration_date,avatar_path FROM user ORDER BY registration_date DESC LIMIT 3";
                     $stmt = $conn->prepare($query);
                     if ($stmt) {
                         $stmt->execute();
@@ -241,9 +241,9 @@ if (!isset($_SESSION['admin_user'])) {
                                 } else {
                                     $timeAgo .= ' ago';
                                 }
-
+                                $avatar_path = $row['avatar_path'] ? htmlspecialchars( '../../main_page/user_avatar/'.$row['avatar_path'] ): '../../main_page/user_avatar/default_avatar.png'; // Path to default avatar if not set
                                 echo "<div class='user'>";
-                                echo "<img src='' alt=''>";
+                                echo "<img src=".$avatar_path." alt='imagine di profilo'>";
                                 echo "<h2>" . htmlspecialchars($row['username']) . "</h2>";
                                 echo "<p>" . htmlspecialchars($timeAgo) . "</p>";
                                 echo "</div>";

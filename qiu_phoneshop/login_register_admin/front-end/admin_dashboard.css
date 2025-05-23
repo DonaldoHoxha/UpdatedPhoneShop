@@ -268,8 +268,13 @@ aside .sidebar a:hover span {
 }
 
 .delete-modal h3 {
+    color: var(--color-dark);
+    margin-bottom:1rem;
+}
+
+.delete-modal h2 {
     color: var(--color-danger);
-    margin-bottom: 1rem;
+    margin-bottom:1rem;
 }
 
 .delete-modal p {
@@ -295,6 +300,11 @@ aside .sidebar a:hover span {
 .modal-cancel {
     border-radius: 10px;
     padding: 10px;
+    background-color: var(--color-info-dark);
+}
+
+.modal-cancel:hover {
+    background: var(--color-dark-variant);
 }
 
 .modal-confirm.danger:hover {

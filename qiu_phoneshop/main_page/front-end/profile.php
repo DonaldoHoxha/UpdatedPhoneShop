@@ -78,7 +78,7 @@ if (!isset($_SESSION['username'])) {
     }
 
     $user_id = $user['id'];
-    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/'. $user['avatar_path']) : 'default-avatar.jpg';
+    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/'. $user['avatar_path']) : '../user_avatar/default_avatar.png';
     
     $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
