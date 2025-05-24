@@ -16,47 +16,6 @@ if (!isset($_SESSION['username'])) {
     <title>TechPhone - Profilo Utente</title>
     <link rel="stylesheet" href="profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script>
-        function showDeleteModal(e) {
-            e.preventDefault();
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-        }
-
-        function deleteAccount() {
-            //window.location.href = '../back-end/delete_account.php';
-            fetch('../back-end/delete_account.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Account eliminato con successo');
-                        window.location.href = '../../login_register_user/logout.php';
-                    } else {
-                        alert('Errore durante l\'eliminazione dell\'account');
-                    }
-                })
-        }
-
-        // Funzione per l'anteprima dell'avatar
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.querySelector('.profile-avatar').src = reader.result;
-            };
-            if (event.target.files[0]) {
-                reader.readAsDataURL(event.target.files[0]);
-                document.getElementById('avatarForm').submit();
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -78,8 +37,8 @@ if (!isset($_SESSION['username'])) {
     }
 
     $user_id = $user['id'];
-    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/'. $user['avatar_path']) : '../user_avatar/default_avatar.png';
-    
+    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/' . $user['avatar_path']) : '../user_avatar/default_avatar.png';
+
     $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -135,7 +94,8 @@ if (!isset($_SESSION['username'])) {
                             <span class="info-value"><?php echo $orders_data['number_of_orders']; ?></span>
                         </div>
                     </div>
-                    <button class="edit-btn" onclick="location.href='edit_profile.php'">Modifica profilo</button>
+                    <button class="edit-btn" onclick="showEditModal(event)">Modifica profilo</button>
+
                 </div>
 
                 <div class="profile-section orders-summary">
@@ -171,6 +131,30 @@ if (!isset($_SESSION['username'])) {
             </div>
         </div>
     </div>
+    <!-- Modali per la modifica e l'eliminazione del profilo -->
+    <div class="edit-modal-overlay" id="editModal" style="display: none;">
+        <div class="edit-modal">
+            <h3>Modifica Profilo</h3>
+            <form id="editProfileForm">
+                <div class="edit-form-group">
+                    <label for="editUsername">Nome Utente</label>
+                    <input type="text" id="editUsername" name="username" required>
+                </div>
+                <div class="edit-form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" name="email" required>
+                </div>
+                <div class="edit-form-group">
+                    <label for="editAddress">Indirizzo di Spedizione</label>
+                    <input type="text" id="editAddress" name="shipping_address">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="modal-cancel" onclick="closeEditModal()">Annulla</button>
+                    <button type="submit" class="modal-confirm-modification">Salva Modifiche</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="delete-modal-overlay" id="deleteModal" style="display: none;">
         <div class="delete-modal">
             <h3>Conferma eliminazione</h3>
@@ -197,6 +181,88 @@ if (!isset($_SESSION['username'])) {
                 }
                 document.getElementById('avatarForm').submit();
             }
+        });
+
+        function showDeleteModal(e) {
+            e.preventDefault();
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        function deleteAccount() {
+            //window.location.href = '../back-end/delete_account.php';
+            fetch('../back-end/delete_account.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Account eliminato con successo');
+                        window.location.href = '../../login_register_user/logout.php';
+                    } else {
+                        alert('Errore durante l\'eliminazione dell\'account');
+                    }
+                })
+        }
+
+        // Funzione per l'anteprima dell'avatar
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.querySelector('.profile-avatar').src = reader.result;
+            };
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+                document.getElementById('avatarForm').submit();
+            }
+        }
+        // Add these functions
+        function showEditModal(e) {
+            e.preventDefault();
+            // Fill form with current values
+            document.getElementById('editUsername').value = '<?php echo $user['username']; ?>';
+            document.getElementById('editEmail').value = '<?php echo $user['email']; ?>';
+            document.getElementById('editAddress').value = '<?php echo $user['shipping_address']; ?>';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Add form submission handler
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('../back-end/edit_profile.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update displayed values
+                        document.querySelector('.info-value:first-child').textContent = data.username;
+                        document.querySelectorAll('.info-value')[1].textContent = data.email;
+                        document.querySelectorAll('.info-value')[2].textContent = data.shipping_address || "Nessun indirizzo registrato";
+                        closeEditModal();
+                        alert('Profilo aggiornato con successo!');
+                    } else {
+                        alert(data.message || 'Errore durante l\'aggiornamento del profilo');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Si è verificato un errore durante l\'aggiornamento');
+                });
         });
     </script>
 </body>

@@ -262,6 +262,7 @@
 }
 
 .modal-confirm,
+.modal-confirm-modification,
 .modal-cancel {
     padding: 0.5rem 1.5rem;
     border: none;
@@ -277,7 +278,7 @@
 }
 
 .modal-confirm:hover {
-    background: #01a584;
+    background: #d60000;
     transform: translateY(-1px);
 }
 
@@ -314,7 +315,8 @@
     align-items: center;
     justify-content: center;
     color: white;
-    pointer-events: none; /* Add this to make overlay non-interactive */
+    pointer-events: none;
+    /* Add this to make overlay non-interactive */
 }
 
 .avatar-upload:hover .avatar-overlay {
@@ -331,7 +333,8 @@
     border: 5px solid white;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    margin: 0; /* Remove margin from here since it's on avatar-upload */
+    margin: 0;
+    /* Remove margin from here since it's on avatar-upload */
 }
 
 .avatar-upload:hover .profile-avatar {
@@ -339,11 +342,80 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Add camera icon styling */
 .avatar-overlay i.fa-camera {
     font-size: 2rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
+
+/* Modale per la modifica del profilo */
+.edit-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.edit-modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+}
+
+.edit-modal h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.edit-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.edit-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+}
+
+.edit-form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.edit-form-group input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.modal-confirm-modification {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.modal-confirm-modification:hover {
+    background: rgb(15, 113, 179);
+    transform: translateY(-1px);
+}
+
 
 @media (max-width: 992px) {
     .profile-content {
