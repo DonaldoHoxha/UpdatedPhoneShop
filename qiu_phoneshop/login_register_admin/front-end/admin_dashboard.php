@@ -241,7 +241,8 @@ if (!isset($_SESSION['admin_user'])) {
                                 } else {
                                     $timeAgo .= ' ago';
                                 }
-                                $avatar_path = $row['avatar_path'] ? htmlspecialchars( '../../main_page/user_avatar/'.$row['avatar_path'] ): '../../main_page/user_avatar/default_avatar.png'; // Path to default avatar if not set
+                                $avatar_path = $row['avatar_path'] ? htmlspecialchars( '../../main_page/user_avatar/'.$row['avatar_path'] ): 
+                                '../../main_page/user_avatar/default_avatar.png'; // Path to default avatar if not set
                                 echo "<div class='user'>";
                                 echo "<img src=".$avatar_path." alt='imagine di profilo'>";
                                 echo "<h2>" . htmlspecialchars($row['username']) . "</h2>";
