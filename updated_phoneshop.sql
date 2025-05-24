@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 23, 2025 at 12:48 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Creato il: Mag 24, 2025 alle 11:51
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `administrator_user`
+-- Struttura della tabella `administrator_user`
 --
 
 CREATE TABLE `administrator_user` (
@@ -35,7 +35,7 @@ CREATE TABLE `administrator_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `administrator_user`
+-- Dump dei dati per la tabella `administrator_user`
 --
 
 INSERT INTO `administrator_user` (`id`, `name`, `password`, `deleted_at`) VALUES
@@ -55,7 +55,7 @@ INSERT INTO `administrator_user` (`id`, `name`, `password`, `deleted_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Struttura della tabella `cart`
 --
 
 CREATE TABLE `cart` (
@@ -65,7 +65,7 @@ CREATE TABLE `cart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cart`
+-- Dump dei dati per la tabella `cart`
 --
 
 INSERT INTO `cart` (`user_id`, `product_id`, `quantity`) VALUES
@@ -80,7 +80,7 @@ INSERT INTO `cart` (`user_id`, `product_id`, `quantity`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Struttura della tabella `orders`
 --
 
 CREATE TABLE `orders` (
@@ -94,7 +94,7 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Dump dei dati per la tabella `orders`
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `product_id`, `order_date`, `quantity`, `total_price`, `shipping_address`) VALUES
@@ -162,7 +162,7 @@ INSERT INTO `orders` (`id`, `user_id`, `product_id`, `order_date`, `quantity`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product`
+-- Struttura della tabella `product`
 --
 
 CREATE TABLE `product` (
@@ -179,7 +179,7 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product`
+-- Dump dei dati per la tabella `product`
 --
 
 INSERT INTO `product` (`id`, `name`, `brand`, `ram`, `rom`, `camera`, `battery`, `price`, `quantity`, `fk_admin`) VALUES
@@ -208,7 +208,7 @@ INSERT INTO `product` (`id`, `name`, `brand`, `ram`, `rom`, `camera`, `battery`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `searches`
+-- Struttura della tabella `searches`
 --
 
 CREATE TABLE `searches` (
@@ -218,7 +218,7 @@ CREATE TABLE `searches` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `searches`
+-- Dump dei dati per la tabella `searches`
 --
 
 INSERT INTO `searches` (`user_id`, `product_id`, `searched_at`) VALUES
@@ -231,7 +231,7 @@ INSERT INTO `searches` (`user_id`, `product_id`, `searched_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struttura della tabella `user`
 --
 
 CREATE TABLE `user` (
@@ -241,46 +241,47 @@ CREATE TABLE `user` (
   `email` varchar(50) NOT NULL,
   `shipping_address` varchar(100) DEFAULT NULL,
   `registration_date` datetime NOT NULL DEFAULT current_timestamp(),
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `avatar_path` varchar(255) DEFAULT 'default_avatar.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user`
+-- Dump dei dati per la tabella `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `email`, `shipping_address`, `registration_date`, `deleted_at`) VALUES
-(4, 'don', '$2y$10$7kGOiOytHZWo/fuuwD3hsOfB6.ly2Kh0W4OFfDOvdc9vq24uBAtiS', 'don@gmail.com', NULL, '2025-04-22 00:00:00', '2025-05-23 09:30:24'),
-(5, 'don1', '$2y$10$uWVg4T9STlST9Xp6EGdpm.Mv3/.V6VZgjHru2y5tQ2O/0OFzX6Ehi', 'don1@gmail.com', NULL, '2025-04-22 00:00:00', NULL),
-(6, 'don2', '$2y$10$BOj7F8oTWOZPMU39vMAR5u8bvY2jwmxE4Mcp4c3jqnPIpBz/0tzHW', 'don2@gmail.com', NULL, '2025-04-22 00:00:00', NULL),
-(7, 'don3', '$2y$10$juoNX/rAkXXX8TgoOUO8TOc9RY38yEPnkDiWehlyikxGFmaKDL4Wu', 'don3@gmail.com', NULL, '2025-04-22 00:00:00', NULL),
-(8, 'qiu1', '$2y$10$RPUKv1QFcrorE1S92bKJyOXcWVUlF/ORq/kKpShiXHII43kb84flO', 'qiu1@gmail.com', NULL, '2025-04-22 00:00:00', NULL),
-(9, 'don9', '$2y$10$9dXM8M6B8B1I04AQl.9zJ./g3s1.ZwTi.yrCJYlbCvhigKTzddCH.', 'bkaba@gmail.com', NULL, '2025-04-22 00:00:00', NULL),
-(10, 'updated_don', '$2y$10$MEiuKtAxcesR2Lul.zfySeGbzIXDBkKecfsQakTbBQ0ankEeApBMC', 'updated_don@gmail.com', '1234567890', '2025-04-22 00:00:00', NULL),
-(11, '123', '$2y$10$SgEwKUEOOf8.1nw0.FNgiOgLi.LSPnePPlyXS27ZQY5iXWal1lehm', '123@gmail.com', '1234567890', '2025-04-22 00:00:00', NULL),
-(12, 'test299', '$2y$10$N.lj.CFifCNiBW6Fwr5OwuBEB59lqN0e8XgMByDDWyc9sCGRE6Yey', 'test299@gmail.com', 'vias fashfaei', '2025-05-08 00:00:00', NULL),
-(13, 'prova', '$2y$10$UDpPa5I.VJNk0DsUUcmFBO0fp6p9K/cvmT6C7BYlxJvv/elkgbn6a', 'prova@gmail.com', 'via ss', '2025-05-09 00:00:00', NULL),
-(14, 'new_login', '$2y$10$vEJmfpVkKP.YuRhmXcPIMu6p5Hmo0C/5thUihXjfQshzUEhtWkI9.', 'new_login@gmail.com', 'via don giacomo stornini14', '2025-05-11 00:00:00', NULL);
+INSERT INTO `user` (`id`, `username`, `password`, `email`, `shipping_address`, `registration_date`, `deleted_at`, `avatar_path`) VALUES
+(4, 'don', '$2y$10$7kGOiOytHZWo/fuuwD3hsOfB6.ly2Kh0W4OFfDOvdc9vq24uBAtiS', 'don@gmail.com', NULL, '2025-04-22 00:00:00', '2025-05-23 09:30:24', 'default_avatar.png'),
+(5, 'don1', '$2y$10$uWVg4T9STlST9Xp6EGdpm.Mv3/.V6VZgjHru2y5tQ2O/0OFzX6Ehi', 'don1@gmail.com', NULL, '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(6, 'don2', '$2y$10$BOj7F8oTWOZPMU39vMAR5u8bvY2jwmxE4Mcp4c3jqnPIpBz/0tzHW', 'don2@gmail.com', NULL, '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(7, 'don3', '$2y$10$juoNX/rAkXXX8TgoOUO8TOc9RY38yEPnkDiWehlyikxGFmaKDL4Wu', 'don3@gmail.com', NULL, '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(8, 'qiu1', '$2y$10$RPUKv1QFcrorE1S92bKJyOXcWVUlF/ORq/kKpShiXHII43kb84flO', 'qiu1@gmail.com', NULL, '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(9, 'don9', '$2y$10$9dXM8M6B8B1I04AQl.9zJ./g3s1.ZwTi.yrCJYlbCvhigKTzddCH.', 'bkaba@gmail.com', NULL, '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(10, 'updated_don', '$2y$10$MEiuKtAxcesR2Lul.zfySeGbzIXDBkKecfsQakTbBQ0ankEeApBMC', 'updated_don@gmail.com', '1234567890', '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(11, '123', '$2y$10$SgEwKUEOOf8.1nw0.FNgiOgLi.LSPnePPlyXS27ZQY5iXWal1lehm', '123@gmail.com', '1234567890', '2025-04-22 00:00:00', NULL, 'default_avatar.png'),
+(12, 'test299', '$2y$10$N.lj.CFifCNiBW6Fwr5OwuBEB59lqN0e8XgMByDDWyc9sCGRE6Yey', 'test299@gmail.com', 'vias fashfaei', '2025-05-08 00:00:00', NULL, 'default_avatar.png'),
+(13, 'prova', '$2y$10$UDpPa5I.VJNk0DsUUcmFBO0fp6p9K/cvmT6C7BYlxJvv/elkgbn6a', 'prova@gmail.com', 'via ss', '2025-05-09 00:00:00', NULL, 'default_avatar.png'),
+(14, 'new_login', '$2y$10$vEJmfpVkKP.YuRhmXcPIMu6p5Hmo0C/5thUihXjfQshzUEhtWkI9.', 'new_login@gmail.com', 'via don giacomo stornini14', '2025-05-11 00:00:00', NULL, 'default_avatar.png');
 
 --
--- Indexes for dumped tables
+-- Indici per le tabelle scaricate
 --
 
 --
--- Indexes for table `administrator_user`
+-- Indici per le tabelle `administrator_user`
 --
 ALTER TABLE `administrator_user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `cart`
+-- Indici per le tabelle `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`user_id`,`product_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `orders`
+-- Indici per le tabelle `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
@@ -288,14 +289,14 @@ ALTER TABLE `orders`
   ADD KEY `FK_product_id` (`product_id`);
 
 --
--- Indexes for table `product`
+-- Indici per le tabelle `product`
 --
 ALTER TABLE `product`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_admin` (`fk_admin`);
 
 --
--- Indexes for table `searches`
+-- Indici per le tabelle `searches`
 --
 ALTER TABLE `searches`
   ADD PRIMARY KEY (`user_id`,`product_id`,`searched_at`),
@@ -303,7 +304,7 @@ ALTER TABLE `searches`
   ADD KEY `searched_at` (`searched_at`);
 
 --
--- Indexes for table `user`
+-- Indici per le tabelle `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
@@ -311,59 +312,59 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `password` (`password`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
--- AUTO_INCREMENT for table `administrator_user`
+-- AUTO_INCREMENT per la tabella `administrator_user`
 --
 ALTER TABLE `administrator_user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT per la tabella `orders`
 --
 ALTER TABLE `orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- AUTO_INCREMENT for table `product`
+-- AUTO_INCREMENT per la tabella `product`
 --
 ALTER TABLE `product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT per la tabella `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- Constraints for dumped tables
+-- Limiti per le tabelle scaricate
 --
 
 --
--- Constraints for table `cart`
+-- Limiti per la tabella `cart`
 --
 ALTER TABLE `cart`
   ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Limiti per la tabella `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `FK_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   ADD CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
--- Constraints for table `product`
+-- Limiti per la tabella `product`
 --
 ALTER TABLE `product`
   ADD CONSTRAINT `fk_admin` FOREIGN KEY (`fk_admin`) REFERENCES `administrator_user` (`id`);
 
 --
--- Constraints for table `searches`
+-- Limiti per la tabella `searches`
 --
 ALTER TABLE `searches`
   ADD CONSTRAINT `searches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,

@@ -1,29 +1,15 @@
 <?php
-// Avvia la sessione (se non è già stata avviata)
+// logout.php for admin
 session_start();
 
-// Rimuove tutte le variabili di sessione
-session_unset();
+// Clear admin-specific session variables
+unset($_SESSION['username']);
 
-// Distrugge completamente la sessione
-// - Elimina i dati dal server
-// - Invalida il cookie di sessione lato client
-session_destroy();
-
-// Itera su tutti i cookie presenti
-foreach ($_COOKIE as $key => $value) {
-    // Imposta ogni cookie con:
-    // - Valore vuoto
-    // - Tempo di scadenza nel passato (per rimuoverlo)
-    // - Percorso root (per assicurarsi di cancellarlo da tutto il sito)
-    setcookie($key, '', time() - 3600, '/');
-    
-    // Rimuove il cookie dall'array $_COOKIE
-    unset($_COOKIE[$key]);
+// Clear admin-specific cookies
+if (isset($_COOKIE['user'])) {
+    setcookie('user', '', time() - 3600, '/');
 }
 
-// Reindirizza l'utente alla pagina principale
-header("Location: ../main_page/front-end/index.php");
-
-// Termina l'esecuzione dello script
+// Redirect to login page
+header('Location: ../main_page/front-end/index.php');
 exit();
