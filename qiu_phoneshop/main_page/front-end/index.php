@@ -83,7 +83,9 @@ if (!isset($_SESSION['username'])) {
                 die("Connection failed: " . $conn->connect_error);
             }
             // Query per ottenere i prodotti
-            $stmt = $conn->prepare("SELECT * FROM product");
+            $stmt = $conn->prepare("SELECT p.name,p.price FROM product p
+                                            JOIN administrator_user a ON p.fk_admin = a.id
+                                            WHERE a.deleted_at IS NULL");
             $stmt->execute();
             $result = $stmt->get_result();
             // Controllo se ci sono risultati
