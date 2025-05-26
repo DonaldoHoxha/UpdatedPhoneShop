@@ -307,45 +307,52 @@ const renderProductsSection = (container) => {
 
     <div id="productModal" class="modal">
       <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2></h2>
-        <form id="addProductForm" method="POST">
-          <div class="form-group" id="productID"></div>
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="brand">Brand:</label>
-            <input type="text" id="brand" name="brand" required>
-          </div>
-          <div class="form-group">
-            <label for="ram">RAM (GB):</label>
-            <input type="number" id="ram" name="ram" required>
-          </div>
-          <div class="form-group">
-            <label for="rom">Storage (GB):</label>
-            <input type="number" id="rom" name="rom" required>
-          </div>
-          <div class="form-group">
-            <label for="camera">Camera (MP):</label>
-            <input type="number" step="0.1" id="camera" name="camera" required>
-          </div>
-          <div class="form-group">
-            <label for="battery">Battery (mAh):</label>
-            <input type="number" id="battery" name="battery" required>
-          </div>
-          <div class="form-group">
-            <label for="price">Price ($):</label>
-            <input type="number" step="0.01" id="price" name="price" required>
-          </div>
-          <div class="form-group">
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" required>
-          </div>
-          <button type="submit" class="submit-btn"></button>
-        </form>
-      </div>
+    <span class="close-modal">&times;</span>
+    <h2></h2>
+    <form id="addProductForm" method="POST">
+        <div class="form-row">
+            <div class="form-column">
+                <div class="form-group" id="productID"></div>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Brand:</label>
+                    <input type="text" id="brand" name="brand" required>
+                </div>
+                <div class="form-group">
+                    <label for="ram">RAM (GB):</label>
+                    <input type="number" id="ram" name="ram" required>
+                </div>
+                <div class="form-group">
+                    <label for="rom">Storage (GB):</label>
+                    <input type="number" id="rom" name="rom" required>
+                </div>
+            </div>
+            
+            <div class="form-column">
+                <div class="form-group">
+                    <label for="camera">Camera (MP):</label>
+                    <input type="number" step="0.1" id="camera" name="camera" required>
+                </div>
+                <div class="form-group">
+                    <label for="battery">Battery (mAh):</label>
+                    <input type="number" id="battery" name="battery" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price ($):</label>
+                    <input type="number" step="0.01" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" required>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="submit-btn"></button>
+    </form>
+</div>
     </div>`;
 
   // Initialize the product modal functionality
@@ -625,7 +632,7 @@ const initProductModal = () => {
       productID.style.display = "none";
       productID.innerHTML = "";
       form.reset();
-      modal.style.display = "block";
+      modal.style.display = "grid";
     };
   }
 
