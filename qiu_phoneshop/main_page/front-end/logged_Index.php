@@ -125,9 +125,6 @@ if (!isset($_SESSION['username'])) {
             </ul>
         </nav>
     </header>
-    <?php
-    ?>
-
     <!-- Main Content -->
     <main class="content">
         <!-- Hero Section -->
@@ -174,9 +171,9 @@ if (!isset($_SESSION['username'])) {
             <div class="footer-section">
                 <h4>Contatti</h4>
                 <ul>
-                    <li><i class="fas fa-phone"></i> +39 02 1234567</li>
-                    <li><i class="fas fa-envelope"></i> info@techphone.it</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Milano, Via Roma 123</li>
+                    <li><i class="fas fa-phone"></i> +39 342 109 2989</li>
+                    <li><i class="fas fa-envelope"></i> donamichele13@gmail.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Spalto Marengo</li>
                 </ul>
             </div>
 

@@ -24,6 +24,7 @@ $user = $result->fetch_assoc();
 $user_id = $user['id'] ?? null;
 $current_username = $_SESSION['username'];
 
+// Dati aggiornati
 $username = $_POST['username'] ?? '';
 $email = $_POST['email'] ?? '';
 $shipping_address = $_POST['shipping_address'] ?? '';

@@ -234,6 +234,7 @@ if (!isset($_SESSION['username'])) {
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
+            window.location.reload(); // Reload the page to reflect changes
         }
 
         // Add form submission handler
@@ -249,12 +250,7 @@ if (!isset($_SESSION['username'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update displayed values
-                        document.querySelector('.info-value:first-child').textContent = data.username;
-                        document.querySelectorAll('.info-value')[1].textContent = data.email;
-                        document.querySelectorAll('.info-value')[2].textContent = data.shipping_address || "Nessun indirizzo registrato";
                         closeEditModal();
-                        alert('Profilo aggiornato con successo!');
                     } else {
                         alert(data.message || 'Errore durante l\'aggiornamento del profilo');
                     }
