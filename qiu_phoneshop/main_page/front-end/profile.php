@@ -37,8 +37,7 @@ if (!isset($_SESSION['username'])) {
     }
 
     $user_id = $user['id'];
-    $avatarPath = !empty($user['avatar_path']) ? htmlspecialchars('../user_avatar/' . $user['avatar_path']) : '../user_avatar/default_avatar.png';
-
+    $avatarPath = $user['avatar_path'];
     $stmt = $conn->prepare("SELECT COUNT(*) as number_of_orders FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -55,7 +54,7 @@ if (!isset($_SESSION['username'])) {
         <div class="profile-content">
             <div class="profile-sidebar">
                 <label for="avatarInput" class="avatar-upload">
-                    <img src="<?php echo $avatarPath; ?>" class="profile-avatar">
+                    <img src="<?php echo '../user_avatar/' . $avatarPath; ?>" class="profile-avatar">
                     <div class="avatar-overlay">
                         <i class="fas fa-camera"></i>
                     </div>

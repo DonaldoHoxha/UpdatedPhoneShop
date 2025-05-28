@@ -116,7 +116,7 @@ if (!isset($_SESSION['username'])) {
 
         <nav class="main-nav">
             <ul class="nav-list">
-                <li><a href="#novita">Novità</a></li>
+                <li><a href="?novità=novità">Novità</a></li>
                 <li><a href="#brand">Brand</a></li>
                 <li><a href="#offerte">Offerte</a></li>
                 <li><a href="#usato">Usato Certificato</a></li>
@@ -142,25 +142,53 @@ if (!isset($_SESSION['username'])) {
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
             }
-            // Query per ottenere tutti i prodotti
-            $stmt = $conn->prepare("SELECT p.id, p.name, p.price FROM product p
+            if (!isset($_GET['novità'])) {
+                // Se non è stata selezionata la novità, imposto il valore di default
+                $_GET['novità'] = '';
+            }
+            if ($_GET['novità'] == 'novità') {
+                // Query per ottenere tutti i prodotti inseriti da meno di 2 settimane
+                $stmt = $conn->prepare("SELECT p.id, p.name, p.price FROM product p
+                                            JOIN administrator_user a ON p.fk_admin = a.id
+                                            WHERE a.deleted_at IS NULL AND p.inserted_at >= NOW() - INTERVAL 14 DAY");
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    // Stampo i prodotti
+
+                    echo "<article class='product-card'>";
+                    echo "<div class='product-info'>";
+                    echo "<h3>" . $row['name'] . "</h3>";
+                    echo "<p class='product-price'>€" . $row['price'] . "</p>";
+                    echo "<div class='product-actions'>";
+                    echo "<button class='quick-view' onclick='showDesc(" . $row['id'] . ")'><i class='fas fa-eye'></i></button>";
+                    echo "<button class='add-to-cart' onclick='addItem(" . $row['id'] . ")'><i class='fas fa-cart-plus'></i></button>";
+                    echo "</div>";
+                    echo "</div>";
+                    echo "</article>";
+                }
+            } else {
+                // Query per ottenere tutti i prodotti
+                $stmt = $conn->prepare("SELECT p.id, p.name, p.price FROM product p
                                             JOIN administrator_user a ON p.fk_admin = a.id
                                             WHERE a.deleted_at IS NULL");
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                // Stampo i prodotti
-                echo "<article class='product-card'>";
-                echo "<div class='product-info'>";
-                echo "<h3>" . $row['name'] . "</h3>";
-                echo "<p class='product-price'>€" . $row['price'] . "</p>";
-                echo "<div class='product-actions'>";
-                echo "<button class='quick-view' onclick='showDesc(" . $row['id'] . ")'><i class='fas fa-eye'></i></button>";
-                echo "<button class='add-to-cart' onclick='addItem(" . $row['id'] . ")'><i class='fas fa-cart-plus'></i></button>";
-                echo "</div>";
-                echo "</div>";
-                echo "</article>";
+                $stmt->execute();
+                $result = $stmt->get_result();
+                while ($row = $result->fetch_assoc()) {
+                    // Stampo i prodotti
+                    echo "<article class='product-card'>";
+                    echo "<div class='product-info'>";
+                    echo "<h3>" . $row['name'] . "</h3>";
+                    echo "<p class='product-price'>€" . $row['price'] . "</p>";
+                    echo "<div class='product-actions'>";
+                    echo "<button class='quick-view' onclick='showDesc(" . $row['id'] . ")'><i class='fas fa-eye'></i></button>";
+                    echo "<button class='add-to-cart' onclick='addItem(" . $row['id'] . ")'><i class='fas fa-cart-plus'></i></button>";
+                    echo "</div>";
+                    echo "</div>";
+                    echo "</article>";
+                }
             }
+
             ?>
         </section>
     </main>
